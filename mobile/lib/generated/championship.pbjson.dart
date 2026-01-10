@@ -95,3 +95,33 @@ const ChampionshipResponse$json = {
 final $typed_data.Uint8List championshipResponseDescriptor = $convert.base64Decode(
     'ChRDaGFtcGlvbnNoaXBSZXNwb25zZRI2CgxjaGFtcGlvbnNoaXAYASABKAsyEi5nYW1lLkNoYW'
     '1waW9uc2hpcFIMY2hhbXBpb25zaGlw');
+
+@$core.Deprecated('Use listChampionshipsRequestDescriptor instead')
+const ListChampionshipsRequest$json = {
+  '1': 'ListChampionshipsRequest',
+};
+
+/// Descriptor for `ListChampionshipsRequest`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List listChampionshipsRequestDescriptor =
+    $convert.base64Decode('ChhMaXN0Q2hhbXBpb25zaGlwc1JlcXVlc3Q=');
+
+@$core.Deprecated('Use listChampionshipsResponseDescriptor instead')
+const ListChampionshipsResponse$json = {
+  '1': 'ListChampionshipsResponse',
+  '2': [
+    {
+      '1': 'championships',
+      '3': 1,
+      '4': 3,
+      '5': 11,
+      '6': '.game.Championship',
+      '10': 'championships'
+    },
+  ],
+};
+
+/// Descriptor for `ListChampionshipsResponse`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List listChampionshipsResponseDescriptor =
+    $convert.base64Decode(
+        'ChlMaXN0Q2hhbXBpb25zaGlwc1Jlc3BvbnNlEjgKDWNoYW1waW9uc2hpcHMYASADKAsyEi5nYW'
+        '1lLkNoYW1waW9uc2hpcFINY2hhbXBpb25zaGlwcw==');

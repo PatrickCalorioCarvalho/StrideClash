@@ -28,8 +28,17 @@ message ChampionshipResponse {
 Championship championship = 1;
 }
 
+message ListChampionshipsRequest {}
+
+message ListChampionshipsResponse {
+  repeated Championship championships = 1;
+}
 
 service ChampionshipService {
-rpc CreateChampionship(CreateChampionshipRequest)
-returns (ChampionshipResponse);
+    
+    rpc CreateChampionship(CreateChampionshipRequest)
+        returns (ChampionshipResponse);
+
+    rpc ListChampionships(ListChampionshipsRequest)
+        returns (ListChampionshipsResponse);
 }

@@ -256,6 +256,95 @@ class ChampionshipResponse extends $pb.GeneratedMessage {
   Championship ensureChampionship() => $_ensure(0);
 }
 
+class ListChampionshipsRequest extends $pb.GeneratedMessage {
+  factory ListChampionshipsRequest() => create();
+
+  ListChampionshipsRequest._();
+
+  factory ListChampionshipsRequest.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(data, registry);
+  factory ListChampionshipsRequest.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'ListChampionshipsRequest',
+      package: const $pb.PackageName(_omitMessageNames ? '' : 'game'),
+      createEmptyInstance: create)
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  ListChampionshipsRequest clone() => deepCopy();
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  ListChampionshipsRequest copyWith(
+          void Function(ListChampionshipsRequest) updates) =>
+      super.copyWith((message) => updates(message as ListChampionshipsRequest))
+          as ListChampionshipsRequest;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static ListChampionshipsRequest create() => ListChampionshipsRequest._();
+  @$core.override
+  ListChampionshipsRequest createEmptyInstance() => create();
+  @$core.pragma('dart2js:noInline')
+  static ListChampionshipsRequest getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<ListChampionshipsRequest>(create);
+  static ListChampionshipsRequest? _defaultInstance;
+}
+
+class ListChampionshipsResponse extends $pb.GeneratedMessage {
+  factory ListChampionshipsResponse({
+    $core.Iterable<Championship>? championships,
+  }) {
+    final result = create();
+    if (championships != null) result.championships.addAll(championships);
+    return result;
+  }
+
+  ListChampionshipsResponse._();
+
+  factory ListChampionshipsResponse.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(data, registry);
+  factory ListChampionshipsResponse.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'ListChampionshipsResponse',
+      package: const $pb.PackageName(_omitMessageNames ? '' : 'game'),
+      createEmptyInstance: create)
+    ..pPM<Championship>(1, _omitFieldNames ? '' : 'championships',
+        subBuilder: Championship.create)
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  ListChampionshipsResponse clone() => deepCopy();
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  ListChampionshipsResponse copyWith(
+          void Function(ListChampionshipsResponse) updates) =>
+      super.copyWith((message) => updates(message as ListChampionshipsResponse))
+          as ListChampionshipsResponse;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static ListChampionshipsResponse create() => ListChampionshipsResponse._();
+  @$core.override
+  ListChampionshipsResponse createEmptyInstance() => create();
+  @$core.pragma('dart2js:noInline')
+  static ListChampionshipsResponse getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<ListChampionshipsResponse>(create);
+  static ListChampionshipsResponse? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $pb.PbList<Championship> get championships => $_getList(0);
+}
+
 const $core.bool _omitFieldNames =
     $core.bool.fromEnvironment('protobuf.omit_field_names');
 const $core.bool _omitMessageNames =

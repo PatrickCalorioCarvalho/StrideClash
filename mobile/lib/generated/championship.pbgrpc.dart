@@ -39,6 +39,13 @@ class ChampionshipServiceClient extends $grpc.Client {
     return $createUnaryCall(_$createChampionship, request, options: options);
   }
 
+  $grpc.ResponseFuture<$0.ListChampionshipsResponse> listChampionships(
+    $0.ListChampionshipsRequest request, {
+    $grpc.CallOptions? options,
+  }) {
+    return $createUnaryCall(_$listChampionships, request, options: options);
+  }
+
   // method descriptors
 
   static final _$createChampionship =
@@ -46,6 +53,11 @@ class ChampionshipServiceClient extends $grpc.Client {
           '/game.ChampionshipService/CreateChampionship',
           ($0.CreateChampionshipRequest value) => value.writeToBuffer(),
           $0.ChampionshipResponse.fromBuffer);
+  static final _$listChampionships = $grpc.ClientMethod<
+          $0.ListChampionshipsRequest, $0.ListChampionshipsResponse>(
+      '/game.ChampionshipService/ListChampionships',
+      ($0.ListChampionshipsRequest value) => value.writeToBuffer(),
+      $0.ListChampionshipsResponse.fromBuffer);
 }
 
 @$pb.GrpcServiceName('game.ChampionshipService')
@@ -62,6 +74,15 @@ abstract class ChampionshipServiceBase extends $grpc.Service {
         ($core.List<$core.int> value) =>
             $0.CreateChampionshipRequest.fromBuffer(value),
         ($0.ChampionshipResponse value) => value.writeToBuffer()));
+    $addMethod($grpc.ServiceMethod<$0.ListChampionshipsRequest,
+            $0.ListChampionshipsResponse>(
+        'ListChampionships',
+        listChampionships_Pre,
+        false,
+        false,
+        ($core.List<$core.int> value) =>
+            $0.ListChampionshipsRequest.fromBuffer(value),
+        ($0.ListChampionshipsResponse value) => value.writeToBuffer()));
   }
 
   $async.Future<$0.ChampionshipResponse> createChampionship_Pre(
@@ -72,4 +93,13 @@ abstract class ChampionshipServiceBase extends $grpc.Service {
 
   $async.Future<$0.ChampionshipResponse> createChampionship(
       $grpc.ServiceCall call, $0.CreateChampionshipRequest request);
+
+  $async.Future<$0.ListChampionshipsResponse> listChampionships_Pre(
+      $grpc.ServiceCall $call,
+      $async.Future<$0.ListChampionshipsRequest> $request) async {
+    return listChampionships($call, await $request);
+  }
+
+  $async.Future<$0.ListChampionshipsResponse> listChampionships(
+      $grpc.ServiceCall call, $0.ListChampionshipsRequest request);
 }

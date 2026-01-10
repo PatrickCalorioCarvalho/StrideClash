@@ -1,50 +1,56 @@
 package services
 
-
 import (
 	"context"
-	"database/sql"
 
 	"github.com/google/uuid"
 	pb "github.com/PatrickCalorioCarvalho/StrideClash/backend/proto"
+	"github.com/PatrickCalorioCarvalho/StrideClash/backend/repository"
 )
-
 
 type ChampionshipService struct {
 	pb.UnimplementedChampionshipServiceServer
-	DB *sql.DB
+	Repo *repository.ChampionshipRepository
 }
-
 
 func (s *ChampionshipService) CreateChampionship(
 	ctx context.Context,
 	req *pb.CreateChampionshipRequest,
 ) (*pb.ChampionshipResponse, error) {
 
-	id := uuid.New()
+	id := uuid.New().String()
 
-	_, err := s.DB.Exec(`
-		INSERT INTO championships (id, name, start_at, end_at)
-		VALUES ($1, $2, $3, $4)
-		`,
+	err := s.Repo.Create(
 		id,
 		req.Name,
 		req.StartAt.AsTime(),
 		req.EndAt.AsTime(),
 	)
-
-
 	if err != nil {
 		return nil, err
 	}
 
-
 	return &pb.ChampionshipResponse{
 		Championship: &pb.Championship{
-		Id: id.String(),
-		Name: req.Name,
-		StartAt: req.StartAt,
-		EndAt: req.EndAt,
+			Id:      id,
+			Name:    req.Name,
+			StartAt: req.StartAt,
+			EndAt:   req.EndAt,
 		},
+	}, nil
+}
+
+func (s *ChampionshipService) ListChampionships(
+	ctx context.Context,
+	req *pb.ListChampionshipsRequest,
+) (*pb.ListChampionshipsResponse, error) {
+
+	championships, err := s.Repo.List()
+	if err != nil {
+		return nil, err
+	}
+
+	return &pb.ListChampionshipsResponse{
+		Championships: championships,
 	}, nil
 }

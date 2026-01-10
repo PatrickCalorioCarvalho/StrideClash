@@ -194,6 +194,86 @@ func (x *ChampionshipResponse) GetChampionship() *Championship {
 	return nil
 }
 
+type ListChampionshipsRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListChampionshipsRequest) Reset() {
+	*x = ListChampionshipsRequest{}
+	mi := &file_proto_championship_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListChampionshipsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListChampionshipsRequest) ProtoMessage() {}
+
+func (x *ListChampionshipsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_championship_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListChampionshipsRequest.ProtoReflect.Descriptor instead.
+func (*ListChampionshipsRequest) Descriptor() ([]byte, []int) {
+	return file_proto_championship_proto_rawDescGZIP(), []int{3}
+}
+
+type ListChampionshipsResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Championships []*Championship        `protobuf:"bytes,1,rep,name=championships,proto3" json:"championships,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListChampionshipsResponse) Reset() {
+	*x = ListChampionshipsResponse{}
+	mi := &file_proto_championship_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListChampionshipsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListChampionshipsResponse) ProtoMessage() {}
+
+func (x *ListChampionshipsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_championship_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListChampionshipsResponse.ProtoReflect.Descriptor instead.
+func (*ListChampionshipsResponse) Descriptor() ([]byte, []int) {
+	return file_proto_championship_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *ListChampionshipsResponse) GetChampionships() []*Championship {
+	if x != nil {
+		return x.Championships
+	}
+	return nil
+}
+
 var File_proto_championship_proto protoreflect.FileDescriptor
 
 const file_proto_championship_proto_rawDesc = "" +
@@ -209,9 +289,13 @@ const file_proto_championship_proto_rawDesc = "" +
 	"\bstart_at\x18\x02 \x01(\v2\x1a.google.protobuf.TimestampR\astartAt\x121\n" +
 	"\x06end_at\x18\x03 \x01(\v2\x1a.google.protobuf.TimestampR\x05endAt\"N\n" +
 	"\x14ChampionshipResponse\x126\n" +
-	"\fchampionship\x18\x01 \x01(\v2\x12.game.ChampionshipR\fchampionship2h\n" +
+	"\fchampionship\x18\x01 \x01(\v2\x12.game.ChampionshipR\fchampionship\"\x1a\n" +
+	"\x18ListChampionshipsRequest\"U\n" +
+	"\x19ListChampionshipsResponse\x128\n" +
+	"\rchampionships\x18\x01 \x03(\v2\x12.game.ChampionshipR\rchampionships2\xbe\x01\n" +
 	"\x13ChampionshipService\x12Q\n" +
-	"\x12CreateChampionship\x12\x1f.game.CreateChampionshipRequest\x1a\x1a.game.ChampionshipResponseBCZAgithub.com/PatrickCalorioCarvalho/StrideClash/backend/proto;protob\x06proto3"
+	"\x12CreateChampionship\x12\x1f.game.CreateChampionshipRequest\x1a\x1a.game.ChampionshipResponse\x12T\n" +
+	"\x11ListChampionships\x12\x1e.game.ListChampionshipsRequest\x1a\x1f.game.ListChampionshipsResponseBCZAgithub.com/PatrickCalorioCarvalho/StrideClash/backend/proto;protob\x06proto3"
 
 var (
 	file_proto_championship_proto_rawDescOnce sync.Once
@@ -225,26 +309,31 @@ func file_proto_championship_proto_rawDescGZIP() []byte {
 	return file_proto_championship_proto_rawDescData
 }
 
-var file_proto_championship_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+var file_proto_championship_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
 var file_proto_championship_proto_goTypes = []any{
 	(*Championship)(nil),              // 0: game.Championship
 	(*CreateChampionshipRequest)(nil), // 1: game.CreateChampionshipRequest
 	(*ChampionshipResponse)(nil),      // 2: game.ChampionshipResponse
-	(*timestamppb.Timestamp)(nil),     // 3: google.protobuf.Timestamp
+	(*ListChampionshipsRequest)(nil),  // 3: game.ListChampionshipsRequest
+	(*ListChampionshipsResponse)(nil), // 4: game.ListChampionshipsResponse
+	(*timestamppb.Timestamp)(nil),     // 5: google.protobuf.Timestamp
 }
 var file_proto_championship_proto_depIdxs = []int32{
-	3, // 0: game.Championship.start_at:type_name -> google.protobuf.Timestamp
-	3, // 1: game.Championship.end_at:type_name -> google.protobuf.Timestamp
-	3, // 2: game.CreateChampionshipRequest.start_at:type_name -> google.protobuf.Timestamp
-	3, // 3: game.CreateChampionshipRequest.end_at:type_name -> google.protobuf.Timestamp
+	5, // 0: game.Championship.start_at:type_name -> google.protobuf.Timestamp
+	5, // 1: game.Championship.end_at:type_name -> google.protobuf.Timestamp
+	5, // 2: game.CreateChampionshipRequest.start_at:type_name -> google.protobuf.Timestamp
+	5, // 3: game.CreateChampionshipRequest.end_at:type_name -> google.protobuf.Timestamp
 	0, // 4: game.ChampionshipResponse.championship:type_name -> game.Championship
-	1, // 5: game.ChampionshipService.CreateChampionship:input_type -> game.CreateChampionshipRequest
-	2, // 6: game.ChampionshipService.CreateChampionship:output_type -> game.ChampionshipResponse
-	6, // [6:7] is the sub-list for method output_type
-	5, // [5:6] is the sub-list for method input_type
-	5, // [5:5] is the sub-list for extension type_name
-	5, // [5:5] is the sub-list for extension extendee
-	0, // [0:5] is the sub-list for field type_name
+	0, // 5: game.ListChampionshipsResponse.championships:type_name -> game.Championship
+	1, // 6: game.ChampionshipService.CreateChampionship:input_type -> game.CreateChampionshipRequest
+	3, // 7: game.ChampionshipService.ListChampionships:input_type -> game.ListChampionshipsRequest
+	2, // 8: game.ChampionshipService.CreateChampionship:output_type -> game.ChampionshipResponse
+	4, // 9: game.ChampionshipService.ListChampionships:output_type -> game.ListChampionshipsResponse
+	8, // [8:10] is the sub-list for method output_type
+	6, // [6:8] is the sub-list for method input_type
+	6, // [6:6] is the sub-list for extension type_name
+	6, // [6:6] is the sub-list for extension extendee
+	0, // [0:6] is the sub-list for field type_name
 }
 
 func init() { file_proto_championship_proto_init() }
@@ -258,7 +347,7 @@ func file_proto_championship_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_championship_proto_rawDesc), len(file_proto_championship_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   3,
+			NumMessages:   5,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

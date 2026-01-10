@@ -20,6 +20,7 @@ const _ = grpc.SupportPackageIsVersion9
 
 const (
 	ChampionshipService_CreateChampionship_FullMethodName = "/game.ChampionshipService/CreateChampionship"
+	ChampionshipService_ListChampionships_FullMethodName  = "/game.ChampionshipService/ListChampionships"
 )
 
 // ChampionshipServiceClient is the client API for ChampionshipService service.
@@ -27,6 +28,7 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ChampionshipServiceClient interface {
 	CreateChampionship(ctx context.Context, in *CreateChampionshipRequest, opts ...grpc.CallOption) (*ChampionshipResponse, error)
+	ListChampionships(ctx context.Context, in *ListChampionshipsRequest, opts ...grpc.CallOption) (*ListChampionshipsResponse, error)
 }
 
 type championshipServiceClient struct {
@@ -47,11 +49,22 @@ func (c *championshipServiceClient) CreateChampionship(ctx context.Context, in *
 	return out, nil
 }
 
+func (c *championshipServiceClient) ListChampionships(ctx context.Context, in *ListChampionshipsRequest, opts ...grpc.CallOption) (*ListChampionshipsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListChampionshipsResponse)
+	err := c.cc.Invoke(ctx, ChampionshipService_ListChampionships_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ChampionshipServiceServer is the server API for ChampionshipService service.
 // All implementations must embed UnimplementedChampionshipServiceServer
 // for forward compatibility.
 type ChampionshipServiceServer interface {
 	CreateChampionship(context.Context, *CreateChampionshipRequest) (*ChampionshipResponse, error)
+	ListChampionships(context.Context, *ListChampionshipsRequest) (*ListChampionshipsResponse, error)
 	mustEmbedUnimplementedChampionshipServiceServer()
 }
 
@@ -64,6 +77,9 @@ type UnimplementedChampionshipServiceServer struct{}
 
 func (UnimplementedChampionshipServiceServer) CreateChampionship(context.Context, *CreateChampionshipRequest) (*ChampionshipResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method CreateChampionship not implemented")
+}
+func (UnimplementedChampionshipServiceServer) ListChampionships(context.Context, *ListChampionshipsRequest) (*ListChampionshipsResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method ListChampionships not implemented")
 }
 func (UnimplementedChampionshipServiceServer) mustEmbedUnimplementedChampionshipServiceServer() {}
 func (UnimplementedChampionshipServiceServer) testEmbeddedByValue()                             {}
@@ -104,6 +120,24 @@ func _ChampionshipService_CreateChampionship_Handler(srv interface{}, ctx contex
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ChampionshipService_ListChampionships_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListChampionshipsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ChampionshipServiceServer).ListChampionships(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ChampionshipService_ListChampionships_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ChampionshipServiceServer).ListChampionships(ctx, req.(*ListChampionshipsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ChampionshipService_ServiceDesc is the grpc.ServiceDesc for ChampionshipService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -114,6 +148,10 @@ var ChampionshipService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreateChampionship",
 			Handler:    _ChampionshipService_CreateChampionship_Handler,
+		},
+		{
+			MethodName: "ListChampionships",
+			Handler:    _ChampionshipService_ListChampionships_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
