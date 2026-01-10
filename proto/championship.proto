@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+
+package game;
+
+
+option go_package = "github.com/PatrickCalorioCarvalho/StrideClash/backend/proto;proto";
+
+import "google/protobuf/timestamp.proto";
+
+
+message Championship {
+string id = 1;
+string name = 2;
+google.protobuf.Timestamp start_at = 3;
+google.protobuf.Timestamp end_at = 4;
+}
+
+
+message CreateChampionshipRequest {
+string name = 1;
+google.protobuf.Timestamp start_at = 2;
+google.protobuf.Timestamp end_at = 3;
+}
+
+
+message ChampionshipResponse {
+Championship championship = 1;
+}
+
+
+service ChampionshipService {
+rpc CreateChampionship(CreateChampionshipRequest)
+returns (ChampionshipResponse);
+}
