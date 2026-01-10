@@ -345,6 +345,191 @@ class ListChampionshipsResponse extends $pb.GeneratedMessage {
   $pb.PbList<Championship> get championships => $_getList(0);
 }
 
+class UpdateChampionshipEndDateRequest extends $pb.GeneratedMessage {
+  factory UpdateChampionshipEndDateRequest({
+    $core.String? id,
+    $1.Timestamp? newEndAt,
+  }) {
+    final result = create();
+    if (id != null) result.id = id;
+    if (newEndAt != null) result.newEndAt = newEndAt;
+    return result;
+  }
+
+  UpdateChampionshipEndDateRequest._();
+
+  factory UpdateChampionshipEndDateRequest.fromBuffer(
+          $core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(data, registry);
+  factory UpdateChampionshipEndDateRequest.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'UpdateChampionshipEndDateRequest',
+      package: const $pb.PackageName(_omitMessageNames ? '' : 'game'),
+      createEmptyInstance: create)
+    ..aOS(1, _omitFieldNames ? '' : 'id')
+    ..aOM<$1.Timestamp>(2, _omitFieldNames ? '' : 'newEndAt',
+        subBuilder: $1.Timestamp.create)
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  UpdateChampionshipEndDateRequest clone() => deepCopy();
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  UpdateChampionshipEndDateRequest copyWith(
+          void Function(UpdateChampionshipEndDateRequest) updates) =>
+      super.copyWith(
+              (message) => updates(message as UpdateChampionshipEndDateRequest))
+          as UpdateChampionshipEndDateRequest;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static UpdateChampionshipEndDateRequest create() =>
+      UpdateChampionshipEndDateRequest._();
+  @$core.override
+  UpdateChampionshipEndDateRequest createEmptyInstance() => create();
+  @$core.pragma('dart2js:noInline')
+  static UpdateChampionshipEndDateRequest getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<UpdateChampionshipEndDateRequest>(
+          create);
+  static UpdateChampionshipEndDateRequest? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get id => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set id($core.String value) => $_setString(0, value);
+  @$pb.TagNumber(1)
+  $core.bool hasId() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearId() => $_clearField(1);
+
+  @$pb.TagNumber(2)
+  $1.Timestamp get newEndAt => $_getN(1);
+  @$pb.TagNumber(2)
+  set newEndAt($1.Timestamp value) => $_setField(2, value);
+  @$pb.TagNumber(2)
+  $core.bool hasNewEndAt() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearNewEndAt() => $_clearField(2);
+  @$pb.TagNumber(2)
+  $1.Timestamp ensureNewEndAt() => $_ensure(1);
+}
+
+class DeleteChampionshipRequest extends $pb.GeneratedMessage {
+  factory DeleteChampionshipRequest({
+    $core.String? id,
+  }) {
+    final result = create();
+    if (id != null) result.id = id;
+    return result;
+  }
+
+  DeleteChampionshipRequest._();
+
+  factory DeleteChampionshipRequest.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(data, registry);
+  factory DeleteChampionshipRequest.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'DeleteChampionshipRequest',
+      package: const $pb.PackageName(_omitMessageNames ? '' : 'game'),
+      createEmptyInstance: create)
+    ..aOS(1, _omitFieldNames ? '' : 'id')
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  DeleteChampionshipRequest clone() => deepCopy();
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  DeleteChampionshipRequest copyWith(
+          void Function(DeleteChampionshipRequest) updates) =>
+      super.copyWith((message) => updates(message as DeleteChampionshipRequest))
+          as DeleteChampionshipRequest;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static DeleteChampionshipRequest create() => DeleteChampionshipRequest._();
+  @$core.override
+  DeleteChampionshipRequest createEmptyInstance() => create();
+  @$core.pragma('dart2js:noInline')
+  static DeleteChampionshipRequest getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<DeleteChampionshipRequest>(create);
+  static DeleteChampionshipRequest? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get id => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set id($core.String value) => $_setString(0, value);
+  @$pb.TagNumber(1)
+  $core.bool hasId() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearId() => $_clearField(1);
+}
+
+class DeleteChampionshipResponse extends $pb.GeneratedMessage {
+  factory DeleteChampionshipResponse({
+    $core.bool? success,
+  }) {
+    final result = create();
+    if (success != null) result.success = success;
+    return result;
+  }
+
+  DeleteChampionshipResponse._();
+
+  factory DeleteChampionshipResponse.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(data, registry);
+  factory DeleteChampionshipResponse.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'DeleteChampionshipResponse',
+      package: const $pb.PackageName(_omitMessageNames ? '' : 'game'),
+      createEmptyInstance: create)
+    ..aOB(1, _omitFieldNames ? '' : 'success')
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  DeleteChampionshipResponse clone() => deepCopy();
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  DeleteChampionshipResponse copyWith(
+          void Function(DeleteChampionshipResponse) updates) =>
+      super.copyWith(
+              (message) => updates(message as DeleteChampionshipResponse))
+          as DeleteChampionshipResponse;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static DeleteChampionshipResponse create() => DeleteChampionshipResponse._();
+  @$core.override
+  DeleteChampionshipResponse createEmptyInstance() => create();
+  @$core.pragma('dart2js:noInline')
+  static DeleteChampionshipResponse getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<DeleteChampionshipResponse>(create);
+  static DeleteChampionshipResponse? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.bool get success => $_getBF(0);
+  @$pb.TagNumber(1)
+  set success($core.bool value) => $_setBool(0, value);
+  @$pb.TagNumber(1)
+  $core.bool hasSuccess() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearSuccess() => $_clearField(1);
+}
+
 const $core.bool _omitFieldNames =
     $core.bool.fromEnvironment('protobuf.omit_field_names');
 const $core.bool _omitMessageNames =

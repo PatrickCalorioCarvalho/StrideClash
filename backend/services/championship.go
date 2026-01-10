@@ -2,8 +2,12 @@ package services
 
 import (
 	"context"
+	"time"
 
 	"github.com/google/uuid"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
+
 	pb "github.com/PatrickCalorioCarvalho/StrideClash/backend/proto"
 	"github.com/PatrickCalorioCarvalho/StrideClash/backend/repository"
 )
@@ -52,5 +56,46 @@ func (s *ChampionshipService) ListChampionships(
 
 	return &pb.ListChampionshipsResponse{
 		Championships: championships,
+	}, nil
+}
+
+func (s *ChampionshipService) UpdateChampionshipEndDate(
+	ctx context.Context,
+	req *pb.UpdateChampionshipEndDateRequest,
+) (*pb.ChampionshipResponse, error) {
+
+	if req.NewEndAt.AsTime().Before(time.Now()) {
+		return nil, status.Error(
+			codes.InvalidArgument,
+			"nova data deve ser maior que hoje",
+		)
+	}
+
+	c, err := s.Repo.UpdateEndDate(
+		req.Id,
+		req.NewEndAt.AsTime(),
+	)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &pb.ChampionshipResponse{
+		Championship: c,
+	}, nil
+}
+
+func (s *ChampionshipService) DeleteChampionship(
+	ctx context.Context,
+	req *pb.DeleteChampionshipRequest,
+) (*pb.DeleteChampionshipResponse, error) {
+
+	ok, err := s.Repo.Delete(req.Id)
+	if err != nil {
+		return nil, err
+	}
+
+	return &pb.DeleteChampionshipResponse{
+		Success: ok,
 	}, nil
 }

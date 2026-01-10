@@ -46,6 +46,21 @@ class ChampionshipServiceClient extends $grpc.Client {
     return $createUnaryCall(_$listChampionships, request, options: options);
   }
 
+  $grpc.ResponseFuture<$0.ChampionshipResponse> updateChampionshipEndDate(
+    $0.UpdateChampionshipEndDateRequest request, {
+    $grpc.CallOptions? options,
+  }) {
+    return $createUnaryCall(_$updateChampionshipEndDate, request,
+        options: options);
+  }
+
+  $grpc.ResponseFuture<$0.DeleteChampionshipResponse> deleteChampionship(
+    $0.DeleteChampionshipRequest request, {
+    $grpc.CallOptions? options,
+  }) {
+    return $createUnaryCall(_$deleteChampionship, request, options: options);
+  }
+
   // method descriptors
 
   static final _$createChampionship =
@@ -58,6 +73,16 @@ class ChampionshipServiceClient extends $grpc.Client {
       '/game.ChampionshipService/ListChampionships',
       ($0.ListChampionshipsRequest value) => value.writeToBuffer(),
       $0.ListChampionshipsResponse.fromBuffer);
+  static final _$updateChampionshipEndDate = $grpc.ClientMethod<
+          $0.UpdateChampionshipEndDateRequest, $0.ChampionshipResponse>(
+      '/game.ChampionshipService/UpdateChampionshipEndDate',
+      ($0.UpdateChampionshipEndDateRequest value) => value.writeToBuffer(),
+      $0.ChampionshipResponse.fromBuffer);
+  static final _$deleteChampionship = $grpc.ClientMethod<
+          $0.DeleteChampionshipRequest, $0.DeleteChampionshipResponse>(
+      '/game.ChampionshipService/DeleteChampionship',
+      ($0.DeleteChampionshipRequest value) => value.writeToBuffer(),
+      $0.DeleteChampionshipResponse.fromBuffer);
 }
 
 @$pb.GrpcServiceName('game.ChampionshipService')
@@ -83,6 +108,24 @@ abstract class ChampionshipServiceBase extends $grpc.Service {
         ($core.List<$core.int> value) =>
             $0.ListChampionshipsRequest.fromBuffer(value),
         ($0.ListChampionshipsResponse value) => value.writeToBuffer()));
+    $addMethod($grpc.ServiceMethod<$0.UpdateChampionshipEndDateRequest,
+            $0.ChampionshipResponse>(
+        'UpdateChampionshipEndDate',
+        updateChampionshipEndDate_Pre,
+        false,
+        false,
+        ($core.List<$core.int> value) =>
+            $0.UpdateChampionshipEndDateRequest.fromBuffer(value),
+        ($0.ChampionshipResponse value) => value.writeToBuffer()));
+    $addMethod($grpc.ServiceMethod<$0.DeleteChampionshipRequest,
+            $0.DeleteChampionshipResponse>(
+        'DeleteChampionship',
+        deleteChampionship_Pre,
+        false,
+        false,
+        ($core.List<$core.int> value) =>
+            $0.DeleteChampionshipRequest.fromBuffer(value),
+        ($0.DeleteChampionshipResponse value) => value.writeToBuffer()));
   }
 
   $async.Future<$0.ChampionshipResponse> createChampionship_Pre(
@@ -102,4 +145,22 @@ abstract class ChampionshipServiceBase extends $grpc.Service {
 
   $async.Future<$0.ListChampionshipsResponse> listChampionships(
       $grpc.ServiceCall call, $0.ListChampionshipsRequest request);
+
+  $async.Future<$0.ChampionshipResponse> updateChampionshipEndDate_Pre(
+      $grpc.ServiceCall $call,
+      $async.Future<$0.UpdateChampionshipEndDateRequest> $request) async {
+    return updateChampionshipEndDate($call, await $request);
+  }
+
+  $async.Future<$0.ChampionshipResponse> updateChampionshipEndDate(
+      $grpc.ServiceCall call, $0.UpdateChampionshipEndDateRequest request);
+
+  $async.Future<$0.DeleteChampionshipResponse> deleteChampionship_Pre(
+      $grpc.ServiceCall $call,
+      $async.Future<$0.DeleteChampionshipRequest> $request) async {
+    return deleteChampionship($call, await $request);
+  }
+
+  $async.Future<$0.DeleteChampionshipResponse> deleteChampionship(
+      $grpc.ServiceCall call, $0.DeleteChampionshipRequest request);
 }

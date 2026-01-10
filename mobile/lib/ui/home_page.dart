@@ -69,6 +69,36 @@ class _HomePageState extends State<HomePage> {
       onSelected(date);
     }
   }
+  Future<void> _deleteChampionship(String id) async {
+    await _client.championship.deleteChampionship(
+      DeleteChampionshipRequest()..id = id,
+    );
+
+    setState(() {
+      _championshipsFuture = _loadChampionships();
+    });
+  }
+  Future<void> _extendChampionship(Championship c) async {
+    final newDate = await showDatePicker(
+      context: context,
+      initialDate: c.endAt.toDateTime(),
+      firstDate: DateTime.now().add(const Duration(days: 1)),
+      lastDate: DateTime(2035),
+    );
+
+    if (newDate == null) return;
+
+    await _client.championship.updateChampionshipEndDate(
+      UpdateChampionshipEndDateRequest()
+        ..id = c.id
+        ..newEndAt = Timestamp.fromDateTime(newDate),
+    );
+
+    setState(() {
+      _championshipsFuture = _loadChampionships();
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -171,6 +201,25 @@ class _HomePageState extends State<HomePage> {
                           '${c.endAt.toDateTime().toLocal().toString().split(' ')[0]}',
                         ),
                         leading: const Icon(Icons.flag),
+                        trailing: PopupMenuButton(
+                          itemBuilder: (context) => [
+                            const PopupMenuItem(
+                              value: 'extend',
+                              child: Text('Estender data'),
+                            ),
+                            const PopupMenuItem(
+                              value: 'delete',
+                              child: Text('Excluir'),
+                            ),
+                          ],
+                          onSelected: (value) {
+                            if (value == 'extend') {
+                              _extendChampionship(c);
+                            } else {
+                              _deleteChampionship(c.id);
+                            }
+                          },
+                        ),
                       );
                     },
                   );

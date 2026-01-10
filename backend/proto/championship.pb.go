@@ -274,6 +274,146 @@ func (x *ListChampionshipsResponse) GetChampionships() []*Championship {
 	return nil
 }
 
+type UpdateChampionshipEndDateRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	NewEndAt      *timestamppb.Timestamp `protobuf:"bytes,2,opt,name=new_end_at,json=newEndAt,proto3" json:"new_end_at,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UpdateChampionshipEndDateRequest) Reset() {
+	*x = UpdateChampionshipEndDateRequest{}
+	mi := &file_proto_championship_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateChampionshipEndDateRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateChampionshipEndDateRequest) ProtoMessage() {}
+
+func (x *UpdateChampionshipEndDateRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_championship_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateChampionshipEndDateRequest.ProtoReflect.Descriptor instead.
+func (*UpdateChampionshipEndDateRequest) Descriptor() ([]byte, []int) {
+	return file_proto_championship_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *UpdateChampionshipEndDateRequest) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *UpdateChampionshipEndDateRequest) GetNewEndAt() *timestamppb.Timestamp {
+	if x != nil {
+		return x.NewEndAt
+	}
+	return nil
+}
+
+type DeleteChampionshipRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeleteChampionshipRequest) Reset() {
+	*x = DeleteChampionshipRequest{}
+	mi := &file_proto_championship_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteChampionshipRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteChampionshipRequest) ProtoMessage() {}
+
+func (x *DeleteChampionshipRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_championship_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteChampionshipRequest.ProtoReflect.Descriptor instead.
+func (*DeleteChampionshipRequest) Descriptor() ([]byte, []int) {
+	return file_proto_championship_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *DeleteChampionshipRequest) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+type DeleteChampionshipResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Success       bool                   `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeleteChampionshipResponse) Reset() {
+	*x = DeleteChampionshipResponse{}
+	mi := &file_proto_championship_proto_msgTypes[7]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteChampionshipResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteChampionshipResponse) ProtoMessage() {}
+
+func (x *DeleteChampionshipResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_championship_proto_msgTypes[7]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteChampionshipResponse.ProtoReflect.Descriptor instead.
+func (*DeleteChampionshipResponse) Descriptor() ([]byte, []int) {
+	return file_proto_championship_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *DeleteChampionshipResponse) GetSuccess() bool {
+	if x != nil {
+		return x.Success
+	}
+	return false
+}
+
 var File_proto_championship_proto protoreflect.FileDescriptor
 
 const file_proto_championship_proto_rawDesc = "" +
@@ -292,10 +432,20 @@ const file_proto_championship_proto_rawDesc = "" +
 	"\fchampionship\x18\x01 \x01(\v2\x12.game.ChampionshipR\fchampionship\"\x1a\n" +
 	"\x18ListChampionshipsRequest\"U\n" +
 	"\x19ListChampionshipsResponse\x128\n" +
-	"\rchampionships\x18\x01 \x03(\v2\x12.game.ChampionshipR\rchampionships2\xbe\x01\n" +
+	"\rchampionships\x18\x01 \x03(\v2\x12.game.ChampionshipR\rchampionships\"l\n" +
+	" UpdateChampionshipEndDateRequest\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x128\n" +
+	"\n" +
+	"new_end_at\x18\x02 \x01(\v2\x1a.google.protobuf.TimestampR\bnewEndAt\"+\n" +
+	"\x19DeleteChampionshipRequest\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\"6\n" +
+	"\x1aDeleteChampionshipResponse\x12\x18\n" +
+	"\asuccess\x18\x01 \x01(\bR\asuccess2\xf8\x02\n" +
 	"\x13ChampionshipService\x12Q\n" +
 	"\x12CreateChampionship\x12\x1f.game.CreateChampionshipRequest\x1a\x1a.game.ChampionshipResponse\x12T\n" +
-	"\x11ListChampionships\x12\x1e.game.ListChampionshipsRequest\x1a\x1f.game.ListChampionshipsResponseBCZAgithub.com/PatrickCalorioCarvalho/StrideClash/backend/proto;protob\x06proto3"
+	"\x11ListChampionships\x12\x1e.game.ListChampionshipsRequest\x1a\x1f.game.ListChampionshipsResponse\x12_\n" +
+	"\x19UpdateChampionshipEndDate\x12&.game.UpdateChampionshipEndDateRequest\x1a\x1a.game.ChampionshipResponse\x12W\n" +
+	"\x12DeleteChampionship\x12\x1f.game.DeleteChampionshipRequest\x1a .game.DeleteChampionshipResponseBCZAgithub.com/PatrickCalorioCarvalho/StrideClash/backend/proto;protob\x06proto3"
 
 var (
 	file_proto_championship_proto_rawDescOnce sync.Once
@@ -309,31 +459,39 @@ func file_proto_championship_proto_rawDescGZIP() []byte {
 	return file_proto_championship_proto_rawDescData
 }
 
-var file_proto_championship_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
+var file_proto_championship_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
 var file_proto_championship_proto_goTypes = []any{
-	(*Championship)(nil),              // 0: game.Championship
-	(*CreateChampionshipRequest)(nil), // 1: game.CreateChampionshipRequest
-	(*ChampionshipResponse)(nil),      // 2: game.ChampionshipResponse
-	(*ListChampionshipsRequest)(nil),  // 3: game.ListChampionshipsRequest
-	(*ListChampionshipsResponse)(nil), // 4: game.ListChampionshipsResponse
-	(*timestamppb.Timestamp)(nil),     // 5: google.protobuf.Timestamp
+	(*Championship)(nil),                     // 0: game.Championship
+	(*CreateChampionshipRequest)(nil),        // 1: game.CreateChampionshipRequest
+	(*ChampionshipResponse)(nil),             // 2: game.ChampionshipResponse
+	(*ListChampionshipsRequest)(nil),         // 3: game.ListChampionshipsRequest
+	(*ListChampionshipsResponse)(nil),        // 4: game.ListChampionshipsResponse
+	(*UpdateChampionshipEndDateRequest)(nil), // 5: game.UpdateChampionshipEndDateRequest
+	(*DeleteChampionshipRequest)(nil),        // 6: game.DeleteChampionshipRequest
+	(*DeleteChampionshipResponse)(nil),       // 7: game.DeleteChampionshipResponse
+	(*timestamppb.Timestamp)(nil),            // 8: google.protobuf.Timestamp
 }
 var file_proto_championship_proto_depIdxs = []int32{
-	5, // 0: game.Championship.start_at:type_name -> google.protobuf.Timestamp
-	5, // 1: game.Championship.end_at:type_name -> google.protobuf.Timestamp
-	5, // 2: game.CreateChampionshipRequest.start_at:type_name -> google.protobuf.Timestamp
-	5, // 3: game.CreateChampionshipRequest.end_at:type_name -> google.protobuf.Timestamp
-	0, // 4: game.ChampionshipResponse.championship:type_name -> game.Championship
-	0, // 5: game.ListChampionshipsResponse.championships:type_name -> game.Championship
-	1, // 6: game.ChampionshipService.CreateChampionship:input_type -> game.CreateChampionshipRequest
-	3, // 7: game.ChampionshipService.ListChampionships:input_type -> game.ListChampionshipsRequest
-	2, // 8: game.ChampionshipService.CreateChampionship:output_type -> game.ChampionshipResponse
-	4, // 9: game.ChampionshipService.ListChampionships:output_type -> game.ListChampionshipsResponse
-	8, // [8:10] is the sub-list for method output_type
-	6, // [6:8] is the sub-list for method input_type
-	6, // [6:6] is the sub-list for extension type_name
-	6, // [6:6] is the sub-list for extension extendee
-	0, // [0:6] is the sub-list for field type_name
+	8,  // 0: game.Championship.start_at:type_name -> google.protobuf.Timestamp
+	8,  // 1: game.Championship.end_at:type_name -> google.protobuf.Timestamp
+	8,  // 2: game.CreateChampionshipRequest.start_at:type_name -> google.protobuf.Timestamp
+	8,  // 3: game.CreateChampionshipRequest.end_at:type_name -> google.protobuf.Timestamp
+	0,  // 4: game.ChampionshipResponse.championship:type_name -> game.Championship
+	0,  // 5: game.ListChampionshipsResponse.championships:type_name -> game.Championship
+	8,  // 6: game.UpdateChampionshipEndDateRequest.new_end_at:type_name -> google.protobuf.Timestamp
+	1,  // 7: game.ChampionshipService.CreateChampionship:input_type -> game.CreateChampionshipRequest
+	3,  // 8: game.ChampionshipService.ListChampionships:input_type -> game.ListChampionshipsRequest
+	5,  // 9: game.ChampionshipService.UpdateChampionshipEndDate:input_type -> game.UpdateChampionshipEndDateRequest
+	6,  // 10: game.ChampionshipService.DeleteChampionship:input_type -> game.DeleteChampionshipRequest
+	2,  // 11: game.ChampionshipService.CreateChampionship:output_type -> game.ChampionshipResponse
+	4,  // 12: game.ChampionshipService.ListChampionships:output_type -> game.ListChampionshipsResponse
+	2,  // 13: game.ChampionshipService.UpdateChampionshipEndDate:output_type -> game.ChampionshipResponse
+	7,  // 14: game.ChampionshipService.DeleteChampionship:output_type -> game.DeleteChampionshipResponse
+	11, // [11:15] is the sub-list for method output_type
+	7,  // [7:11] is the sub-list for method input_type
+	7,  // [7:7] is the sub-list for extension type_name
+	7,  // [7:7] is the sub-list for extension extendee
+	0,  // [0:7] is the sub-list for field type_name
 }
 
 func init() { file_proto_championship_proto_init() }
@@ -347,7 +505,7 @@ func file_proto_championship_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_championship_proto_rawDesc), len(file_proto_championship_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   5,
+			NumMessages:   8,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

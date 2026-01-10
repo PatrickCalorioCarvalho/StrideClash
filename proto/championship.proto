@@ -10,22 +10,22 @@ import "google/protobuf/timestamp.proto";
 
 
 message Championship {
-string id = 1;
-string name = 2;
-google.protobuf.Timestamp start_at = 3;
-google.protobuf.Timestamp end_at = 4;
+    string id = 1;
+    string name = 2;
+    google.protobuf.Timestamp start_at = 3;
+    google.protobuf.Timestamp end_at = 4;
 }
 
 
 message CreateChampionshipRequest {
-string name = 1;
-google.protobuf.Timestamp start_at = 2;
-google.protobuf.Timestamp end_at = 3;
+    string name = 1;
+    google.protobuf.Timestamp start_at = 2;
+    google.protobuf.Timestamp end_at = 3;
 }
 
 
 message ChampionshipResponse {
-Championship championship = 1;
+    Championship championship = 1;
 }
 
 message ListChampionshipsRequest {}
@@ -34,11 +34,30 @@ message ListChampionshipsResponse {
   repeated Championship championships = 1;
 }
 
+message UpdateChampionshipEndDateRequest {
+  string id = 1;
+  google.protobuf.Timestamp new_end_at = 2;
+}
+
+message DeleteChampionshipRequest {
+  string id = 1;
+}
+
+message DeleteChampionshipResponse {
+  bool success = 1;
+}
+
 service ChampionshipService {
-    
+
     rpc CreateChampionship(CreateChampionshipRequest)
         returns (ChampionshipResponse);
 
     rpc ListChampionships(ListChampionshipsRequest)
         returns (ListChampionshipsResponse);
+
+    rpc UpdateChampionshipEndDate(UpdateChampionshipEndDateRequest)
+        returns (ChampionshipResponse);
+
+    rpc DeleteChampionship(DeleteChampionshipRequest)
+        returns (DeleteChampionshipResponse);
 }

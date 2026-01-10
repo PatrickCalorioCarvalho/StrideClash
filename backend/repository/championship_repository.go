@@ -61,3 +61,47 @@ func (r *ChampionshipRepository) List() ([]*pb.Championship, error) {
 
 	return result, nil
 }
+
+func (r *ChampionshipRepository) UpdateEndDate(
+	id string,
+	newEnd time.Time,
+) (*pb.Championship, error) {
+
+	var c pb.Championship
+	var start, end time.Time
+	
+	err := r.DB.QueryRow(`
+		UPDATE championships
+		SET end_at = $1
+		WHERE id = $2
+		RETURNING id, name, start_at, end_at
+	`, newEnd, id).Scan(
+		&c.Id,
+		&c.Name,
+		&start,
+		&end,
+	)
+
+	if err != nil {
+		return nil, err
+	}
+
+	c.StartAt = timestamppb.New(start)
+	c.EndAt = timestamppb.New(end)
+
+	return &c, nil
+}
+
+func (r *ChampionshipRepository) Delete(id string) (bool, error) {
+	res, err := r.DB.Exec(`
+		DELETE FROM championships
+		WHERE id = $1
+	`, id)
+
+	if err != nil {
+		return false, err
+	}
+
+	rows, _ := res.RowsAffected()
+	return rows > 0, nil
+}

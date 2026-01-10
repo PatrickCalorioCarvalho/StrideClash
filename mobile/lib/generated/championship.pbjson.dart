@@ -125,3 +125,51 @@ final $typed_data.Uint8List listChampionshipsResponseDescriptor =
     $convert.base64Decode(
         'ChlMaXN0Q2hhbXBpb25zaGlwc1Jlc3BvbnNlEjgKDWNoYW1waW9uc2hpcHMYASADKAsyEi5nYW'
         '1lLkNoYW1waW9uc2hpcFINY2hhbXBpb25zaGlwcw==');
+
+@$core.Deprecated('Use updateChampionshipEndDateRequestDescriptor instead')
+const UpdateChampionshipEndDateRequest$json = {
+  '1': 'UpdateChampionshipEndDateRequest',
+  '2': [
+    {'1': 'id', '3': 1, '4': 1, '5': 9, '10': 'id'},
+    {
+      '1': 'new_end_at',
+      '3': 2,
+      '4': 1,
+      '5': 11,
+      '6': '.google.protobuf.Timestamp',
+      '10': 'newEndAt'
+    },
+  ],
+};
+
+/// Descriptor for `UpdateChampionshipEndDateRequest`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List updateChampionshipEndDateRequestDescriptor =
+    $convert.base64Decode(
+        'CiBVcGRhdGVDaGFtcGlvbnNoaXBFbmREYXRlUmVxdWVzdBIOCgJpZBgBIAEoCVICaWQSOAoKbm'
+        'V3X2VuZF9hdBgCIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXBSCG5ld0VuZEF0');
+
+@$core.Deprecated('Use deleteChampionshipRequestDescriptor instead')
+const DeleteChampionshipRequest$json = {
+  '1': 'DeleteChampionshipRequest',
+  '2': [
+    {'1': 'id', '3': 1, '4': 1, '5': 9, '10': 'id'},
+  ],
+};
+
+/// Descriptor for `DeleteChampionshipRequest`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List deleteChampionshipRequestDescriptor =
+    $convert.base64Decode(
+        'ChlEZWxldGVDaGFtcGlvbnNoaXBSZXF1ZXN0Eg4KAmlkGAEgASgJUgJpZA==');
+
+@$core.Deprecated('Use deleteChampionshipResponseDescriptor instead')
+const DeleteChampionshipResponse$json = {
+  '1': 'DeleteChampionshipResponse',
+  '2': [
+    {'1': 'success', '3': 1, '4': 1, '5': 8, '10': 'success'},
+  ],
+};
+
+/// Descriptor for `DeleteChampionshipResponse`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List deleteChampionshipResponseDescriptor =
+    $convert.base64Decode(
+        'ChpEZWxldGVDaGFtcGlvbnNoaXBSZXNwb25zZRIYCgdzdWNjZXNzGAEgASgIUgdzdWNjZXNz');

@@ -19,8 +19,10 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	ChampionshipService_CreateChampionship_FullMethodName = "/game.ChampionshipService/CreateChampionship"
-	ChampionshipService_ListChampionships_FullMethodName  = "/game.ChampionshipService/ListChampionships"
+	ChampionshipService_CreateChampionship_FullMethodName        = "/game.ChampionshipService/CreateChampionship"
+	ChampionshipService_ListChampionships_FullMethodName         = "/game.ChampionshipService/ListChampionships"
+	ChampionshipService_UpdateChampionshipEndDate_FullMethodName = "/game.ChampionshipService/UpdateChampionshipEndDate"
+	ChampionshipService_DeleteChampionship_FullMethodName        = "/game.ChampionshipService/DeleteChampionship"
 )
 
 // ChampionshipServiceClient is the client API for ChampionshipService service.
@@ -29,6 +31,8 @@ const (
 type ChampionshipServiceClient interface {
 	CreateChampionship(ctx context.Context, in *CreateChampionshipRequest, opts ...grpc.CallOption) (*ChampionshipResponse, error)
 	ListChampionships(ctx context.Context, in *ListChampionshipsRequest, opts ...grpc.CallOption) (*ListChampionshipsResponse, error)
+	UpdateChampionshipEndDate(ctx context.Context, in *UpdateChampionshipEndDateRequest, opts ...grpc.CallOption) (*ChampionshipResponse, error)
+	DeleteChampionship(ctx context.Context, in *DeleteChampionshipRequest, opts ...grpc.CallOption) (*DeleteChampionshipResponse, error)
 }
 
 type championshipServiceClient struct {
@@ -59,12 +63,34 @@ func (c *championshipServiceClient) ListChampionships(ctx context.Context, in *L
 	return out, nil
 }
 
+func (c *championshipServiceClient) UpdateChampionshipEndDate(ctx context.Context, in *UpdateChampionshipEndDateRequest, opts ...grpc.CallOption) (*ChampionshipResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ChampionshipResponse)
+	err := c.cc.Invoke(ctx, ChampionshipService_UpdateChampionshipEndDate_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *championshipServiceClient) DeleteChampionship(ctx context.Context, in *DeleteChampionshipRequest, opts ...grpc.CallOption) (*DeleteChampionshipResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DeleteChampionshipResponse)
+	err := c.cc.Invoke(ctx, ChampionshipService_DeleteChampionship_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ChampionshipServiceServer is the server API for ChampionshipService service.
 // All implementations must embed UnimplementedChampionshipServiceServer
 // for forward compatibility.
 type ChampionshipServiceServer interface {
 	CreateChampionship(context.Context, *CreateChampionshipRequest) (*ChampionshipResponse, error)
 	ListChampionships(context.Context, *ListChampionshipsRequest) (*ListChampionshipsResponse, error)
+	UpdateChampionshipEndDate(context.Context, *UpdateChampionshipEndDateRequest) (*ChampionshipResponse, error)
+	DeleteChampionship(context.Context, *DeleteChampionshipRequest) (*DeleteChampionshipResponse, error)
 	mustEmbedUnimplementedChampionshipServiceServer()
 }
 
@@ -80,6 +106,12 @@ func (UnimplementedChampionshipServiceServer) CreateChampionship(context.Context
 }
 func (UnimplementedChampionshipServiceServer) ListChampionships(context.Context, *ListChampionshipsRequest) (*ListChampionshipsResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method ListChampionships not implemented")
+}
+func (UnimplementedChampionshipServiceServer) UpdateChampionshipEndDate(context.Context, *UpdateChampionshipEndDateRequest) (*ChampionshipResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method UpdateChampionshipEndDate not implemented")
+}
+func (UnimplementedChampionshipServiceServer) DeleteChampionship(context.Context, *DeleteChampionshipRequest) (*DeleteChampionshipResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method DeleteChampionship not implemented")
 }
 func (UnimplementedChampionshipServiceServer) mustEmbedUnimplementedChampionshipServiceServer() {}
 func (UnimplementedChampionshipServiceServer) testEmbeddedByValue()                             {}
@@ -138,6 +170,42 @@ func _ChampionshipService_ListChampionships_Handler(srv interface{}, ctx context
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ChampionshipService_UpdateChampionshipEndDate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateChampionshipEndDateRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ChampionshipServiceServer).UpdateChampionshipEndDate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ChampionshipService_UpdateChampionshipEndDate_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ChampionshipServiceServer).UpdateChampionshipEndDate(ctx, req.(*UpdateChampionshipEndDateRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ChampionshipService_DeleteChampionship_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteChampionshipRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ChampionshipServiceServer).DeleteChampionship(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ChampionshipService_DeleteChampionship_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ChampionshipServiceServer).DeleteChampionship(ctx, req.(*DeleteChampionshipRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ChampionshipService_ServiceDesc is the grpc.ServiceDesc for ChampionshipService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -152,6 +220,14 @@ var ChampionshipService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ListChampionships",
 			Handler:    _ChampionshipService_ListChampionships_Handler,
+		},
+		{
+			MethodName: "UpdateChampionshipEndDate",
+			Handler:    _ChampionshipService_UpdateChampionshipEndDate_Handler,
+		},
+		{
+			MethodName: "DeleteChampionship",
+			Handler:    _ChampionshipService_DeleteChampionship_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
