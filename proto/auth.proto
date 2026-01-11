@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package auth;
+
+option go_package = "github.com/PatrickCalorioCarvalho/StrideClash/backend/proto;pb";
+
+
+message LoginRequest {
+  string id_token = 1;
+}
+
+message LoginResponse {
+  string user_id = 1;
+  string email = 2;
+  string name = 3;
+}
+
+service AuthService {
+  rpc Login (LoginRequest) returns (LoginResponse);
+}

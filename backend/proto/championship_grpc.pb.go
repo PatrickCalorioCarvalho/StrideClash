@@ -4,7 +4,7 @@
 // - protoc             v6.33.2
 // source: proto/championship.proto
 
-package proto
+package pb
 
 import (
 	context "context"

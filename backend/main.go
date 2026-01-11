@@ -3,7 +3,9 @@ package main
 import (
 	"log"
 	"net"
+	"os"
 
+	"github.com/joho/godotenv"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 
@@ -14,6 +16,11 @@ import (
 )
 
 func main() {
+
+	if err := godotenv.Load(); err != nil {
+		log.Println("⚠️ .env não encontrado, usando variáveis do sistema")
+	}
+	
 	dbConn := db.Connect()
 
 	repo := repository.NewChampionshipRepository(dbConn)
@@ -24,6 +31,11 @@ func main() {
 	}
 
 	grpcServer := grpc.NewServer()
+
+	authService := &services.AuthService{
+		GoogleClientID: os.Getenv("GOOGLE_CLIENT_ID"),
+	}
+	pb.RegisterAuthServiceServer(grpcServer, authService)
 
 	pb.RegisterChampionshipServiceServer(
 		grpcServer,

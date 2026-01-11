@@ -4,7 +4,7 @@
 // 	protoc        v6.33.2
 // source: proto/championship.proto
 
-package proto
+package pb
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
@@ -445,7 +445,7 @@ const file_proto_championship_proto_rawDesc = "" +
 	"\x12CreateChampionship\x12\x1f.game.CreateChampionshipRequest\x1a\x1a.game.ChampionshipResponse\x12T\n" +
 	"\x11ListChampionships\x12\x1e.game.ListChampionshipsRequest\x1a\x1f.game.ListChampionshipsResponse\x12_\n" +
 	"\x19UpdateChampionshipEndDate\x12&.game.UpdateChampionshipEndDateRequest\x1a\x1a.game.ChampionshipResponse\x12W\n" +
-	"\x12DeleteChampionship\x12\x1f.game.DeleteChampionshipRequest\x1a .game.DeleteChampionshipResponseBCZAgithub.com/PatrickCalorioCarvalho/StrideClash/backend/proto;protob\x06proto3"
+	"\x12DeleteChampionship\x12\x1f.game.DeleteChampionshipRequest\x1a .game.DeleteChampionshipResponseB@Z>github.com/PatrickCalorioCarvalho/StrideClash/backend/proto;pbb\x06proto3"
 
 var (
 	file_proto_championship_proto_rawDescOnce sync.Once

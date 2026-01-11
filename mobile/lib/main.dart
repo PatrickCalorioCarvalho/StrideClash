@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
-import 'ui/home_page.dart';
+import 'package:mobile/page/login_page.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: ".env");
   runApp(const StrideClashApp());
 }
 
@@ -16,7 +19,7 @@ class StrideClashApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
         useMaterial3: true,
       ),
-      home: const HomePage(),
+      home: LoginPage(),
     );
   }
 }

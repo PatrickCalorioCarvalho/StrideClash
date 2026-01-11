@@ -4,7 +4,8 @@ syntax = "proto3";
 package game;
 
 
-option go_package = "github.com/PatrickCalorioCarvalho/StrideClash/backend/proto;proto";
+option go_package = "github.com/PatrickCalorioCarvalho/StrideClash/backend/proto;pb";
+
 
 import "google/protobuf/timestamp.proto";
 
