@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/auth/auth_storage.dart';
 import 'package:mobile/page/home_page.dart';
 import '../auth/google_auth_service.dart';
 import '../grpc_client.dart';
@@ -9,6 +10,7 @@ class LoginPage extends StatelessWidget {
   LoginPage({super.key});
   final _client = GrpcClient();
   final _auth = GoogleAuthService();
+  final _storage = AuthStorage();
 
   Future<void> login(BuildContext context) async {
     try {
@@ -26,6 +28,8 @@ class LoginPage extends StatelessWidget {
       );
 
       debugPrint('LOGIN OK: ${response.email}');
+      
+      await _storage.saveUser(response);
 
       Navigator.pushReplacement(
         context,
