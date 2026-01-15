@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/auth/auth_storage.dart';
-import 'package:mobile/page/home_page.dart';
-import '../auth/google_auth_service.dart';
-import '../grpc_client.dart';
-import '../generated/auth.pb.dart';
-import '../generated/auth.pbgrpc.dart';
+import 'package:mobile/page/tabs/main_tabs_page.dart';
+import '../../auth/google_auth_service.dart';
+import '../../grpc_client.dart';
+import '../../generated/auth.pb.dart';
+import '../../generated/auth.pbgrpc.dart';
 
 class LoginPage extends StatelessWidget {
   LoginPage({super.key});
@@ -34,7 +34,7 @@ class LoginPage extends StatelessWidget {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (_) => const HomePage(),
+          builder: (_) => const MainTabsPage(),
         ),
       );
     } catch (e, s) {

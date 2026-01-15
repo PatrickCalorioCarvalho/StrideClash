@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/auth/auth_storage.dart';
-import 'package:mobile/page/home_page.dart';
-import 'package:mobile/page/login_page.dart';
+import 'package:mobile/page/auth/login_page.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:mobile/page/tabs/main_tabs_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -25,7 +25,7 @@ class StrideClashApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
         useMaterial3: true,
       ),
-      home: isLogged ? const HomePage() : LoginPage(),
+      home: isLogged ? const MainTabsPage() : LoginPage(),
     );
   }
 }

@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+package walk;
+
+option go_package = "github.com/PatrickCalorioCarvalho/StrideClash/backend/proto;pb";
+
+import "google/protobuf/timestamp.proto";
+
+service WalkService {
+  rpc StartWalk(StartWalkRequest) returns (StartWalkResponse);
+  rpc FinishWalk(FinishWalkRequest) returns (FinishWalkResponse);
+}
+
+message StartWalkRequest {
+  string user_id = 1;
+  string championship_id = 2;
+}
+
+message StartWalkResponse {
+  string walk_id = 1;
+  google.protobuf.Timestamp started_at = 2;
+}
+
+message FinishWalkRequest {
+  string walk_id = 1;
+  repeated WalkPoint points = 2;
+}
+
+message FinishWalkResponse {
+  string polygon_wkt = 1;
+}
+
+message WalkPoint {
+  double lat = 1;
+  double lng = 2;
+  google.protobuf.Timestamp timestamp = 3;
+}

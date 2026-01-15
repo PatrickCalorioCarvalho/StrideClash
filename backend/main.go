@@ -23,8 +23,9 @@ func main() {
 
 	dbConn := db.Connect()
 
-	repo := repository.NewChampionshipRepository(dbConn)
+	championship := repository.NewChampionshipRepository(dbConn)
 	user := repository.NewUserRepository(dbConn)
+	walk := repository.NewWalkRepository(dbConn)
 
 	lis, err := net.Listen("tcp", ":50051")
 	if err != nil {
@@ -42,7 +43,14 @@ func main() {
 	pb.RegisterChampionshipServiceServer(
 		grpcServer,
 		&services.ChampionshipService{
-			Repo: repo,
+			Championships: championship,
+		},
+	)
+
+	pb.RegisterWalkServiceServer(
+		grpcServer,
+		&services.WalkService{
+			Walks: walk,
 		},
 	)
 

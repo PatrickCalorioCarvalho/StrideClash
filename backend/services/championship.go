@@ -14,7 +14,7 @@ import (
 
 type ChampionshipService struct {
 	pb.UnimplementedChampionshipServiceServer
-	Repo *repository.ChampionshipRepository
+	Championships *repository.ChampionshipRepository
 }
 
 func (s *ChampionshipService) CreateChampionship(
@@ -24,7 +24,7 @@ func (s *ChampionshipService) CreateChampionship(
 
 	id := uuid.New().String()
 
-	err := s.Repo.Create(
+	err := s.Championships.Create(
 		id,
 		req.Name,
 		req.StartAt.AsTime(),
@@ -49,7 +49,7 @@ func (s *ChampionshipService) ListChampionships(
 	req *pb.ListChampionshipsRequest,
 ) (*pb.ListChampionshipsResponse, error) {
 
-	championships, err := s.Repo.List()
+	championships, err := s.Championships.List()
 	if err != nil {
 		return nil, err
 	}
@@ -71,7 +71,7 @@ func (s *ChampionshipService) UpdateChampionshipEndDate(
 		)
 	}
 
-	c, err := s.Repo.UpdateEndDate(
+	c, err := s.Championships.UpdateEndDate(
 		req.Id,
 		req.NewEndAt.AsTime(),
 	)
@@ -90,7 +90,7 @@ func (s *ChampionshipService) DeleteChampionship(
 	req *pb.DeleteChampionshipRequest,
 ) (*pb.DeleteChampionshipResponse, error) {
 
-	ok, err := s.Repo.Delete(req.Id)
+	ok, err := s.Championships.Delete(req.Id)
 	if err != nil {
 		return nil, err
 	}
