@@ -1,0 +1,22 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: strideclash_postgres
+    restart: always
+
+    environment:
+      POSTGRES_DB: strideclash
+      POSTGRES_USER: strideclash
+      POSTGRES_PASSWORD: strideclash123
+
+    ports:
+      - "5433:5432"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/init:/docker-entrypoint-initdb.d
+
+volumes:
+  postgres_data:
