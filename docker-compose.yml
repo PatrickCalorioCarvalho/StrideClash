@@ -1,8 +1,6 @@
-version: "3.9"
-
 services:
   postgres:
-    image: postgres:16
+    image: postgis/postgis:16-3.4
     container_name: strideclash_postgres
     restart: always
 
@@ -12,11 +10,42 @@ services:
       POSTGRES_PASSWORD: strideclash123
 
     ports:
-      - "5433:5432"
+      # 5434 (não 5433): evita conflito de porta com o Postgres do
+      # CLKThingsManager, que usa 5433 e pode estar rodando no mesmo host.
+      - "5434:5432"
 
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./database/init:/docker-entrypoint-initdb.d
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U strideclash -d strideclash"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build: ./backend
+    container_name: strideclash_backend
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    env_file:
+      - .env
+    environment:
+      # O backend em container sempre fala com o serviço "postgres" acima,
+      # na porta interna 5432 — não com o host:5434 exposto pro seu ambiente
+      # local. Isso vale mesmo que o seu .env tenha outros valores de DB_*
+      # (esses são só pra rodar `go run` fora do Docker).
+      DB_HOST: postgres
+      DB_PORT: "5432"
+      DB_USER: strideclash
+      DB_PASSWORD: strideclash123
+      DB_NAME: strideclash
+      DB_SSLMODE: disable
+    ports:
+      - "50051:50051"
 
 volumes:
   postgres_data:

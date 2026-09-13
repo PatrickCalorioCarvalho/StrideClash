@@ -56,3 +56,7 @@ coverage/
 Thumbs.db
 
 docker-compose.override.yml
+
+# Script de deploy local — específico do seu servidor/ambiente, de propósito
+# não faz parte do código do projeto.
+deploy.ps1
