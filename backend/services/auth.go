@@ -3,14 +3,13 @@ package services
 import (
 	"context"
 
-	pb "github.com/PatrickCalorioCarvalho/StrideClash/backend/proto"
 	"github.com/PatrickCalorioCarvalho/StrideClash/backend/auth"
+	pb "github.com/PatrickCalorioCarvalho/StrideClash/backend/proto"
 	"github.com/PatrickCalorioCarvalho/StrideClash/backend/repository"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
-
 
 type AuthService struct {
 	pb.UnimplementedAuthServiceServer
@@ -42,10 +41,16 @@ func (s *AuthService) Login(
 			googleUser.Sub,
 			googleUser.Email,
 			googleUser.Name,
+			googleUser.Picture,
 		)
 		if err != nil {
 			return nil, err
 		}
+	} else if googleUser.Picture != user.Picture {
+		if err := s.Users.UpdatePicture(user.ID, googleUser.Picture); err != nil {
+			return nil, err
+		}
+		user.Picture = googleUser.Picture
 	}
 
 	return &pb.LoginResponse{
