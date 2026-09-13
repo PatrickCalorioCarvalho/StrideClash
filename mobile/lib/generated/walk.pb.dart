@@ -18,6 +18,126 @@ import 'package:protobuf/well_known_types/google/protobuf/timestamp.pb.dart'
 
 export 'package:protobuf/protobuf.dart' show GeneratedMessageGenericExtensions;
 
+class GetUserStatsRequest extends $pb.GeneratedMessage {
+  factory GetUserStatsRequest({
+    $core.String? userId,
+  }) {
+    final result = create();
+    if (userId != null) result.userId = userId;
+    return result;
+  }
+
+  GetUserStatsRequest._();
+
+  factory GetUserStatsRequest.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(data, registry);
+  factory GetUserStatsRequest.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'GetUserStatsRequest',
+      package: const $pb.PackageName(_omitMessageNames ? '' : 'walk'),
+      createEmptyInstance: create)
+    ..aOS(1, _omitFieldNames ? '' : 'userId')
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  GetUserStatsRequest clone() => deepCopy();
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  GetUserStatsRequest copyWith(void Function(GetUserStatsRequest) updates) =>
+      super.copyWith((message) => updates(message as GetUserStatsRequest))
+          as GetUserStatsRequest;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static GetUserStatsRequest create() => GetUserStatsRequest._();
+  @$core.override
+  GetUserStatsRequest createEmptyInstance() => create();
+  @$core.pragma('dart2js:noInline')
+  static GetUserStatsRequest getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<GetUserStatsRequest>(create);
+  static GetUserStatsRequest? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get userId => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set userId($core.String value) => $_setString(0, value);
+  @$pb.TagNumber(1)
+  $core.bool hasUserId() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearUserId() => $_clearField(1);
+}
+
+class GetUserStatsResponse extends $pb.GeneratedMessage {
+  factory GetUserStatsResponse({
+    $core.double? totalAreaM2,
+    $core.int? walkCount,
+  }) {
+    final result = create();
+    if (totalAreaM2 != null) result.totalAreaM2 = totalAreaM2;
+    if (walkCount != null) result.walkCount = walkCount;
+    return result;
+  }
+
+  GetUserStatsResponse._();
+
+  factory GetUserStatsResponse.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(data, registry);
+  factory GetUserStatsResponse.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'GetUserStatsResponse',
+      package: const $pb.PackageName(_omitMessageNames ? '' : 'walk'),
+      createEmptyInstance: create)
+    ..aD(1, _omitFieldNames ? '' : 'totalAreaM2')
+    ..aI(2, _omitFieldNames ? '' : 'walkCount')
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  GetUserStatsResponse clone() => deepCopy();
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  GetUserStatsResponse copyWith(void Function(GetUserStatsResponse) updates) =>
+      super.copyWith((message) => updates(message as GetUserStatsResponse))
+          as GetUserStatsResponse;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static GetUserStatsResponse create() => GetUserStatsResponse._();
+  @$core.override
+  GetUserStatsResponse createEmptyInstance() => create();
+  @$core.pragma('dart2js:noInline')
+  static GetUserStatsResponse getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<GetUserStatsResponse>(create);
+  static GetUserStatsResponse? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.double get totalAreaM2 => $_getN(0);
+  @$pb.TagNumber(1)
+  set totalAreaM2($core.double value) => $_setDouble(0, value);
+  @$pb.TagNumber(1)
+  $core.bool hasTotalAreaM2() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearTotalAreaM2() => $_clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.int get walkCount => $_getIZ(1);
+  @$pb.TagNumber(2)
+  set walkCount($core.int value) => $_setSignedInt32(1, value);
+  @$pb.TagNumber(2)
+  $core.bool hasWalkCount() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearWalkCount() => $_clearField(2);
+}
+
 class StartWalkRequest extends $pb.GeneratedMessage {
   factory StartWalkRequest({
     $core.String? userId,

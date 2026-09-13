@@ -9,6 +9,16 @@ import "google/protobuf/timestamp.proto";
 service WalkService {
   rpc StartWalk(StartWalkRequest) returns (StartWalkResponse);
   rpc FinishWalk(FinishWalkRequest) returns (FinishWalkResponse);
+  rpc GetUserStats(GetUserStatsRequest) returns (GetUserStatsResponse);
+}
+
+message GetUserStatsRequest {
+  string user_id = 1;
+}
+
+message GetUserStatsResponse {
+  double total_area_m2 = 1;
+  int32 walk_count = 2;
 }
 
 message StartWalkRequest {

@@ -46,6 +46,13 @@ class WalkServiceClient extends $grpc.Client {
     return $createUnaryCall(_$finishWalk, request, options: options);
   }
 
+  $grpc.ResponseFuture<$0.GetUserStatsResponse> getUserStats(
+    $0.GetUserStatsRequest request, {
+    $grpc.CallOptions? options,
+  }) {
+    return $createUnaryCall(_$getUserStats, request, options: options);
+  }
+
   // method descriptors
 
   static final _$startWalk =
@@ -58,6 +65,11 @@ class WalkServiceClient extends $grpc.Client {
           '/walk.WalkService/FinishWalk',
           ($0.FinishWalkRequest value) => value.writeToBuffer(),
           $0.FinishWalkResponse.fromBuffer);
+  static final _$getUserStats =
+      $grpc.ClientMethod<$0.GetUserStatsRequest, $0.GetUserStatsResponse>(
+          '/walk.WalkService/GetUserStats',
+          ($0.GetUserStatsRequest value) => value.writeToBuffer(),
+          $0.GetUserStatsResponse.fromBuffer);
 }
 
 @$pb.GrpcServiceName('walk.WalkService')
@@ -79,6 +91,15 @@ abstract class WalkServiceBase extends $grpc.Service {
         false,
         ($core.List<$core.int> value) => $0.FinishWalkRequest.fromBuffer(value),
         ($0.FinishWalkResponse value) => value.writeToBuffer()));
+    $addMethod(
+        $grpc.ServiceMethod<$0.GetUserStatsRequest, $0.GetUserStatsResponse>(
+            'GetUserStats',
+            getUserStats_Pre,
+            false,
+            false,
+            ($core.List<$core.int> value) =>
+                $0.GetUserStatsRequest.fromBuffer(value),
+            ($0.GetUserStatsResponse value) => value.writeToBuffer()));
   }
 
   $async.Future<$0.StartWalkResponse> startWalk_Pre($grpc.ServiceCall $call,
@@ -96,4 +117,13 @@ abstract class WalkServiceBase extends $grpc.Service {
 
   $async.Future<$0.FinishWalkResponse> finishWalk(
       $grpc.ServiceCall call, $0.FinishWalkRequest request);
+
+  $async.Future<$0.GetUserStatsResponse> getUserStats_Pre(
+      $grpc.ServiceCall $call,
+      $async.Future<$0.GetUserStatsRequest> $request) async {
+    return getUserStats($call, await $request);
+  }
+
+  $async.Future<$0.GetUserStatsResponse> getUserStats(
+      $grpc.ServiceCall call, $0.GetUserStatsRequest request);
 }
