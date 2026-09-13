@@ -1,4 +1,5 @@
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+CREATE EXTENSION IF NOT EXISTS "postgis";
 
 -- USERS
 CREATE TABLE IF NOT EXISTS users (
@@ -6,6 +7,7 @@ CREATE TABLE IF NOT EXISTS users (
     google_sub TEXT UNIQUE NOT NULL,
     email TEXT UNIQUE NOT NULL,
     name TEXT,
+    picture TEXT,
     created_at TIMESTAMP DEFAULT NOW()
 );
 
@@ -15,7 +17,18 @@ CREATE TABLE IF NOT EXISTS championships (
     name TEXT NOT NULL,
     start_at TIMESTAMP NOT NULL,
     end_at TIMESTAMP NOT NULL,
+    created_by UUID REFERENCES users(id) ON DELETE SET NULL,
+    join_code TEXT UNIQUE NOT NULL,
     created_at TIMESTAMP DEFAULT NOW()
+);
+
+-- CHAMPIONSHIP MEMBERS (who created/joined which championship — the
+-- "friends group" a championship's ranking and walks are scoped to)
+CREATE TABLE IF NOT EXISTS championship_members (
+    championship_id UUID NOT NULL REFERENCES championships(id) ON DELETE CASCADE,
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    joined_at TIMESTAMP DEFAULT NOW(),
+    PRIMARY KEY (championship_id, user_id)
 );
 
 -- WALKS
@@ -24,7 +37,9 @@ CREATE TABLE IF NOT EXISTS walks (
     user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     championship_id UUID REFERENCES championships(id) ON DELETE SET NULL,
     started_at TIMESTAMP NOT NULL,
-    finished_at TIMESTAMP
+    finished_at TIMESTAMP,
+    polygon GEOMETRY(Polygon, 4326),
+    area_m2 DOUBLE PRECISION
 );
 
 -- WALK POINTS
@@ -46,3 +61,6 @@ ON walk_points(recorded_at);
 
 CREATE INDEX IF NOT EXISTS idx_walks_user
 ON walks(user_id);
+
+CREATE INDEX IF NOT EXISTS idx_walks_polygon
+ON walks USING GIST(polygon);

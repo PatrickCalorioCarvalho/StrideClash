@@ -61,6 +61,22 @@ class ChampionshipServiceClient extends $grpc.Client {
     return $createUnaryCall(_$deleteChampionship, request, options: options);
   }
 
+  $grpc.ResponseFuture<$0.JoinChampionshipResponse> joinChampionship(
+    $0.JoinChampionshipRequest request, {
+    $grpc.CallOptions? options,
+  }) {
+    return $createUnaryCall(_$joinChampionship, request, options: options);
+  }
+
+  $grpc.ResponseFuture<$0.GetChampionshipRankingResponse>
+      getChampionshipRanking(
+    $0.GetChampionshipRankingRequest request, {
+    $grpc.CallOptions? options,
+  }) {
+    return $createUnaryCall(_$getChampionshipRanking, request,
+        options: options);
+  }
+
   // method descriptors
 
   static final _$createChampionship =
@@ -83,6 +99,16 @@ class ChampionshipServiceClient extends $grpc.Client {
       '/game.ChampionshipService/DeleteChampionship',
       ($0.DeleteChampionshipRequest value) => value.writeToBuffer(),
       $0.DeleteChampionshipResponse.fromBuffer);
+  static final _$joinChampionship = $grpc.ClientMethod<
+          $0.JoinChampionshipRequest, $0.JoinChampionshipResponse>(
+      '/game.ChampionshipService/JoinChampionship',
+      ($0.JoinChampionshipRequest value) => value.writeToBuffer(),
+      $0.JoinChampionshipResponse.fromBuffer);
+  static final _$getChampionshipRanking = $grpc.ClientMethod<
+          $0.GetChampionshipRankingRequest, $0.GetChampionshipRankingResponse>(
+      '/game.ChampionshipService/GetChampionshipRanking',
+      ($0.GetChampionshipRankingRequest value) => value.writeToBuffer(),
+      $0.GetChampionshipRankingResponse.fromBuffer);
 }
 
 @$pb.GrpcServiceName('game.ChampionshipService')
@@ -126,6 +152,24 @@ abstract class ChampionshipServiceBase extends $grpc.Service {
         ($core.List<$core.int> value) =>
             $0.DeleteChampionshipRequest.fromBuffer(value),
         ($0.DeleteChampionshipResponse value) => value.writeToBuffer()));
+    $addMethod($grpc.ServiceMethod<$0.JoinChampionshipRequest,
+            $0.JoinChampionshipResponse>(
+        'JoinChampionship',
+        joinChampionship_Pre,
+        false,
+        false,
+        ($core.List<$core.int> value) =>
+            $0.JoinChampionshipRequest.fromBuffer(value),
+        ($0.JoinChampionshipResponse value) => value.writeToBuffer()));
+    $addMethod($grpc.ServiceMethod<$0.GetChampionshipRankingRequest,
+            $0.GetChampionshipRankingResponse>(
+        'GetChampionshipRanking',
+        getChampionshipRanking_Pre,
+        false,
+        false,
+        ($core.List<$core.int> value) =>
+            $0.GetChampionshipRankingRequest.fromBuffer(value),
+        ($0.GetChampionshipRankingResponse value) => value.writeToBuffer()));
   }
 
   $async.Future<$0.ChampionshipResponse> createChampionship_Pre(
@@ -163,4 +207,22 @@ abstract class ChampionshipServiceBase extends $grpc.Service {
 
   $async.Future<$0.DeleteChampionshipResponse> deleteChampionship(
       $grpc.ServiceCall call, $0.DeleteChampionshipRequest request);
+
+  $async.Future<$0.JoinChampionshipResponse> joinChampionship_Pre(
+      $grpc.ServiceCall $call,
+      $async.Future<$0.JoinChampionshipRequest> $request) async {
+    return joinChampionship($call, await $request);
+  }
+
+  $async.Future<$0.JoinChampionshipResponse> joinChampionship(
+      $grpc.ServiceCall call, $0.JoinChampionshipRequest request);
+
+  $async.Future<$0.GetChampionshipRankingResponse> getChampionshipRanking_Pre(
+      $grpc.ServiceCall $call,
+      $async.Future<$0.GetChampionshipRankingRequest> $request) async {
+    return getChampionshipRanking($call, await $request);
+  }
+
+  $async.Future<$0.GetChampionshipRankingResponse> getChampionshipRanking(
+      $grpc.ServiceCall call, $0.GetChampionshipRankingRequest request);
 }

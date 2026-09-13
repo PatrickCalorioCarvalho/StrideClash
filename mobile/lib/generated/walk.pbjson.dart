@@ -76,12 +76,14 @@ const FinishWalkResponse$json = {
   '1': 'FinishWalkResponse',
   '2': [
     {'1': 'polygon_wkt', '3': 1, '4': 1, '5': 9, '10': 'polygonWkt'},
+    {'1': 'area_m2', '3': 2, '4': 1, '5': 1, '10': 'areaM2'},
   ],
 };
 
 /// Descriptor for `FinishWalkResponse`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List finishWalkResponseDescriptor = $convert.base64Decode(
-    'ChJGaW5pc2hXYWxrUmVzcG9uc2USHwoLcG9seWdvbl93a3QYASABKAlSCnBvbHlnb25Xa3Q=');
+    'ChJGaW5pc2hXYWxrUmVzcG9uc2USHwoLcG9seWdvbl93a3QYASABKAlSCnBvbHlnb25Xa3QSFw'
+    'oHYXJlYV9tMhgCIAEoAVIGYXJlYU0y');
 
 @$core.Deprecated('Use walkPointDescriptor instead')
 const WalkPoint$json = {
@@ -97,10 +99,12 @@ const WalkPoint$json = {
       '6': '.google.protobuf.Timestamp',
       '10': 'timestamp'
     },
+    {'1': 'speed', '3': 4, '4': 1, '5': 1, '10': 'speed'},
   ],
 };
 
 /// Descriptor for `WalkPoint`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List walkPointDescriptor = $convert.base64Decode(
     'CglXYWxrUG9pbnQSEAoDbGF0GAEgASgBUgNsYXQSEAoDbG5nGAIgASgBUgNsbmcSOAoJdGltZX'
-    'N0YW1wGAMgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcFIJdGltZXN0YW1w');
+    'N0YW1wGAMgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcFIJdGltZXN0YW1wEhQKBXNw'
+    'ZWVkGAQgASgBUgVzcGVlZA==');

@@ -28,6 +28,8 @@ type Championship struct {
 	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
 	StartAt       *timestamppb.Timestamp `protobuf:"bytes,3,opt,name=start_at,json=startAt,proto3" json:"start_at,omitempty"`
 	EndAt         *timestamppb.Timestamp `protobuf:"bytes,4,opt,name=end_at,json=endAt,proto3" json:"end_at,omitempty"`
+	JoinCode      string                 `protobuf:"bytes,5,opt,name=join_code,json=joinCode,proto3" json:"join_code,omitempty"`
+	CreatedBy     string                 `protobuf:"bytes,6,opt,name=created_by,json=createdBy,proto3" json:"created_by,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -90,11 +92,26 @@ func (x *Championship) GetEndAt() *timestamppb.Timestamp {
 	return nil
 }
 
+func (x *Championship) GetJoinCode() string {
+	if x != nil {
+		return x.JoinCode
+	}
+	return ""
+}
+
+func (x *Championship) GetCreatedBy() string {
+	if x != nil {
+		return x.CreatedBy
+	}
+	return ""
+}
+
 type CreateChampionshipRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Name          string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 	StartAt       *timestamppb.Timestamp `protobuf:"bytes,2,opt,name=start_at,json=startAt,proto3" json:"start_at,omitempty"`
 	EndAt         *timestamppb.Timestamp `protobuf:"bytes,3,opt,name=end_at,json=endAt,proto3" json:"end_at,omitempty"`
+	UserId        string                 `protobuf:"bytes,4,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -150,6 +167,13 @@ func (x *CreateChampionshipRequest) GetEndAt() *timestamppb.Timestamp {
 	return nil
 }
 
+func (x *CreateChampionshipRequest) GetUserId() string {
+	if x != nil {
+		return x.UserId
+	}
+	return ""
+}
+
 type ChampionshipResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Championship  *Championship          `protobuf:"bytes,1,opt,name=championship,proto3" json:"championship,omitempty"`
@@ -196,6 +220,7 @@ func (x *ChampionshipResponse) GetChampionship() *Championship {
 
 type ListChampionshipsRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
+	UserId        string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -228,6 +253,13 @@ func (x *ListChampionshipsRequest) ProtoReflect() protoreflect.Message {
 // Deprecated: Use ListChampionshipsRequest.ProtoReflect.Descriptor instead.
 func (*ListChampionshipsRequest) Descriptor() ([]byte, []int) {
 	return file_proto_championship_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *ListChampionshipsRequest) GetUserId() string {
+	if x != nil {
+		return x.UserId
+	}
+	return ""
 }
 
 type ListChampionshipsResponse struct {
@@ -278,6 +310,7 @@ type UpdateChampionshipEndDateRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	NewEndAt      *timestamppb.Timestamp `protobuf:"bytes,2,opt,name=new_end_at,json=newEndAt,proto3" json:"new_end_at,omitempty"`
+	UserId        string                 `protobuf:"bytes,3,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -326,9 +359,17 @@ func (x *UpdateChampionshipEndDateRequest) GetNewEndAt() *timestamppb.Timestamp 
 	return nil
 }
 
+func (x *UpdateChampionshipEndDateRequest) GetUserId() string {
+	if x != nil {
+		return x.UserId
+	}
+	return ""
+}
+
 type DeleteChampionshipRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	UserId        string                 `protobuf:"bytes,2,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -366,6 +407,13 @@ func (*DeleteChampionshipRequest) Descriptor() ([]byte, []int) {
 func (x *DeleteChampionshipRequest) GetId() string {
 	if x != nil {
 		return x.Id
+	}
+	return ""
+}
+
+func (x *DeleteChampionshipRequest) GetUserId() string {
+	if x != nil {
+		return x.UserId
 	}
 	return ""
 }
@@ -414,38 +462,322 @@ func (x *DeleteChampionshipResponse) GetSuccess() bool {
 	return false
 }
 
+type JoinChampionshipRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	UserId        string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	JoinCode      string                 `protobuf:"bytes,2,opt,name=join_code,json=joinCode,proto3" json:"join_code,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *JoinChampionshipRequest) Reset() {
+	*x = JoinChampionshipRequest{}
+	mi := &file_proto_championship_proto_msgTypes[8]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *JoinChampionshipRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*JoinChampionshipRequest) ProtoMessage() {}
+
+func (x *JoinChampionshipRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_championship_proto_msgTypes[8]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use JoinChampionshipRequest.ProtoReflect.Descriptor instead.
+func (*JoinChampionshipRequest) Descriptor() ([]byte, []int) {
+	return file_proto_championship_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *JoinChampionshipRequest) GetUserId() string {
+	if x != nil {
+		return x.UserId
+	}
+	return ""
+}
+
+func (x *JoinChampionshipRequest) GetJoinCode() string {
+	if x != nil {
+		return x.JoinCode
+	}
+	return ""
+}
+
+type JoinChampionshipResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Championship  *Championship          `protobuf:"bytes,1,opt,name=championship,proto3" json:"championship,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *JoinChampionshipResponse) Reset() {
+	*x = JoinChampionshipResponse{}
+	mi := &file_proto_championship_proto_msgTypes[9]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *JoinChampionshipResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*JoinChampionshipResponse) ProtoMessage() {}
+
+func (x *JoinChampionshipResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_championship_proto_msgTypes[9]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use JoinChampionshipResponse.ProtoReflect.Descriptor instead.
+func (*JoinChampionshipResponse) Descriptor() ([]byte, []int) {
+	return file_proto_championship_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *JoinChampionshipResponse) GetChampionship() *Championship {
+	if x != nil {
+		return x.Championship
+	}
+	return nil
+}
+
+type ChampionshipRankingEntry struct {
+	state          protoimpl.MessageState `protogen:"open.v1"`
+	UserId         string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	UserName       string                 `protobuf:"bytes,2,opt,name=user_name,json=userName,proto3" json:"user_name,omitempty"`
+	UserPictureUrl string                 `protobuf:"bytes,3,opt,name=user_picture_url,json=userPictureUrl,proto3" json:"user_picture_url,omitempty"`
+	TotalAreaM2    float64                `protobuf:"fixed64,4,opt,name=total_area_m2,json=totalAreaM2,proto3" json:"total_area_m2,omitempty"`
+	PolygonsWkt    []string               `protobuf:"bytes,5,rep,name=polygons_wkt,json=polygonsWkt,proto3" json:"polygons_wkt,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
+}
+
+func (x *ChampionshipRankingEntry) Reset() {
+	*x = ChampionshipRankingEntry{}
+	mi := &file_proto_championship_proto_msgTypes[10]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ChampionshipRankingEntry) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ChampionshipRankingEntry) ProtoMessage() {}
+
+func (x *ChampionshipRankingEntry) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_championship_proto_msgTypes[10]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ChampionshipRankingEntry.ProtoReflect.Descriptor instead.
+func (*ChampionshipRankingEntry) Descriptor() ([]byte, []int) {
+	return file_proto_championship_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *ChampionshipRankingEntry) GetUserId() string {
+	if x != nil {
+		return x.UserId
+	}
+	return ""
+}
+
+func (x *ChampionshipRankingEntry) GetUserName() string {
+	if x != nil {
+		return x.UserName
+	}
+	return ""
+}
+
+func (x *ChampionshipRankingEntry) GetUserPictureUrl() string {
+	if x != nil {
+		return x.UserPictureUrl
+	}
+	return ""
+}
+
+func (x *ChampionshipRankingEntry) GetTotalAreaM2() float64 {
+	if x != nil {
+		return x.TotalAreaM2
+	}
+	return 0
+}
+
+func (x *ChampionshipRankingEntry) GetPolygonsWkt() []string {
+	if x != nil {
+		return x.PolygonsWkt
+	}
+	return nil
+}
+
+type GetChampionshipRankingRequest struct {
+	state          protoimpl.MessageState `protogen:"open.v1"`
+	ChampionshipId string                 `protobuf:"bytes,1,opt,name=championship_id,json=championshipId,proto3" json:"championship_id,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
+}
+
+func (x *GetChampionshipRankingRequest) Reset() {
+	*x = GetChampionshipRankingRequest{}
+	mi := &file_proto_championship_proto_msgTypes[11]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetChampionshipRankingRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetChampionshipRankingRequest) ProtoMessage() {}
+
+func (x *GetChampionshipRankingRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_championship_proto_msgTypes[11]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetChampionshipRankingRequest.ProtoReflect.Descriptor instead.
+func (*GetChampionshipRankingRequest) Descriptor() ([]byte, []int) {
+	return file_proto_championship_proto_rawDescGZIP(), []int{11}
+}
+
+func (x *GetChampionshipRankingRequest) GetChampionshipId() string {
+	if x != nil {
+		return x.ChampionshipId
+	}
+	return ""
+}
+
+type GetChampionshipRankingResponse struct {
+	state         protoimpl.MessageState      `protogen:"open.v1"`
+	Entries       []*ChampionshipRankingEntry `protobuf:"bytes,1,rep,name=entries,proto3" json:"entries,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetChampionshipRankingResponse) Reset() {
+	*x = GetChampionshipRankingResponse{}
+	mi := &file_proto_championship_proto_msgTypes[12]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetChampionshipRankingResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetChampionshipRankingResponse) ProtoMessage() {}
+
+func (x *GetChampionshipRankingResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_championship_proto_msgTypes[12]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetChampionshipRankingResponse.ProtoReflect.Descriptor instead.
+func (*GetChampionshipRankingResponse) Descriptor() ([]byte, []int) {
+	return file_proto_championship_proto_rawDescGZIP(), []int{12}
+}
+
+func (x *GetChampionshipRankingResponse) GetEntries() []*ChampionshipRankingEntry {
+	if x != nil {
+		return x.Entries
+	}
+	return nil
+}
+
 var File_proto_championship_proto protoreflect.FileDescriptor
 
 const file_proto_championship_proto_rawDesc = "" +
 	"\n" +
-	"\x18proto/championship.proto\x12\x04game\x1a\x1fgoogle/protobuf/timestamp.proto\"\x9c\x01\n" +
+	"\x18proto/championship.proto\x12\x04game\x1a\x1fgoogle/protobuf/timestamp.proto\"\xd8\x01\n" +
 	"\fChampionship\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x125\n" +
 	"\bstart_at\x18\x03 \x01(\v2\x1a.google.protobuf.TimestampR\astartAt\x121\n" +
-	"\x06end_at\x18\x04 \x01(\v2\x1a.google.protobuf.TimestampR\x05endAt\"\x99\x01\n" +
+	"\x06end_at\x18\x04 \x01(\v2\x1a.google.protobuf.TimestampR\x05endAt\x12\x1b\n" +
+	"\tjoin_code\x18\x05 \x01(\tR\bjoinCode\x12\x1d\n" +
+	"\n" +
+	"created_by\x18\x06 \x01(\tR\tcreatedBy\"\xb2\x01\n" +
 	"\x19CreateChampionshipRequest\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x125\n" +
 	"\bstart_at\x18\x02 \x01(\v2\x1a.google.protobuf.TimestampR\astartAt\x121\n" +
-	"\x06end_at\x18\x03 \x01(\v2\x1a.google.protobuf.TimestampR\x05endAt\"N\n" +
+	"\x06end_at\x18\x03 \x01(\v2\x1a.google.protobuf.TimestampR\x05endAt\x12\x17\n" +
+	"\auser_id\x18\x04 \x01(\tR\x06userId\"N\n" +
 	"\x14ChampionshipResponse\x126\n" +
-	"\fchampionship\x18\x01 \x01(\v2\x12.game.ChampionshipR\fchampionship\"\x1a\n" +
-	"\x18ListChampionshipsRequest\"U\n" +
+	"\fchampionship\x18\x01 \x01(\v2\x12.game.ChampionshipR\fchampionship\"3\n" +
+	"\x18ListChampionshipsRequest\x12\x17\n" +
+	"\auser_id\x18\x01 \x01(\tR\x06userId\"U\n" +
 	"\x19ListChampionshipsResponse\x128\n" +
-	"\rchampionships\x18\x01 \x03(\v2\x12.game.ChampionshipR\rchampionships\"l\n" +
+	"\rchampionships\x18\x01 \x03(\v2\x12.game.ChampionshipR\rchampionships\"\x85\x01\n" +
 	" UpdateChampionshipEndDateRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x128\n" +
 	"\n" +
-	"new_end_at\x18\x02 \x01(\v2\x1a.google.protobuf.TimestampR\bnewEndAt\"+\n" +
+	"new_end_at\x18\x02 \x01(\v2\x1a.google.protobuf.TimestampR\bnewEndAt\x12\x17\n" +
+	"\auser_id\x18\x03 \x01(\tR\x06userId\"D\n" +
 	"\x19DeleteChampionshipRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\"6\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x17\n" +
+	"\auser_id\x18\x02 \x01(\tR\x06userId\"6\n" +
 	"\x1aDeleteChampionshipResponse\x12\x18\n" +
-	"\asuccess\x18\x01 \x01(\bR\asuccess2\xf8\x02\n" +
+	"\asuccess\x18\x01 \x01(\bR\asuccess\"O\n" +
+	"\x17JoinChampionshipRequest\x12\x17\n" +
+	"\auser_id\x18\x01 \x01(\tR\x06userId\x12\x1b\n" +
+	"\tjoin_code\x18\x02 \x01(\tR\bjoinCode\"R\n" +
+	"\x18JoinChampionshipResponse\x126\n" +
+	"\fchampionship\x18\x01 \x01(\v2\x12.game.ChampionshipR\fchampionship\"\xc1\x01\n" +
+	"\x18ChampionshipRankingEntry\x12\x17\n" +
+	"\auser_id\x18\x01 \x01(\tR\x06userId\x12\x1b\n" +
+	"\tuser_name\x18\x02 \x01(\tR\buserName\x12(\n" +
+	"\x10user_picture_url\x18\x03 \x01(\tR\x0euserPictureUrl\x12\"\n" +
+	"\rtotal_area_m2\x18\x04 \x01(\x01R\vtotalAreaM2\x12!\n" +
+	"\fpolygons_wkt\x18\x05 \x03(\tR\vpolygonsWkt\"H\n" +
+	"\x1dGetChampionshipRankingRequest\x12'\n" +
+	"\x0fchampionship_id\x18\x01 \x01(\tR\x0echampionshipId\"Z\n" +
+	"\x1eGetChampionshipRankingResponse\x128\n" +
+	"\aentries\x18\x01 \x03(\v2\x1e.game.ChampionshipRankingEntryR\aentries2\xb0\x04\n" +
 	"\x13ChampionshipService\x12Q\n" +
 	"\x12CreateChampionship\x12\x1f.game.CreateChampionshipRequest\x1a\x1a.game.ChampionshipResponse\x12T\n" +
 	"\x11ListChampionships\x12\x1e.game.ListChampionshipsRequest\x1a\x1f.game.ListChampionshipsResponse\x12_\n" +
 	"\x19UpdateChampionshipEndDate\x12&.game.UpdateChampionshipEndDateRequest\x1a\x1a.game.ChampionshipResponse\x12W\n" +
-	"\x12DeleteChampionship\x12\x1f.game.DeleteChampionshipRequest\x1a .game.DeleteChampionshipResponseB@Z>github.com/PatrickCalorioCarvalho/StrideClash/backend/proto;pbb\x06proto3"
+	"\x12DeleteChampionship\x12\x1f.game.DeleteChampionshipRequest\x1a .game.DeleteChampionshipResponse\x12Q\n" +
+	"\x10JoinChampionship\x12\x1d.game.JoinChampionshipRequest\x1a\x1e.game.JoinChampionshipResponse\x12c\n" +
+	"\x16GetChampionshipRanking\x12#.game.GetChampionshipRankingRequest\x1a$.game.GetChampionshipRankingResponseB@Z>github.com/PatrickCalorioCarvalho/StrideClash/backend/proto;pbb\x06proto3"
 
 var (
 	file_proto_championship_proto_rawDescOnce sync.Once
@@ -459,7 +791,7 @@ func file_proto_championship_proto_rawDescGZIP() []byte {
 	return file_proto_championship_proto_rawDescData
 }
 
-var file_proto_championship_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
+var file_proto_championship_proto_msgTypes = make([]protoimpl.MessageInfo, 13)
 var file_proto_championship_proto_goTypes = []any{
 	(*Championship)(nil),                     // 0: game.Championship
 	(*CreateChampionshipRequest)(nil),        // 1: game.CreateChampionshipRequest
@@ -469,29 +801,40 @@ var file_proto_championship_proto_goTypes = []any{
 	(*UpdateChampionshipEndDateRequest)(nil), // 5: game.UpdateChampionshipEndDateRequest
 	(*DeleteChampionshipRequest)(nil),        // 6: game.DeleteChampionshipRequest
 	(*DeleteChampionshipResponse)(nil),       // 7: game.DeleteChampionshipResponse
-	(*timestamppb.Timestamp)(nil),            // 8: google.protobuf.Timestamp
+	(*JoinChampionshipRequest)(nil),          // 8: game.JoinChampionshipRequest
+	(*JoinChampionshipResponse)(nil),         // 9: game.JoinChampionshipResponse
+	(*ChampionshipRankingEntry)(nil),         // 10: game.ChampionshipRankingEntry
+	(*GetChampionshipRankingRequest)(nil),    // 11: game.GetChampionshipRankingRequest
+	(*GetChampionshipRankingResponse)(nil),   // 12: game.GetChampionshipRankingResponse
+	(*timestamppb.Timestamp)(nil),            // 13: google.protobuf.Timestamp
 }
 var file_proto_championship_proto_depIdxs = []int32{
-	8,  // 0: game.Championship.start_at:type_name -> google.protobuf.Timestamp
-	8,  // 1: game.Championship.end_at:type_name -> google.protobuf.Timestamp
-	8,  // 2: game.CreateChampionshipRequest.start_at:type_name -> google.protobuf.Timestamp
-	8,  // 3: game.CreateChampionshipRequest.end_at:type_name -> google.protobuf.Timestamp
+	13, // 0: game.Championship.start_at:type_name -> google.protobuf.Timestamp
+	13, // 1: game.Championship.end_at:type_name -> google.protobuf.Timestamp
+	13, // 2: game.CreateChampionshipRequest.start_at:type_name -> google.protobuf.Timestamp
+	13, // 3: game.CreateChampionshipRequest.end_at:type_name -> google.protobuf.Timestamp
 	0,  // 4: game.ChampionshipResponse.championship:type_name -> game.Championship
 	0,  // 5: game.ListChampionshipsResponse.championships:type_name -> game.Championship
-	8,  // 6: game.UpdateChampionshipEndDateRequest.new_end_at:type_name -> google.protobuf.Timestamp
-	1,  // 7: game.ChampionshipService.CreateChampionship:input_type -> game.CreateChampionshipRequest
-	3,  // 8: game.ChampionshipService.ListChampionships:input_type -> game.ListChampionshipsRequest
-	5,  // 9: game.ChampionshipService.UpdateChampionshipEndDate:input_type -> game.UpdateChampionshipEndDateRequest
-	6,  // 10: game.ChampionshipService.DeleteChampionship:input_type -> game.DeleteChampionshipRequest
-	2,  // 11: game.ChampionshipService.CreateChampionship:output_type -> game.ChampionshipResponse
-	4,  // 12: game.ChampionshipService.ListChampionships:output_type -> game.ListChampionshipsResponse
-	2,  // 13: game.ChampionshipService.UpdateChampionshipEndDate:output_type -> game.ChampionshipResponse
-	7,  // 14: game.ChampionshipService.DeleteChampionship:output_type -> game.DeleteChampionshipResponse
-	11, // [11:15] is the sub-list for method output_type
-	7,  // [7:11] is the sub-list for method input_type
-	7,  // [7:7] is the sub-list for extension type_name
-	7,  // [7:7] is the sub-list for extension extendee
-	0,  // [0:7] is the sub-list for field type_name
+	13, // 6: game.UpdateChampionshipEndDateRequest.new_end_at:type_name -> google.protobuf.Timestamp
+	0,  // 7: game.JoinChampionshipResponse.championship:type_name -> game.Championship
+	10, // 8: game.GetChampionshipRankingResponse.entries:type_name -> game.ChampionshipRankingEntry
+	1,  // 9: game.ChampionshipService.CreateChampionship:input_type -> game.CreateChampionshipRequest
+	3,  // 10: game.ChampionshipService.ListChampionships:input_type -> game.ListChampionshipsRequest
+	5,  // 11: game.ChampionshipService.UpdateChampionshipEndDate:input_type -> game.UpdateChampionshipEndDateRequest
+	6,  // 12: game.ChampionshipService.DeleteChampionship:input_type -> game.DeleteChampionshipRequest
+	8,  // 13: game.ChampionshipService.JoinChampionship:input_type -> game.JoinChampionshipRequest
+	11, // 14: game.ChampionshipService.GetChampionshipRanking:input_type -> game.GetChampionshipRankingRequest
+	2,  // 15: game.ChampionshipService.CreateChampionship:output_type -> game.ChampionshipResponse
+	4,  // 16: game.ChampionshipService.ListChampionships:output_type -> game.ListChampionshipsResponse
+	2,  // 17: game.ChampionshipService.UpdateChampionshipEndDate:output_type -> game.ChampionshipResponse
+	7,  // 18: game.ChampionshipService.DeleteChampionship:output_type -> game.DeleteChampionshipResponse
+	9,  // 19: game.ChampionshipService.JoinChampionship:output_type -> game.JoinChampionshipResponse
+	12, // 20: game.ChampionshipService.GetChampionshipRanking:output_type -> game.GetChampionshipRankingResponse
+	15, // [15:21] is the sub-list for method output_type
+	9,  // [9:15] is the sub-list for method input_type
+	9,  // [9:9] is the sub-list for extension type_name
+	9,  // [9:9] is the sub-list for extension extendee
+	0,  // [0:9] is the sub-list for field type_name
 }
 
 func init() { file_proto_championship_proto_init() }
@@ -505,7 +848,7 @@ func file_proto_championship_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_championship_proto_rawDesc), len(file_proto_championship_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   8,
+			NumMessages:   13,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

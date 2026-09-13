@@ -1,0 +1,54 @@
+# Overlay opcional pra expor o backend gRPC externamente via ngrok, sem
+# misturar isso no docker-compose.yml principal (que é o que roda "de
+# verdade" no servidor).
+#
+# Usa um túnel HTTP com --app-protocol=http2 (não `ngrok tcp`): desde 2024 o
+# ngrok exige cartão cadastrado (verificação, sem cobrança) pra liberar
+# endpoints TCP/TLS, mesmo no plano grátis. Endpoints HTTP continuam livres
+# de verificação, e gRPC funciona por cima de HTTP/2 — o ngrok termina TLS
+# na borda (endereço público fica https://...) e repassa pro backend em
+# HTTP/2 sem criptografia (h2c), que é exatamente como o grpc.NewServer()
+# do backend já roda (sem TransportCredentials). Por isso o mobile precisa
+# falar com o túnel usando credenciais seguras (TLS) — ver
+# GRPC_USE_TLS em mobile/.env — mesmo com o backend em si continuando sem
+# TLS nenhum.
+#
+# Uso:
+#   docker compose -f docker-compose.yml -f docker-compose.ngrok.yml up -d --build
+#
+# Requer NGROK_AUTHTOKEN no seu .env (pegue em https://dashboard.ngrok.com/get-started/your-authtoken).
+# NGROK_URL é opcional — sem ele, o endereço público muda a cada restart do
+# container, o que quebra o GRPC_HOST configurado no mobile. Reserve um
+# domínio estático GRÁTIS (não precisa de cartão) em
+# https://dashboard.ngrok.com/domains e coloque a URL completa aqui (ex:
+# https://algo-aleatorio.ngrok-free.app) — é assim que o próprio dashboard
+# do ngrok mostra o comando (--url com a URL inteira, não só o domínio).
+#
+# Depois de subir, veja o endereço público em http://localhost:4041
+# (dashboard do ngrok) ou em `docker compose logs ngrok`, e aponte
+# GRPC_HOST (o host do https://..., sem o "https://") e GRPC_PORT=443 no
+# mobile/.env, com GRPC_USE_TLS=true.
+
+services:
+  ngrok:
+    image: ngrok/ngrok:latest
+    restart: unless-stopped
+    environment:
+      NGROK_AUTHTOKEN: ${NGROK_AUTHTOKEN}
+      NGROK_URL: ${NGROK_URL:-}
+    entrypoint: ["sh", "-c"]
+    # Só passa --url se NGROK_URL estiver definido, senão o ngrok reclama de
+    # um valor vazio.
+    command:
+      - |
+        if [ -n "$$NGROK_URL" ]; then
+          exec ngrok http --app-protocol=http2 --log=stdout --log-format=logfmt backend:50051 --url="$$NGROK_URL"
+        else
+          exec ngrok http --app-protocol=http2 --log=stdout --log-format=logfmt backend:50051
+        fi
+    ports:
+      # 4041 (não 4040): evita conflito de porta com o dashboard do ngrok
+      # do CLKThingsManager, que usa 4040 e pode estar rodando no mesmo host.
+      - "4041:4040"
+    depends_on:
+      - backend

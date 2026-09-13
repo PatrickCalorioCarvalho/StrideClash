@@ -15,6 +15,8 @@ message Championship {
     string name = 2;
     google.protobuf.Timestamp start_at = 3;
     google.protobuf.Timestamp end_at = 4;
+    string join_code = 5;
+    string created_by = 6;
 }
 
 
@@ -22,6 +24,7 @@ message CreateChampionshipRequest {
     string name = 1;
     google.protobuf.Timestamp start_at = 2;
     google.protobuf.Timestamp end_at = 3;
+    string user_id = 4;
 }
 
 
@@ -29,7 +32,9 @@ message ChampionshipResponse {
     Championship championship = 1;
 }
 
-message ListChampionshipsRequest {}
+message ListChampionshipsRequest {
+  string user_id = 1;
+}
 
 message ListChampionshipsResponse {
   repeated Championship championships = 1;
@@ -38,14 +43,41 @@ message ListChampionshipsResponse {
 message UpdateChampionshipEndDateRequest {
   string id = 1;
   google.protobuf.Timestamp new_end_at = 2;
+  string user_id = 3;
 }
 
 message DeleteChampionshipRequest {
   string id = 1;
+  string user_id = 2;
 }
 
 message DeleteChampionshipResponse {
   bool success = 1;
+}
+
+message JoinChampionshipRequest {
+  string user_id = 1;
+  string join_code = 2;
+}
+
+message JoinChampionshipResponse {
+  Championship championship = 1;
+}
+
+message ChampionshipRankingEntry {
+  string user_id = 1;
+  string user_name = 2;
+  string user_picture_url = 3;
+  double total_area_m2 = 4;
+  repeated string polygons_wkt = 5;
+}
+
+message GetChampionshipRankingRequest {
+  string championship_id = 1;
+}
+
+message GetChampionshipRankingResponse {
+  repeated ChampionshipRankingEntry entries = 1;
 }
 
 service ChampionshipService {
@@ -61,4 +93,10 @@ service ChampionshipService {
 
     rpc DeleteChampionship(DeleteChampionshipRequest)
         returns (DeleteChampionshipResponse);
+
+    rpc JoinChampionship(JoinChampionshipRequest)
+        returns (JoinChampionshipResponse);
+
+    rpc GetChampionshipRanking(GetChampionshipRankingRequest)
+        returns (GetChampionshipRankingResponse);
 }

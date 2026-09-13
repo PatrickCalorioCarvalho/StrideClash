@@ -8,9 +8,10 @@ import (
 )
 
 type GoogleUser struct {
-	Email string
-	Name  string
-	Sub   string
+	Email   string
+	Name    string
+	Sub     string
+	Picture string
 }
 
 func VerifyGoogleToken(
@@ -24,9 +25,12 @@ func VerifyGoogleToken(
 		return nil, errors.New("token google inválido")
 	}
 
+	picture, _ := payload.Claims["picture"].(string)
+
 	return &GoogleUser{
-		Email: payload.Claims["email"].(string),
-		Name:  payload.Claims["name"].(string),
-		Sub:   payload.Subject,
+		Email:   payload.Claims["email"].(string),
+		Name:    payload.Claims["name"].(string),
+		Sub:     payload.Subject,
+		Picture: picture,
 	}, nil
 }

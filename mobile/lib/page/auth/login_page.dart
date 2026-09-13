@@ -16,20 +16,20 @@ class LoginPage extends StatelessWidget {
     try {
       debugPrint('Iniciando login com Google...');
 
-      final idToken = await _auth.signIn();
+      final googleResult = await _auth.signIn();
 
-      if (idToken == null) {
+      if (googleResult == null) {
         debugPrint('Login cancelado');
         return;
       }
 
       final response = await _client.auth.login(
-        LoginRequest()..idToken = idToken,
+        LoginRequest()..idToken = googleResult.idToken,
       );
 
       debugPrint('LOGIN OK: ${response.email}');
-      
-      await _storage.saveUser(response);
+
+      await _storage.saveUser(response, photoUrl: googleResult.photoUrl);
 
       Navigator.pushReplacement(
         context,

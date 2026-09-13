@@ -28,10 +28,12 @@ message FinishWalkRequest {
 
 message FinishWalkResponse {
   string polygon_wkt = 1;
+  double area_m2 = 2;
 }
 
 message WalkPoint {
   double lat = 1;
   double lng = 2;
   google.protobuf.Timestamp timestamp = 3;
+  double speed = 4;
 }

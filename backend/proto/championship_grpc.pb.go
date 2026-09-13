@@ -23,6 +23,8 @@ const (
 	ChampionshipService_ListChampionships_FullMethodName         = "/game.ChampionshipService/ListChampionships"
 	ChampionshipService_UpdateChampionshipEndDate_FullMethodName = "/game.ChampionshipService/UpdateChampionshipEndDate"
 	ChampionshipService_DeleteChampionship_FullMethodName        = "/game.ChampionshipService/DeleteChampionship"
+	ChampionshipService_JoinChampionship_FullMethodName          = "/game.ChampionshipService/JoinChampionship"
+	ChampionshipService_GetChampionshipRanking_FullMethodName    = "/game.ChampionshipService/GetChampionshipRanking"
 )
 
 // ChampionshipServiceClient is the client API for ChampionshipService service.
@@ -33,6 +35,8 @@ type ChampionshipServiceClient interface {
 	ListChampionships(ctx context.Context, in *ListChampionshipsRequest, opts ...grpc.CallOption) (*ListChampionshipsResponse, error)
 	UpdateChampionshipEndDate(ctx context.Context, in *UpdateChampionshipEndDateRequest, opts ...grpc.CallOption) (*ChampionshipResponse, error)
 	DeleteChampionship(ctx context.Context, in *DeleteChampionshipRequest, opts ...grpc.CallOption) (*DeleteChampionshipResponse, error)
+	JoinChampionship(ctx context.Context, in *JoinChampionshipRequest, opts ...grpc.CallOption) (*JoinChampionshipResponse, error)
+	GetChampionshipRanking(ctx context.Context, in *GetChampionshipRankingRequest, opts ...grpc.CallOption) (*GetChampionshipRankingResponse, error)
 }
 
 type championshipServiceClient struct {
@@ -83,6 +87,26 @@ func (c *championshipServiceClient) DeleteChampionship(ctx context.Context, in *
 	return out, nil
 }
 
+func (c *championshipServiceClient) JoinChampionship(ctx context.Context, in *JoinChampionshipRequest, opts ...grpc.CallOption) (*JoinChampionshipResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(JoinChampionshipResponse)
+	err := c.cc.Invoke(ctx, ChampionshipService_JoinChampionship_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *championshipServiceClient) GetChampionshipRanking(ctx context.Context, in *GetChampionshipRankingRequest, opts ...grpc.CallOption) (*GetChampionshipRankingResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetChampionshipRankingResponse)
+	err := c.cc.Invoke(ctx, ChampionshipService_GetChampionshipRanking_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ChampionshipServiceServer is the server API for ChampionshipService service.
 // All implementations must embed UnimplementedChampionshipServiceServer
 // for forward compatibility.
@@ -91,6 +115,8 @@ type ChampionshipServiceServer interface {
 	ListChampionships(context.Context, *ListChampionshipsRequest) (*ListChampionshipsResponse, error)
 	UpdateChampionshipEndDate(context.Context, *UpdateChampionshipEndDateRequest) (*ChampionshipResponse, error)
 	DeleteChampionship(context.Context, *DeleteChampionshipRequest) (*DeleteChampionshipResponse, error)
+	JoinChampionship(context.Context, *JoinChampionshipRequest) (*JoinChampionshipResponse, error)
+	GetChampionshipRanking(context.Context, *GetChampionshipRankingRequest) (*GetChampionshipRankingResponse, error)
 	mustEmbedUnimplementedChampionshipServiceServer()
 }
 
@@ -112,6 +138,12 @@ func (UnimplementedChampionshipServiceServer) UpdateChampionshipEndDate(context.
 }
 func (UnimplementedChampionshipServiceServer) DeleteChampionship(context.Context, *DeleteChampionshipRequest) (*DeleteChampionshipResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method DeleteChampionship not implemented")
+}
+func (UnimplementedChampionshipServiceServer) JoinChampionship(context.Context, *JoinChampionshipRequest) (*JoinChampionshipResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method JoinChampionship not implemented")
+}
+func (UnimplementedChampionshipServiceServer) GetChampionshipRanking(context.Context, *GetChampionshipRankingRequest) (*GetChampionshipRankingResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetChampionshipRanking not implemented")
 }
 func (UnimplementedChampionshipServiceServer) mustEmbedUnimplementedChampionshipServiceServer() {}
 func (UnimplementedChampionshipServiceServer) testEmbeddedByValue()                             {}
@@ -206,6 +238,42 @@ func _ChampionshipService_DeleteChampionship_Handler(srv interface{}, ctx contex
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ChampionshipService_JoinChampionship_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(JoinChampionshipRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ChampionshipServiceServer).JoinChampionship(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ChampionshipService_JoinChampionship_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ChampionshipServiceServer).JoinChampionship(ctx, req.(*JoinChampionshipRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ChampionshipService_GetChampionshipRanking_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetChampionshipRankingRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ChampionshipServiceServer).GetChampionshipRanking(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ChampionshipService_GetChampionshipRanking_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ChampionshipServiceServer).GetChampionshipRanking(ctx, req.(*GetChampionshipRankingRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ChampionshipService_ServiceDesc is the grpc.ServiceDesc for ChampionshipService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -228,6 +296,14 @@ var ChampionshipService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteChampionship",
 			Handler:    _ChampionshipService_DeleteChampionship_Handler,
+		},
+		{
+			MethodName: "JoinChampionship",
+			Handler:    _ChampionshipService_JoinChampionship_Handler,
+		},
+		{
+			MethodName: "GetChampionshipRanking",
+			Handler:    _ChampionshipService_GetChampionshipRanking_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
