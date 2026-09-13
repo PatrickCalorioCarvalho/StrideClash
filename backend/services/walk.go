@@ -84,6 +84,22 @@ func (s *WalkService) FinishWalk(
 	}, nil
 }
 
+func (s *WalkService) GetUserStats(
+	ctx context.Context,
+	req *pb.GetUserStatsRequest,
+) (*pb.GetUserStatsResponse, error) {
+
+	totalAreaM2, walkCount, err := s.Walks.GetUserStats(req.UserId)
+	if err != nil {
+		return nil, err
+	}
+
+	return &pb.GetUserStatsResponse{
+		TotalAreaM2: totalAreaM2,
+		WalkCount:   int32(walkCount),
+	}, nil
+}
+
 // closeRing appends the starting point to the end of the trail if the walker
 // didn't already return to it, so the trail forms a valid closed polygon ring.
 func closeRing(points []*pb.WalkPoint) []*pb.WalkPoint {

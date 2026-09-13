@@ -8,6 +8,7 @@ import '../../grpc_client.dart';
 import '../../generated/championship.pb.dart';
 import '../../generated/championship.pbgrpc.dart';
 import '../../services/walk_tracking_service.dart';
+import '../../widgets/dark_map_layers.dart';
 
 class WalkTrackingPage extends StatefulWidget {
   const WalkTrackingPage({super.key});
@@ -98,6 +99,58 @@ class _WalkTrackingPageState extends State<WalkTrackingPage> {
     );
   }
 
+  String get _selectedChampionshipName {
+    final match = _championships.where((c) => c.id == _selectedChampionshipId);
+    return match.isEmpty ? 'Sem campeonato' : match.first.name;
+  }
+
+  Widget _buildChampionshipCard() {
+    if (_tracking) {
+      return Card(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+          child: Row(
+            children: [
+              const Icon(Icons.emoji_events_outlined, size: 20),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  'Valendo pra: $_selectedChampionshipName',
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12),
+        child: DropdownButtonHideUnderline(
+          child: DropdownButton<String?>(
+            isExpanded: true,
+            hint: const Text('Sem campeonato'),
+            value: _selectedChampionshipId,
+            items: [
+              const DropdownMenuItem<String?>(
+                value: null,
+                child: Text('Sem campeonato'),
+              ),
+              ..._championships.map((c) => DropdownMenuItem<String?>(
+                    value: c.id,
+                    child: Text(c.name),
+                  )),
+            ],
+            onChanged: (value) =>
+                setState(() => _selectedChampionshipId = value),
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final points = _service.points
@@ -120,12 +173,8 @@ class _WalkTrackingPageState extends State<WalkTrackingPage> {
               initialZoom: 16,
             ),
             children: [
-              TileLayer(
-                urlTemplate:
-                    'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                userAgentPackageName:
-                    'com.patrickcaloriocarvalho.strideclash',
-              ),
+              buildDarkTileLayer(),
+              buildMapAttribution(),
               if (showPolygon)
                 PolygonLayer(
                   polygons: [
@@ -150,53 +199,29 @@ class _WalkTrackingPageState extends State<WalkTrackingPage> {
             ],
           ),
 
-          if (!_tracking && _championships.isNotEmpty)
-            Positioned(
-              top: 16,
-              left: 16,
-              right: 16,
-              child: Card(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                  child: DropdownButtonHideUnderline(
-                    child: DropdownButton<String?>(
-                      isExpanded: true,
-                      hint: const Text('Não vale campeonato'),
-                      value: _selectedChampionshipId,
-                      items: [
-                        const DropdownMenuItem<String?>(
-                          value: null,
-                          child: Text('Não vale campeonato'),
-                        ),
-                        ..._championships.map((c) => DropdownMenuItem<String?>(
-                              value: c.id,
-                              child: Text(c.name),
-                            )),
-                      ],
-                      onChanged: (value) =>
-                          setState(() => _selectedChampionshipId = value),
+          Positioned(
+            top: 16,
+            left: 16,
+            right: 16,
+            child: Column(
+              children: [
+                _buildChampionshipCard(),
+                if (showPolygon && finishedWalk.areaM2 != null) ...[
+                  const SizedBox(height: 8),
+                  Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(12),
+                      child: Text(
+                        'Área capturada: ${finishedWalk.areaM2!.toStringAsFixed(0)} m²',
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.center,
+                      ),
                     ),
                   ),
-                ),
-              ),
+                ],
+              ],
             ),
-
-          if (showPolygon && finishedWalk.areaM2 != null)
-            Positioned(
-              top: 16,
-              left: 16,
-              right: 16,
-              child: Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(12),
-                  child: Text(
-                    'Área capturada: ${finishedWalk.areaM2!.toStringAsFixed(0)} m²',
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              ),
-            ),
+          ),
 
           Positioned(
             bottom: 24,

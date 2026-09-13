@@ -19,8 +19,9 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	WalkService_StartWalk_FullMethodName  = "/walk.WalkService/StartWalk"
-	WalkService_FinishWalk_FullMethodName = "/walk.WalkService/FinishWalk"
+	WalkService_StartWalk_FullMethodName    = "/walk.WalkService/StartWalk"
+	WalkService_FinishWalk_FullMethodName   = "/walk.WalkService/FinishWalk"
+	WalkService_GetUserStats_FullMethodName = "/walk.WalkService/GetUserStats"
 )
 
 // WalkServiceClient is the client API for WalkService service.
@@ -29,6 +30,7 @@ const (
 type WalkServiceClient interface {
 	StartWalk(ctx context.Context, in *StartWalkRequest, opts ...grpc.CallOption) (*StartWalkResponse, error)
 	FinishWalk(ctx context.Context, in *FinishWalkRequest, opts ...grpc.CallOption) (*FinishWalkResponse, error)
+	GetUserStats(ctx context.Context, in *GetUserStatsRequest, opts ...grpc.CallOption) (*GetUserStatsResponse, error)
 }
 
 type walkServiceClient struct {
@@ -59,12 +61,23 @@ func (c *walkServiceClient) FinishWalk(ctx context.Context, in *FinishWalkReques
 	return out, nil
 }
 
+func (c *walkServiceClient) GetUserStats(ctx context.Context, in *GetUserStatsRequest, opts ...grpc.CallOption) (*GetUserStatsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetUserStatsResponse)
+	err := c.cc.Invoke(ctx, WalkService_GetUserStats_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // WalkServiceServer is the server API for WalkService service.
 // All implementations must embed UnimplementedWalkServiceServer
 // for forward compatibility.
 type WalkServiceServer interface {
 	StartWalk(context.Context, *StartWalkRequest) (*StartWalkResponse, error)
 	FinishWalk(context.Context, *FinishWalkRequest) (*FinishWalkResponse, error)
+	GetUserStats(context.Context, *GetUserStatsRequest) (*GetUserStatsResponse, error)
 	mustEmbedUnimplementedWalkServiceServer()
 }
 
@@ -80,6 +93,9 @@ func (UnimplementedWalkServiceServer) StartWalk(context.Context, *StartWalkReque
 }
 func (UnimplementedWalkServiceServer) FinishWalk(context.Context, *FinishWalkRequest) (*FinishWalkResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method FinishWalk not implemented")
+}
+func (UnimplementedWalkServiceServer) GetUserStats(context.Context, *GetUserStatsRequest) (*GetUserStatsResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetUserStats not implemented")
 }
 func (UnimplementedWalkServiceServer) mustEmbedUnimplementedWalkServiceServer() {}
 func (UnimplementedWalkServiceServer) testEmbeddedByValue()                     {}
@@ -138,6 +154,24 @@ func _WalkService_FinishWalk_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _WalkService_GetUserStats_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetUserStatsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(WalkServiceServer).GetUserStats(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: WalkService_GetUserStats_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(WalkServiceServer).GetUserStats(ctx, req.(*GetUserStatsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // WalkService_ServiceDesc is the grpc.ServiceDesc for WalkService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -152,6 +186,10 @@ var WalkService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "FinishWalk",
 			Handler:    _WalkService_FinishWalk_Handler,
+		},
+		{
+			MethodName: "GetUserStats",
+			Handler:    _WalkService_GetUserStats_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

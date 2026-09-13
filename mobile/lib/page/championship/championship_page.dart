@@ -8,6 +8,14 @@ import '../../generated/championship.pb.dart';
 import '../../generated/championship.pbgrpc.dart';
 import 'championship_ranking_page.dart';
 
+class _ChampionshipWithStats {
+  final Championship championship;
+  final double? myAreaM2;
+  final int? myRank;
+
+  _ChampionshipWithStats(this.championship, this.myAreaM2, this.myRank);
+}
+
 class ChampionshipPage extends StatefulWidget {
   const ChampionshipPage({super.key});
 
@@ -26,7 +34,7 @@ class _ChampionshipsPageState extends State<ChampionshipPage> {
   final _authStorage = AuthStorage();
 
   String? _userId;
-  late Future<List<Championship>> _championshipsFuture;
+  late Future<List<_ChampionshipWithStats>> _championshipsFuture;
 
   @override
   void initState() {
@@ -34,7 +42,7 @@ class _ChampionshipsPageState extends State<ChampionshipPage> {
     _championshipsFuture = _init();
   }
 
-  Future<List<Championship>> _init() async {
+  Future<List<_ChampionshipWithStats>> _init() async {
     _userId = await _authStorage.userId;
     return _loadChampionships();
   }
@@ -46,18 +54,41 @@ class _ChampionshipsPageState extends State<ChampionshipPage> {
     super.dispose();
   }
 
-  Future<List<Championship>> _loadChampionships() async {
+  Future<List<_ChampionshipWithStats>> _loadChampionships() async {
     final response = await _client.championship.listChampionships(
       ListChampionshipsRequest()..userId = _userId!,
     );
 
-    return response.championships;
+    final result = <_ChampionshipWithStats>[];
+    for (final c in response.championships) {
+      try {
+        final ranking = await _client.championship.getChampionshipRanking(
+          GetChampionshipRankingRequest()..championshipId = c.id,
+        );
+        final myIndex = ranking.entries.indexWhere((e) => e.userId == _userId);
+        result.add(_ChampionshipWithStats(
+          c,
+          myIndex >= 0 ? ranking.entries[myIndex].totalAreaM2 : null,
+          myIndex >= 0 ? myIndex + 1 : null,
+        ));
+      } catch (e) {
+        debugPrint('getChampionshipRanking failed for ${c.id}: $e');
+        result.add(_ChampionshipWithStats(c, null, null));
+      }
+    }
+    return result;
   }
 
-  Future<void> _createChampionship() async {
-    if (_nameController.text.isEmpty || _userId == null) return;
+  void _refresh() {
+    setState(() {
+      _championshipsFuture = _loadChampionships();
+    });
+  }
 
-    await _client.championship.createChampionship(
+  Future<Championship?> _createChampionship() async {
+    if (_nameController.text.isEmpty || _userId == null) return null;
+
+    final response = await _client.championship.createChampionship(
       CreateChampionshipRequest()
         ..name = _nameController.text
         ..startAt = Timestamp.fromDateTime(_startDate)
@@ -66,10 +97,8 @@ class _ChampionshipsPageState extends State<ChampionshipPage> {
     );
 
     _nameController.clear();
-
-    setState(() {
-      _championshipsFuture = _loadChampionships();
-    });
+    _refresh();
+    return response.championship;
   }
 
   Future<void> _joinChampionship() async {
@@ -83,9 +112,8 @@ class _ChampionshipsPageState extends State<ChampionshipPage> {
           ..joinCode = code,
       );
       _joinCodeController.clear();
-      setState(() {
-        _championshipsFuture = _loadChampionships();
-      });
+      if (mounted) Navigator.of(context).pop();
+      _refresh();
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -103,9 +131,7 @@ class _ChampionshipsPageState extends State<ChampionshipPage> {
         ..userId = _userId!,
     );
 
-    setState(() {
-      _championshipsFuture = _loadChampionships();
-    });
+    _refresh();
   }
 
   Future<void> _extendChampionship(Championship c) async {
@@ -127,9 +153,7 @@ class _ChampionshipsPageState extends State<ChampionshipPage> {
         ..userId = _userId!,
     );
 
-    setState(() {
-      _championshipsFuture = _loadChampionships();
-    });
+    _refresh();
   }
 
   void _shareJoinCode(Championship c) {
@@ -140,11 +164,12 @@ class _ChampionshipsPageState extends State<ChampionshipPage> {
   }
 
   Future<void> _pickDate({
+    required BuildContext dialogContext,
     required DateTime initial,
     required ValueChanged<DateTime> onSelected,
   }) async {
     final date = await showDatePicker(
-      context: context,
+      context: dialogContext,
       initialDate: initial,
       firstDate: DateTime(2020),
       lastDate: DateTime(2035),
@@ -153,6 +178,151 @@ class _ChampionshipsPageState extends State<ChampionshipPage> {
     if (date != null) {
       onSelected(date);
     }
+  }
+
+  Future<void> _showCreateDialog() async {
+    _nameController.clear();
+    _startDate = DateTime.now();
+    _endDate = DateTime.now().add(const Duration(days: 7));
+
+    await showDialog<void>(
+      context: context,
+      builder: (dialogContext) {
+        return StatefulBuilder(
+          builder: (context, setDialogState) {
+            return AlertDialog(
+              title: const Text('Criar campeonato'),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextField(
+                    controller: _nameController,
+                    decoration: const InputDecoration(
+                      labelText: 'Nome do campeonato',
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: OutlinedButton(
+                          onPressed: () => _pickDate(
+                            dialogContext: context,
+                            initial: _startDate,
+                            onSelected: (d) =>
+                                setDialogState(() => _startDate = d),
+                          ),
+                          child: Text(
+                            'Início: ${_startDate.toLocal().toString().split(' ')[0]}',
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: OutlinedButton(
+                          onPressed: () => _pickDate(
+                            dialogContext: context,
+                            initial: _endDate,
+                            onSelected: (d) =>
+                                setDialogState(() => _endDate = d),
+                          ),
+                          child: Text(
+                            'Fim: ${_endDate.toLocal().toString().split(' ')[0]}',
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(dialogContext).pop(),
+                  child: const Text('Cancelar'),
+                ),
+                ElevatedButton(
+                  onPressed: () async {
+                    final created = await _createChampionship();
+                    if (!dialogContext.mounted) return;
+                    Navigator.of(dialogContext).pop();
+                    if (created != null) _showShareDialog(created);
+                  },
+                  child: const Text('Criar'),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
+  void _showShareDialog(Championship c) {
+    showDialog<void>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('Campeonato criado!'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text('Compartilhe esse código com seus amigos:'),
+            const SizedBox(height: 12),
+            Center(
+              child: Text(
+                c.joinCode,
+                style: const TextStyle(
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 2,
+                ),
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(),
+            child: const Text('Fechar'),
+          ),
+          ElevatedButton.icon(
+            icon: const Icon(Icons.share),
+            label: const Text('Compartilhar'),
+            onPressed: () {
+              _shareJoinCode(c);
+              Navigator.of(dialogContext).pop();
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _showJoinDialog() async {
+    _joinCodeController.clear();
+
+    await showDialog<void>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('Entrar com código'),
+        content: TextField(
+          controller: _joinCodeController,
+          autofocus: true,
+          textCapitalization: TextCapitalization.characters,
+          decoration: const InputDecoration(labelText: 'Código do amigo'),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(),
+            child: const Text('Cancelar'),
+          ),
+          ElevatedButton(
+            onPressed: _joinChampionship,
+            child: const Text('Entrar'),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -166,9 +336,25 @@ class _ChampionshipsPageState extends State<ChampionshipPage> {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            _buildJoinForm(),
-            const SizedBox(height: 16),
-            _buildCreateForm(),
+            Row(
+              children: [
+                Expanded(
+                  child: ElevatedButton.icon(
+                    icon: const Icon(Icons.add),
+                    label: const Text('Criar o meu'),
+                    onPressed: _showCreateDialog,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: OutlinedButton.icon(
+                    icon: const Icon(Icons.group_add),
+                    label: const Text('Entrar com código'),
+                    onPressed: _showJoinDialog,
+                  ),
+                ),
+              ],
+            ),
             const SizedBox(height: 16),
             Expanded(child: _buildChampionshipList()),
           ],
@@ -177,92 +363,8 @@ class _ChampionshipsPageState extends State<ChampionshipPage> {
     );
   }
 
-  Widget _buildJoinForm() {
-    return Card(
-      elevation: 2,
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Row(
-          children: [
-            Expanded(
-              child: TextField(
-                controller: _joinCodeController,
-                textCapitalization: TextCapitalization.characters,
-                decoration: const InputDecoration(
-                  labelText: 'Código de um amigo',
-                  border: OutlineInputBorder(),
-                ),
-              ),
-            ),
-            const SizedBox(width: 8),
-            ElevatedButton(
-              onPressed: _joinChampionship,
-              child: const Text('Entrar'),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildCreateForm() {
-    return Card(
-      elevation: 2,
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            TextField(
-              controller: _nameController,
-              decoration: const InputDecoration(
-                labelText: 'Nome do campeonato',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(height: 12),
-            Row(
-              children: [
-                Expanded(
-                  child: OutlinedButton(
-                    onPressed: () => _pickDate(
-                      initial: _startDate,
-                      onSelected: (d) =>
-                          setState(() => _startDate = d),
-                    ),
-                    child: Text(
-                      'Início: ${_startDate.toLocal().toString().split(' ')[0]}',
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: OutlinedButton(
-                    onPressed: () => _pickDate(
-                      initial: _endDate,
-                      onSelected: (d) =>
-                          setState(() => _endDate = d),
-                    ),
-                    child: Text(
-                      'Fim: ${_endDate.toLocal().toString().split(' ')[0]}',
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            ElevatedButton(
-              onPressed: _createChampionship,
-              child: const Text('Criar Campeonato'),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   Widget _buildChampionshipList() {
-    return FutureBuilder<List<Championship>>(
+    return FutureBuilder<List<_ChampionshipWithStats>>(
       future: _championshipsFuture,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -281,8 +383,13 @@ class _ChampionshipsPageState extends State<ChampionshipPage> {
           itemCount: items.length,
           separatorBuilder: (_, _) => const Divider(),
           itemBuilder: (context, index) {
-            final c = items[index];
+            final entry = items[index];
+            final c = entry.championship;
             final isOwner = c.createdBy == _userId;
+
+            final myStat = entry.myRank != null
+                ? 'Você: ${entry.myAreaM2!.toStringAsFixed(0)} m² (${entry.myRank}º lugar)'
+                : 'Você ainda não capturou nada aqui';
 
             return ListTile(
               leading: const Icon(Icons.flag),
@@ -291,7 +398,8 @@ class _ChampionshipsPageState extends State<ChampionshipPage> {
                 '${c.startAt.toDateTime().toLocal().toString().split(' ')[0]}'
                 ' → '
                 '${c.endAt.toDateTime().toLocal().toString().split(' ')[0]}'
-                '\nCódigo: ${c.joinCode}',
+                '\nCódigo: ${c.joinCode}'
+                '\n$myStat',
               ),
               isThreeLine: true,
               onTap: () => Navigator.push(

@@ -15,6 +15,33 @@ import 'dart:convert' as $convert;
 import 'dart:core' as $core;
 import 'dart:typed_data' as $typed_data;
 
+@$core.Deprecated('Use getUserStatsRequestDescriptor instead')
+const GetUserStatsRequest$json = {
+  '1': 'GetUserStatsRequest',
+  '2': [
+    {'1': 'user_id', '3': 1, '4': 1, '5': 9, '10': 'userId'},
+  ],
+};
+
+/// Descriptor for `GetUserStatsRequest`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List getUserStatsRequestDescriptor =
+    $convert.base64Decode(
+        'ChNHZXRVc2VyU3RhdHNSZXF1ZXN0EhcKB3VzZXJfaWQYASABKAlSBnVzZXJJZA==');
+
+@$core.Deprecated('Use getUserStatsResponseDescriptor instead')
+const GetUserStatsResponse$json = {
+  '1': 'GetUserStatsResponse',
+  '2': [
+    {'1': 'total_area_m2', '3': 1, '4': 1, '5': 1, '10': 'totalAreaM2'},
+    {'1': 'walk_count', '3': 2, '4': 1, '5': 5, '10': 'walkCount'},
+  ],
+};
+
+/// Descriptor for `GetUserStatsResponse`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List getUserStatsResponseDescriptor = $convert.base64Decode(
+    'ChRHZXRVc2VyU3RhdHNSZXNwb25zZRIiCg10b3RhbF9hcmVhX20yGAEgASgBUgt0b3RhbEFyZW'
+    'FNMhIdCgp3YWxrX2NvdW50GAIgASgFUgl3YWxrQ291bnQ=');
+
 @$core.Deprecated('Use startWalkRequestDescriptor instead')
 const StartWalkRequest$json = {
   '1': 'StartWalkRequest',

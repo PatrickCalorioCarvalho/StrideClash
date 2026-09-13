@@ -102,3 +102,15 @@ func (r *WalkRepository) ClearPolygon(walkID string) error {
 
 	return err
 }
+
+// GetUserStats sums a user's captured area across every finished walk,
+// championship or not — a personal lifetime total.
+func (r *WalkRepository) GetUserStats(userID string) (totalAreaM2 float64, walkCount int, err error) {
+	err = r.DB.QueryRow(`
+		SELECT COALESCE(SUM(area_m2), 0), COUNT(*)
+		FROM walks
+		WHERE user_id = $1 AND finished_at IS NOT NULL AND polygon IS NOT NULL
+	`, userID).Scan(&totalAreaM2, &walkCount)
+
+	return totalAreaM2, walkCount, err
+}

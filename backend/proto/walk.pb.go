@@ -22,6 +22,102 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+type GetUserStatsRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	UserId        string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetUserStatsRequest) Reset() {
+	*x = GetUserStatsRequest{}
+	mi := &file_proto_walk_proto_msgTypes[0]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetUserStatsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetUserStatsRequest) ProtoMessage() {}
+
+func (x *GetUserStatsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_walk_proto_msgTypes[0]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetUserStatsRequest.ProtoReflect.Descriptor instead.
+func (*GetUserStatsRequest) Descriptor() ([]byte, []int) {
+	return file_proto_walk_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *GetUserStatsRequest) GetUserId() string {
+	if x != nil {
+		return x.UserId
+	}
+	return ""
+}
+
+type GetUserStatsResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	TotalAreaM2   float64                `protobuf:"fixed64,1,opt,name=total_area_m2,json=totalAreaM2,proto3" json:"total_area_m2,omitempty"`
+	WalkCount     int32                  `protobuf:"varint,2,opt,name=walk_count,json=walkCount,proto3" json:"walk_count,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetUserStatsResponse) Reset() {
+	*x = GetUserStatsResponse{}
+	mi := &file_proto_walk_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetUserStatsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetUserStatsResponse) ProtoMessage() {}
+
+func (x *GetUserStatsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_walk_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetUserStatsResponse.ProtoReflect.Descriptor instead.
+func (*GetUserStatsResponse) Descriptor() ([]byte, []int) {
+	return file_proto_walk_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *GetUserStatsResponse) GetTotalAreaM2() float64 {
+	if x != nil {
+		return x.TotalAreaM2
+	}
+	return 0
+}
+
+func (x *GetUserStatsResponse) GetWalkCount() int32 {
+	if x != nil {
+		return x.WalkCount
+	}
+	return 0
+}
+
 type StartWalkRequest struct {
 	state          protoimpl.MessageState `protogen:"open.v1"`
 	UserId         string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
@@ -32,7 +128,7 @@ type StartWalkRequest struct {
 
 func (x *StartWalkRequest) Reset() {
 	*x = StartWalkRequest{}
-	mi := &file_proto_walk_proto_msgTypes[0]
+	mi := &file_proto_walk_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -44,7 +140,7 @@ func (x *StartWalkRequest) String() string {
 func (*StartWalkRequest) ProtoMessage() {}
 
 func (x *StartWalkRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_walk_proto_msgTypes[0]
+	mi := &file_proto_walk_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -57,7 +153,7 @@ func (x *StartWalkRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use StartWalkRequest.ProtoReflect.Descriptor instead.
 func (*StartWalkRequest) Descriptor() ([]byte, []int) {
-	return file_proto_walk_proto_rawDescGZIP(), []int{0}
+	return file_proto_walk_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *StartWalkRequest) GetUserId() string {
@@ -84,7 +180,7 @@ type StartWalkResponse struct {
 
 func (x *StartWalkResponse) Reset() {
 	*x = StartWalkResponse{}
-	mi := &file_proto_walk_proto_msgTypes[1]
+	mi := &file_proto_walk_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -96,7 +192,7 @@ func (x *StartWalkResponse) String() string {
 func (*StartWalkResponse) ProtoMessage() {}
 
 func (x *StartWalkResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_walk_proto_msgTypes[1]
+	mi := &file_proto_walk_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -109,7 +205,7 @@ func (x *StartWalkResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use StartWalkResponse.ProtoReflect.Descriptor instead.
 func (*StartWalkResponse) Descriptor() ([]byte, []int) {
-	return file_proto_walk_proto_rawDescGZIP(), []int{1}
+	return file_proto_walk_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *StartWalkResponse) GetWalkId() string {
@@ -136,7 +232,7 @@ type FinishWalkRequest struct {
 
 func (x *FinishWalkRequest) Reset() {
 	*x = FinishWalkRequest{}
-	mi := &file_proto_walk_proto_msgTypes[2]
+	mi := &file_proto_walk_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -148,7 +244,7 @@ func (x *FinishWalkRequest) String() string {
 func (*FinishWalkRequest) ProtoMessage() {}
 
 func (x *FinishWalkRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_walk_proto_msgTypes[2]
+	mi := &file_proto_walk_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -161,7 +257,7 @@ func (x *FinishWalkRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use FinishWalkRequest.ProtoReflect.Descriptor instead.
 func (*FinishWalkRequest) Descriptor() ([]byte, []int) {
-	return file_proto_walk_proto_rawDescGZIP(), []int{2}
+	return file_proto_walk_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *FinishWalkRequest) GetWalkId() string {
@@ -188,7 +284,7 @@ type FinishWalkResponse struct {
 
 func (x *FinishWalkResponse) Reset() {
 	*x = FinishWalkResponse{}
-	mi := &file_proto_walk_proto_msgTypes[3]
+	mi := &file_proto_walk_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -200,7 +296,7 @@ func (x *FinishWalkResponse) String() string {
 func (*FinishWalkResponse) ProtoMessage() {}
 
 func (x *FinishWalkResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_walk_proto_msgTypes[3]
+	mi := &file_proto_walk_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -213,7 +309,7 @@ func (x *FinishWalkResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use FinishWalkResponse.ProtoReflect.Descriptor instead.
 func (*FinishWalkResponse) Descriptor() ([]byte, []int) {
-	return file_proto_walk_proto_rawDescGZIP(), []int{3}
+	return file_proto_walk_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *FinishWalkResponse) GetPolygonWkt() string {
@@ -242,7 +338,7 @@ type WalkPoint struct {
 
 func (x *WalkPoint) Reset() {
 	*x = WalkPoint{}
-	mi := &file_proto_walk_proto_msgTypes[4]
+	mi := &file_proto_walk_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -254,7 +350,7 @@ func (x *WalkPoint) String() string {
 func (*WalkPoint) ProtoMessage() {}
 
 func (x *WalkPoint) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_walk_proto_msgTypes[4]
+	mi := &file_proto_walk_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -267,7 +363,7 @@ func (x *WalkPoint) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use WalkPoint.ProtoReflect.Descriptor instead.
 func (*WalkPoint) Descriptor() ([]byte, []int) {
-	return file_proto_walk_proto_rawDescGZIP(), []int{4}
+	return file_proto_walk_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *WalkPoint) GetLat() float64 {
@@ -302,7 +398,13 @@ var File_proto_walk_proto protoreflect.FileDescriptor
 
 const file_proto_walk_proto_rawDesc = "" +
 	"\n" +
-	"\x10proto/walk.proto\x12\x04walk\x1a\x1fgoogle/protobuf/timestamp.proto\"T\n" +
+	"\x10proto/walk.proto\x12\x04walk\x1a\x1fgoogle/protobuf/timestamp.proto\".\n" +
+	"\x13GetUserStatsRequest\x12\x17\n" +
+	"\auser_id\x18\x01 \x01(\tR\x06userId\"Y\n" +
+	"\x14GetUserStatsResponse\x12\"\n" +
+	"\rtotal_area_m2\x18\x01 \x01(\x01R\vtotalAreaM2\x12\x1d\n" +
+	"\n" +
+	"walk_count\x18\x02 \x01(\x05R\twalkCount\"T\n" +
 	"\x10StartWalkRequest\x12\x17\n" +
 	"\auser_id\x18\x01 \x01(\tR\x06userId\x12'\n" +
 	"\x0fchampionship_id\x18\x02 \x01(\tR\x0echampionshipId\"g\n" +
@@ -321,11 +423,12 @@ const file_proto_walk_proto_rawDesc = "" +
 	"\x03lat\x18\x01 \x01(\x01R\x03lat\x12\x10\n" +
 	"\x03lng\x18\x02 \x01(\x01R\x03lng\x128\n" +
 	"\ttimestamp\x18\x03 \x01(\v2\x1a.google.protobuf.TimestampR\ttimestamp\x12\x14\n" +
-	"\x05speed\x18\x04 \x01(\x01R\x05speed2\x8c\x01\n" +
+	"\x05speed\x18\x04 \x01(\x01R\x05speed2\xd3\x01\n" +
 	"\vWalkService\x12<\n" +
 	"\tStartWalk\x12\x16.walk.StartWalkRequest\x1a\x17.walk.StartWalkResponse\x12?\n" +
 	"\n" +
-	"FinishWalk\x12\x17.walk.FinishWalkRequest\x1a\x18.walk.FinishWalkResponseB@Z>github.com/PatrickCalorioCarvalho/StrideClash/backend/proto;pbb\x06proto3"
+	"FinishWalk\x12\x17.walk.FinishWalkRequest\x1a\x18.walk.FinishWalkResponse\x12E\n" +
+	"\fGetUserStats\x12\x19.walk.GetUserStatsRequest\x1a\x1a.walk.GetUserStatsResponseB@Z>github.com/PatrickCalorioCarvalho/StrideClash/backend/proto;pbb\x06proto3"
 
 var (
 	file_proto_walk_proto_rawDescOnce sync.Once
@@ -339,25 +442,29 @@ func file_proto_walk_proto_rawDescGZIP() []byte {
 	return file_proto_walk_proto_rawDescData
 }
 
-var file_proto_walk_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
+var file_proto_walk_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
 var file_proto_walk_proto_goTypes = []any{
-	(*StartWalkRequest)(nil),      // 0: walk.StartWalkRequest
-	(*StartWalkResponse)(nil),     // 1: walk.StartWalkResponse
-	(*FinishWalkRequest)(nil),     // 2: walk.FinishWalkRequest
-	(*FinishWalkResponse)(nil),    // 3: walk.FinishWalkResponse
-	(*WalkPoint)(nil),             // 4: walk.WalkPoint
-	(*timestamppb.Timestamp)(nil), // 5: google.protobuf.Timestamp
+	(*GetUserStatsRequest)(nil),   // 0: walk.GetUserStatsRequest
+	(*GetUserStatsResponse)(nil),  // 1: walk.GetUserStatsResponse
+	(*StartWalkRequest)(nil),      // 2: walk.StartWalkRequest
+	(*StartWalkResponse)(nil),     // 3: walk.StartWalkResponse
+	(*FinishWalkRequest)(nil),     // 4: walk.FinishWalkRequest
+	(*FinishWalkResponse)(nil),    // 5: walk.FinishWalkResponse
+	(*WalkPoint)(nil),             // 6: walk.WalkPoint
+	(*timestamppb.Timestamp)(nil), // 7: google.protobuf.Timestamp
 }
 var file_proto_walk_proto_depIdxs = []int32{
-	5, // 0: walk.StartWalkResponse.started_at:type_name -> google.protobuf.Timestamp
-	4, // 1: walk.FinishWalkRequest.points:type_name -> walk.WalkPoint
-	5, // 2: walk.WalkPoint.timestamp:type_name -> google.protobuf.Timestamp
-	0, // 3: walk.WalkService.StartWalk:input_type -> walk.StartWalkRequest
-	2, // 4: walk.WalkService.FinishWalk:input_type -> walk.FinishWalkRequest
-	1, // 5: walk.WalkService.StartWalk:output_type -> walk.StartWalkResponse
-	3, // 6: walk.WalkService.FinishWalk:output_type -> walk.FinishWalkResponse
-	5, // [5:7] is the sub-list for method output_type
-	3, // [3:5] is the sub-list for method input_type
+	7, // 0: walk.StartWalkResponse.started_at:type_name -> google.protobuf.Timestamp
+	6, // 1: walk.FinishWalkRequest.points:type_name -> walk.WalkPoint
+	7, // 2: walk.WalkPoint.timestamp:type_name -> google.protobuf.Timestamp
+	2, // 3: walk.WalkService.StartWalk:input_type -> walk.StartWalkRequest
+	4, // 4: walk.WalkService.FinishWalk:input_type -> walk.FinishWalkRequest
+	0, // 5: walk.WalkService.GetUserStats:input_type -> walk.GetUserStatsRequest
+	3, // 6: walk.WalkService.StartWalk:output_type -> walk.StartWalkResponse
+	5, // 7: walk.WalkService.FinishWalk:output_type -> walk.FinishWalkResponse
+	1, // 8: walk.WalkService.GetUserStats:output_type -> walk.GetUserStatsResponse
+	6, // [6:9] is the sub-list for method output_type
+	3, // [3:6] is the sub-list for method input_type
 	3, // [3:3] is the sub-list for extension type_name
 	3, // [3:3] is the sub-list for extension extendee
 	0, // [0:3] is the sub-list for field type_name
@@ -374,7 +481,7 @@ func file_proto_walk_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_walk_proto_rawDesc), len(file_proto_walk_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   5,
+			NumMessages:   7,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

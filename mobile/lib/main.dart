@@ -13,17 +13,74 @@ void main() async {
 
 }
 
+// Neon green + near-black — matches the "capture territory" game concept
+// better than the stock Material light theme.
+const _kNeonGreen = Color(0xFF39FF6A);
+
 class StrideClashApp extends StatelessWidget {
   final bool isLogged;
   const StrideClashApp({super.key, required this.isLogged});
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = ColorScheme.fromSeed(
+      seedColor: _kNeonGreen,
+      brightness: Brightness.dark,
+    ).copyWith(
+      surface: const Color(0xFF121212),
+    );
+
     return MaterialApp(
       title: 'StrideClash',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
+        colorScheme: colorScheme,
         useMaterial3: true,
+        scaffoldBackgroundColor: const Color(0xFF0B0F0C),
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Color(0xFF0B0F0C),
+          foregroundColor: _kNeonGreen,
+          elevation: 0,
+          centerTitle: true,
+          titleTextStyle: TextStyle(
+            color: _kNeonGreen,
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            letterSpacing: 1.1,
+          ),
+        ),
+        cardTheme: CardThemeData(
+          color: const Color(0xFF161B17),
+          elevation: 4,
+          shadowColor: _kNeonGreen.withValues(alpha: 0.25),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+            side: BorderSide(color: _kNeonGreen.withValues(alpha: 0.15)),
+          ),
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: _kNeonGreen,
+            foregroundColor: Colors.black,
+            textStyle: const TextStyle(fontWeight: FontWeight.bold),
+            padding: const EdgeInsets.symmetric(vertical: 14),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
+        ),
+        inputDecorationTheme: InputDecorationTheme(
+          filled: true,
+          fillColor: const Color(0xFF161B17),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: BorderSide.none,
+          ),
+        ),
+        bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+          backgroundColor: Color(0xFF0B0F0C),
+          selectedItemColor: _kNeonGreen,
+          unselectedItemColor: Colors.white38,
+        ),
       ),
       home: isLogged ? const MainTabsPage() : LoginPage(),
     );

@@ -5,6 +5,7 @@ import 'package:latlong2/latlong.dart';
 import '../../grpc_client.dart';
 import '../../generated/championship.pb.dart';
 import '../../generated/championship.pbgrpc.dart';
+import '../../widgets/dark_map_layers.dart';
 
 const _kEntryColors = [
   Colors.red,
@@ -108,12 +109,8 @@ class _ChampionshipRankingPageState extends State<ChampionshipRankingPage> {
                 child: FlutterMap(
                   options: MapOptions(initialCenter: center, initialZoom: 15),
                   children: [
-                    TileLayer(
-                      urlTemplate:
-                          'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                      userAgentPackageName:
-                          'com.patrickcaloriocarvalho.strideclash',
-                    ),
+                    buildDarkTileLayer(),
+                    buildMapAttribution(),
                     PolygonLayer(polygons: allPolygons),
                   ],
                 ),

@@ -12,11 +12,13 @@ class MainTabsPage extends StatefulWidget {
 }
 
 class _MainTabsPageState extends State<MainTabsPage> {
+  // Caminhada é a aba central e a que abre por padrão — Perfil e
+  // Campeonato ficam de cada lado dela na barra inferior.
   int _index = 1;
 
   final _pages = const [
-    WalkTrackingPage(),
     ProfilePage(),
+    WalkTrackingPage(),
     ChampionshipPage(),
   ];
 
@@ -32,12 +34,12 @@ class _MainTabsPageState extends State<MainTabsPage> {
         onTap: (i) => setState(() => _index = i),
         items: const [
           BottomNavigationBarItem(
-            icon: Icon(Icons.directions_walk),
-            label: 'Caminhada',
-          ),
-          BottomNavigationBarItem(
             icon: Icon(Icons.person),
             label: 'Perfil',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.directions_walk),
+            label: 'Caminhada',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.flag),
