@@ -181,6 +181,7 @@ func (x *FinishWalkRequest) GetPoints() []*WalkPoint {
 type FinishWalkResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	PolygonWkt    string                 `protobuf:"bytes,1,opt,name=polygon_wkt,json=polygonWkt,proto3" json:"polygon_wkt,omitempty"`
+	AreaM2        float64                `protobuf:"fixed64,2,opt,name=area_m2,json=areaM2,proto3" json:"area_m2,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -222,11 +223,19 @@ func (x *FinishWalkResponse) GetPolygonWkt() string {
 	return ""
 }
 
+func (x *FinishWalkResponse) GetAreaM2() float64 {
+	if x != nil {
+		return x.AreaM2
+	}
+	return 0
+}
+
 type WalkPoint struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Lat           float64                `protobuf:"fixed64,1,opt,name=lat,proto3" json:"lat,omitempty"`
 	Lng           float64                `protobuf:"fixed64,2,opt,name=lng,proto3" json:"lng,omitempty"`
 	Timestamp     *timestamppb.Timestamp `protobuf:"bytes,3,opt,name=timestamp,proto3" json:"timestamp,omitempty"`
+	Speed         float64                `protobuf:"fixed64,4,opt,name=speed,proto3" json:"speed,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -282,6 +291,13 @@ func (x *WalkPoint) GetTimestamp() *timestamppb.Timestamp {
 	return nil
 }
 
+func (x *WalkPoint) GetSpeed() float64 {
+	if x != nil {
+		return x.Speed
+	}
+	return 0
+}
+
 var File_proto_walk_proto protoreflect.FileDescriptor
 
 const file_proto_walk_proto_rawDesc = "" +
@@ -296,14 +312,16 @@ const file_proto_walk_proto_rawDesc = "" +
 	"started_at\x18\x02 \x01(\v2\x1a.google.protobuf.TimestampR\tstartedAt\"U\n" +
 	"\x11FinishWalkRequest\x12\x17\n" +
 	"\awalk_id\x18\x01 \x01(\tR\x06walkId\x12'\n" +
-	"\x06points\x18\x02 \x03(\v2\x0f.walk.WalkPointR\x06points\"5\n" +
+	"\x06points\x18\x02 \x03(\v2\x0f.walk.WalkPointR\x06points\"N\n" +
 	"\x12FinishWalkResponse\x12\x1f\n" +
 	"\vpolygon_wkt\x18\x01 \x01(\tR\n" +
-	"polygonWkt\"i\n" +
+	"polygonWkt\x12\x17\n" +
+	"\aarea_m2\x18\x02 \x01(\x01R\x06areaM2\"\x7f\n" +
 	"\tWalkPoint\x12\x10\n" +
 	"\x03lat\x18\x01 \x01(\x01R\x03lat\x12\x10\n" +
 	"\x03lng\x18\x02 \x01(\x01R\x03lng\x128\n" +
-	"\ttimestamp\x18\x03 \x01(\v2\x1a.google.protobuf.TimestampR\ttimestamp2\x8c\x01\n" +
+	"\ttimestamp\x18\x03 \x01(\v2\x1a.google.protobuf.TimestampR\ttimestamp\x12\x14\n" +
+	"\x05speed\x18\x04 \x01(\x01R\x05speed2\x8c\x01\n" +
 	"\vWalkService\x12<\n" +
 	"\tStartWalk\x12\x16.walk.StartWalkRequest\x1a\x17.walk.StartWalkResponse\x12?\n" +
 	"\n" +

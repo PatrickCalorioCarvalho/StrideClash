@@ -217,9 +217,11 @@ class FinishWalkRequest extends $pb.GeneratedMessage {
 class FinishWalkResponse extends $pb.GeneratedMessage {
   factory FinishWalkResponse({
     $core.String? polygonWkt,
+    $core.double? areaM2,
   }) {
     final result = create();
     if (polygonWkt != null) result.polygonWkt = polygonWkt;
+    if (areaM2 != null) result.areaM2 = areaM2;
     return result;
   }
 
@@ -237,6 +239,7 @@ class FinishWalkResponse extends $pb.GeneratedMessage {
       package: const $pb.PackageName(_omitMessageNames ? '' : 'walk'),
       createEmptyInstance: create)
     ..aOS(1, _omitFieldNames ? '' : 'polygonWkt')
+    ..aD(2, _omitFieldNames ? '' : 'areaM2')
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -266,6 +269,15 @@ class FinishWalkResponse extends $pb.GeneratedMessage {
   $core.bool hasPolygonWkt() => $_has(0);
   @$pb.TagNumber(1)
   void clearPolygonWkt() => $_clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.double get areaM2 => $_getN(1);
+  @$pb.TagNumber(2)
+  set areaM2($core.double value) => $_setDouble(1, value);
+  @$pb.TagNumber(2)
+  $core.bool hasAreaM2() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearAreaM2() => $_clearField(2);
 }
 
 class WalkPoint extends $pb.GeneratedMessage {
@@ -273,11 +285,13 @@ class WalkPoint extends $pb.GeneratedMessage {
     $core.double? lat,
     $core.double? lng,
     $1.Timestamp? timestamp,
+    $core.double? speed,
   }) {
     final result = create();
     if (lat != null) result.lat = lat;
     if (lng != null) result.lng = lng;
     if (timestamp != null) result.timestamp = timestamp;
+    if (speed != null) result.speed = speed;
     return result;
   }
 
@@ -298,6 +312,7 @@ class WalkPoint extends $pb.GeneratedMessage {
     ..aD(2, _omitFieldNames ? '' : 'lng')
     ..aOM<$1.Timestamp>(3, _omitFieldNames ? '' : 'timestamp',
         subBuilder: $1.Timestamp.create)
+    ..aD(4, _omitFieldNames ? '' : 'speed')
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -346,6 +361,15 @@ class WalkPoint extends $pb.GeneratedMessage {
   void clearTimestamp() => $_clearField(3);
   @$pb.TagNumber(3)
   $1.Timestamp ensureTimestamp() => $_ensure(2);
+
+  @$pb.TagNumber(4)
+  $core.double get speed => $_getN(3);
+  @$pb.TagNumber(4)
+  set speed($core.double value) => $_setDouble(3, value);
+  @$pb.TagNumber(4)
+  $core.bool hasSpeed() => $_has(3);
+  @$pb.TagNumber(4)
+  void clearSpeed() => $_clearField(4);
 }
 
 const $core.bool _omitFieldNames =
