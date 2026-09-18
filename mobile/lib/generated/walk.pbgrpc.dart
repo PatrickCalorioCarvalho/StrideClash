@@ -32,18 +32,11 @@ class WalkServiceClient extends $grpc.Client {
 
   WalkServiceClient(super.channel, {super.options, super.interceptors});
 
-  $grpc.ResponseFuture<$0.StartWalkResponse> startWalk(
-    $0.StartWalkRequest request, {
+  $grpc.ResponseFuture<$0.SyncWalkResponse> syncWalk(
+    $0.SyncWalkRequest request, {
     $grpc.CallOptions? options,
   }) {
-    return $createUnaryCall(_$startWalk, request, options: options);
-  }
-
-  $grpc.ResponseFuture<$0.FinishWalkResponse> finishWalk(
-    $0.FinishWalkRequest request, {
-    $grpc.CallOptions? options,
-  }) {
-    return $createUnaryCall(_$finishWalk, request, options: options);
+    return $createUnaryCall(_$syncWalk, request, options: options);
   }
 
   $grpc.ResponseFuture<$0.GetUserStatsResponse> getUserStats(
@@ -55,16 +48,11 @@ class WalkServiceClient extends $grpc.Client {
 
   // method descriptors
 
-  static final _$startWalk =
-      $grpc.ClientMethod<$0.StartWalkRequest, $0.StartWalkResponse>(
-          '/walk.WalkService/StartWalk',
-          ($0.StartWalkRequest value) => value.writeToBuffer(),
-          $0.StartWalkResponse.fromBuffer);
-  static final _$finishWalk =
-      $grpc.ClientMethod<$0.FinishWalkRequest, $0.FinishWalkResponse>(
-          '/walk.WalkService/FinishWalk',
-          ($0.FinishWalkRequest value) => value.writeToBuffer(),
-          $0.FinishWalkResponse.fromBuffer);
+  static final _$syncWalk =
+      $grpc.ClientMethod<$0.SyncWalkRequest, $0.SyncWalkResponse>(
+          '/walk.WalkService/SyncWalk',
+          ($0.SyncWalkRequest value) => value.writeToBuffer(),
+          $0.SyncWalkResponse.fromBuffer);
   static final _$getUserStats =
       $grpc.ClientMethod<$0.GetUserStatsRequest, $0.GetUserStatsResponse>(
           '/walk.WalkService/GetUserStats',
@@ -77,20 +65,13 @@ abstract class WalkServiceBase extends $grpc.Service {
   $core.String get $name => 'walk.WalkService';
 
   WalkServiceBase() {
-    $addMethod($grpc.ServiceMethod<$0.StartWalkRequest, $0.StartWalkResponse>(
-        'StartWalk',
-        startWalk_Pre,
+    $addMethod($grpc.ServiceMethod<$0.SyncWalkRequest, $0.SyncWalkResponse>(
+        'SyncWalk',
+        syncWalk_Pre,
         false,
         false,
-        ($core.List<$core.int> value) => $0.StartWalkRequest.fromBuffer(value),
-        ($0.StartWalkResponse value) => value.writeToBuffer()));
-    $addMethod($grpc.ServiceMethod<$0.FinishWalkRequest, $0.FinishWalkResponse>(
-        'FinishWalk',
-        finishWalk_Pre,
-        false,
-        false,
-        ($core.List<$core.int> value) => $0.FinishWalkRequest.fromBuffer(value),
-        ($0.FinishWalkResponse value) => value.writeToBuffer()));
+        ($core.List<$core.int> value) => $0.SyncWalkRequest.fromBuffer(value),
+        ($0.SyncWalkResponse value) => value.writeToBuffer()));
     $addMethod(
         $grpc.ServiceMethod<$0.GetUserStatsRequest, $0.GetUserStatsResponse>(
             'GetUserStats',
@@ -102,21 +83,13 @@ abstract class WalkServiceBase extends $grpc.Service {
             ($0.GetUserStatsResponse value) => value.writeToBuffer()));
   }
 
-  $async.Future<$0.StartWalkResponse> startWalk_Pre($grpc.ServiceCall $call,
-      $async.Future<$0.StartWalkRequest> $request) async {
-    return startWalk($call, await $request);
+  $async.Future<$0.SyncWalkResponse> syncWalk_Pre($grpc.ServiceCall $call,
+      $async.Future<$0.SyncWalkRequest> $request) async {
+    return syncWalk($call, await $request);
   }
 
-  $async.Future<$0.StartWalkResponse> startWalk(
-      $grpc.ServiceCall call, $0.StartWalkRequest request);
-
-  $async.Future<$0.FinishWalkResponse> finishWalk_Pre($grpc.ServiceCall $call,
-      $async.Future<$0.FinishWalkRequest> $request) async {
-    return finishWalk($call, await $request);
-  }
-
-  $async.Future<$0.FinishWalkResponse> finishWalk(
-      $grpc.ServiceCall call, $0.FinishWalkRequest request);
+  $async.Future<$0.SyncWalkResponse> syncWalk(
+      $grpc.ServiceCall call, $0.SyncWalkRequest request);
 
   $async.Future<$0.GetUserStatsResponse> getUserStats_Pre(
       $grpc.ServiceCall $call,

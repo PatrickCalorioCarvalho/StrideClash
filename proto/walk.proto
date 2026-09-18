@@ -7,36 +7,24 @@ option go_package = "github.com/PatrickCalorioCarvalho/StrideClash/backend/proto
 import "google/protobuf/timestamp.proto";
 
 service WalkService {
-  rpc StartWalk(StartWalkRequest) returns (StartWalkResponse);
-  rpc FinishWalk(FinishWalkRequest) returns (FinishWalkResponse);
+  rpc SyncWalk(SyncWalkRequest) returns (SyncWalkResponse);
   rpc GetUserStats(GetUserStatsRequest) returns (GetUserStatsResponse);
 }
 
-message GetUserStatsRequest {
-  string user_id = 1;
+// SyncWalk uploads a walk recorded entirely offline: the client generates
+// its own id and keeps the walk (and every GPS point) locally the whole
+// time, then calls this once network is available. Safe to retry —
+// syncing the same client_walk_id twice just replays the same result.
+message SyncWalkRequest {
+  string client_walk_id = 1;
+  string user_id = 2;
+  string championship_id = 3;
+  google.protobuf.Timestamp started_at = 4;
+  google.protobuf.Timestamp finished_at = 5;
+  repeated WalkPoint points = 6;
 }
 
-message GetUserStatsResponse {
-  double total_area_m2 = 1;
-  int32 walk_count = 2;
-}
-
-message StartWalkRequest {
-  string user_id = 1;
-  string championship_id = 2;
-}
-
-message StartWalkResponse {
-  string walk_id = 1;
-  google.protobuf.Timestamp started_at = 2;
-}
-
-message FinishWalkRequest {
-  string walk_id = 1;
-  repeated WalkPoint points = 2;
-}
-
-message FinishWalkResponse {
+message SyncWalkResponse {
   string polygon_wkt = 1;
   double area_m2 = 2;
 }
@@ -46,4 +34,13 @@ message WalkPoint {
   double lng = 2;
   google.protobuf.Timestamp timestamp = 3;
   double speed = 4;
+}
+
+message GetUserStatsRequest {
+  string user_id = 1;
+}
+
+message GetUserStatsResponse {
+  double total_area_m2 = 1;
+  int32 walk_count = 2;
 }
