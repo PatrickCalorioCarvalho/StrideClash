@@ -21,6 +21,22 @@ jobs:
         with:
           channel: stable
 
+      # mobile/.env é gitignored (nunca commitado) mas pubspec.yaml o declara
+      # como asset obrigatório — sem ele o build falha com "No file or
+      # variants found for asset: .env". Precisa vir de secrets do repositório
+      # (Settings > Secrets and variables > Actions):
+      #   MOBILE_GOOGLE_CLIENT_ID, MOBILE_GRPC_HOST, MOBILE_GRPC_PORT,
+      #   MOBILE_GRPC_USE_TLS
+      - name: Create mobile/.env
+        working-directory: mobile
+        run: |
+          cat > .env << EOF
+          GOOGLE_CLIENT_ID=${{ secrets.MOBILE_GOOGLE_CLIENT_ID }}
+          GRPC_HOST=${{ secrets.MOBILE_GRPC_HOST }}
+          GRPC_PORT=${{ secrets.MOBILE_GRPC_PORT }}
+          GRPC_USE_TLS=${{ secrets.MOBILE_GRPC_USE_TLS }}
+          EOF
+
       - name: Install dependencies
         working-directory: mobile
         run: flutter pub get
