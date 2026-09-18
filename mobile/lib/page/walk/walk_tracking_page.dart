@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 
 import '../../auth/auth_storage.dart';
@@ -126,11 +127,21 @@ class WalkTrackingPageState extends State<WalkTrackingPage>
     super.dispose();
   }
 
+  // Precisa bater com maxClosingGapMeters em backend/services/walk.go — além
+  // dessa distância do ponto inicial, o servidor descarta o polígono (a
+  // caminhada é salva, mas não conta território).
+  static const _maxClosingGapMeters = 50.0;
+
   void _start() async {
     setState(() => _busy = true);
     try {
       await _service.startWalk(championshipId: _selectedChampionshipId);
       setState(() => _tracking = true);
+      _showInfo(
+        'Pra fechar território, volte a até ${_maxClosingGapMeters.toStringAsFixed(0)} m '
+        'de onde você começou antes de finalizar.',
+        duration: const Duration(seconds: 5),
+      );
     } catch (e, st) {
       debugPrint('startWalk failed: $e\n$st');
       _showError('Não foi possível iniciar a caminhada: $e');
@@ -139,7 +150,50 @@ class WalkTrackingPageState extends State<WalkTrackingPage>
     }
   }
 
+  double? _distanceToStartMeters() {
+    final pts = _service.points;
+    if (pts.length < 2) return null;
+    return Geolocator.distanceBetween(
+      pts.first.latitude,
+      pts.first.longitude,
+      pts.last.latitude,
+      pts.last.longitude,
+    );
+  }
+
+  Future<bool> _confirmFarFromStart(double distance) async {
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Você está longe do início'),
+        content: Text(
+          'Você está a ${distance.toStringAsFixed(0)} m de onde começou. '
+          'Pra fechar território, precisa estar a até '
+          '${_maxClosingGapMeters.toStringAsFixed(0)} m. Se finalizar agora, '
+          'a caminhada é salva mas não conta área.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Continuar caminhando'),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Finalizar mesmo assim'),
+          ),
+        ],
+      ),
+    );
+    return result ?? false;
+  }
+
   void _stop() async {
+    final distance = _distanceToStartMeters();
+    if (distance != null && distance > _maxClosingGapMeters) {
+      final proceed = await _confirmFarFromStart(distance);
+      if (!proceed) return;
+    }
+
     setState(() => _busy = true);
     try {
       final walk = await _service.stopWalk();
@@ -162,9 +216,49 @@ class WalkTrackingPageState extends State<WalkTrackingPage>
     );
   }
 
+  void _showInfo(String message, {Duration? duration}) {
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        duration: duration ?? const Duration(seconds: 4),
+      ),
+    );
+  }
+
   String get _selectedChampionshipName {
     final match = _championships.where((c) => c.id == _selectedChampionshipId);
     return match.isEmpty ? 'Sem campeonato' : match.first.name;
+  }
+
+  Widget _buildDistanceToStartCard() {
+    final distance = _distanceToStartMeters();
+    final closed = distance != null && distance <= _maxClosingGapMeters;
+
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        child: Row(
+          children: [
+            Icon(
+              closed ? Icons.check_circle_outline : Icons.social_distance,
+              size: 18,
+              color: closed ? Colors.green : null,
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                distance == null
+                    ? 'Comece a andar pra ver a distância até o início'
+                    : closed
+                        ? 'Perto do início — território pronto pra fechar'
+                        : 'A ${distance.toStringAsFixed(0)} m do início',
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   Widget _buildChampionshipCard() {
@@ -272,6 +366,10 @@ class WalkTrackingPageState extends State<WalkTrackingPage>
             child: Column(
               children: [
                 _buildChampionshipCard(),
+                if (_tracking) ...[
+                  const SizedBox(height: 8),
+                  _buildDistanceToStartCard(),
+                ],
                 if (showPolygon) ...[
                   const SizedBox(height: 8),
                   Card(
