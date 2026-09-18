@@ -19,8 +19,7 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	WalkService_StartWalk_FullMethodName    = "/walk.WalkService/StartWalk"
-	WalkService_FinishWalk_FullMethodName   = "/walk.WalkService/FinishWalk"
+	WalkService_SyncWalk_FullMethodName     = "/walk.WalkService/SyncWalk"
 	WalkService_GetUserStats_FullMethodName = "/walk.WalkService/GetUserStats"
 )
 
@@ -28,8 +27,7 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type WalkServiceClient interface {
-	StartWalk(ctx context.Context, in *StartWalkRequest, opts ...grpc.CallOption) (*StartWalkResponse, error)
-	FinishWalk(ctx context.Context, in *FinishWalkRequest, opts ...grpc.CallOption) (*FinishWalkResponse, error)
+	SyncWalk(ctx context.Context, in *SyncWalkRequest, opts ...grpc.CallOption) (*SyncWalkResponse, error)
 	GetUserStats(ctx context.Context, in *GetUserStatsRequest, opts ...grpc.CallOption) (*GetUserStatsResponse, error)
 }
 
@@ -41,20 +39,10 @@ func NewWalkServiceClient(cc grpc.ClientConnInterface) WalkServiceClient {
 	return &walkServiceClient{cc}
 }
 
-func (c *walkServiceClient) StartWalk(ctx context.Context, in *StartWalkRequest, opts ...grpc.CallOption) (*StartWalkResponse, error) {
+func (c *walkServiceClient) SyncWalk(ctx context.Context, in *SyncWalkRequest, opts ...grpc.CallOption) (*SyncWalkResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(StartWalkResponse)
-	err := c.cc.Invoke(ctx, WalkService_StartWalk_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *walkServiceClient) FinishWalk(ctx context.Context, in *FinishWalkRequest, opts ...grpc.CallOption) (*FinishWalkResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(FinishWalkResponse)
-	err := c.cc.Invoke(ctx, WalkService_FinishWalk_FullMethodName, in, out, cOpts...)
+	out := new(SyncWalkResponse)
+	err := c.cc.Invoke(ctx, WalkService_SyncWalk_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -75,8 +63,7 @@ func (c *walkServiceClient) GetUserStats(ctx context.Context, in *GetUserStatsRe
 // All implementations must embed UnimplementedWalkServiceServer
 // for forward compatibility.
 type WalkServiceServer interface {
-	StartWalk(context.Context, *StartWalkRequest) (*StartWalkResponse, error)
-	FinishWalk(context.Context, *FinishWalkRequest) (*FinishWalkResponse, error)
+	SyncWalk(context.Context, *SyncWalkRequest) (*SyncWalkResponse, error)
 	GetUserStats(context.Context, *GetUserStatsRequest) (*GetUserStatsResponse, error)
 	mustEmbedUnimplementedWalkServiceServer()
 }
@@ -88,11 +75,8 @@ type WalkServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedWalkServiceServer struct{}
 
-func (UnimplementedWalkServiceServer) StartWalk(context.Context, *StartWalkRequest) (*StartWalkResponse, error) {
-	return nil, status.Error(codes.Unimplemented, "method StartWalk not implemented")
-}
-func (UnimplementedWalkServiceServer) FinishWalk(context.Context, *FinishWalkRequest) (*FinishWalkResponse, error) {
-	return nil, status.Error(codes.Unimplemented, "method FinishWalk not implemented")
+func (UnimplementedWalkServiceServer) SyncWalk(context.Context, *SyncWalkRequest) (*SyncWalkResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method SyncWalk not implemented")
 }
 func (UnimplementedWalkServiceServer) GetUserStats(context.Context, *GetUserStatsRequest) (*GetUserStatsResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetUserStats not implemented")
@@ -118,38 +102,20 @@ func RegisterWalkServiceServer(s grpc.ServiceRegistrar, srv WalkServiceServer) {
 	s.RegisterService(&WalkService_ServiceDesc, srv)
 }
 
-func _WalkService_StartWalk_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(StartWalkRequest)
+func _WalkService_SyncWalk_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SyncWalkRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(WalkServiceServer).StartWalk(ctx, in)
+		return srv.(WalkServiceServer).SyncWalk(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: WalkService_StartWalk_FullMethodName,
+		FullMethod: WalkService_SyncWalk_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(WalkServiceServer).StartWalk(ctx, req.(*StartWalkRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _WalkService_FinishWalk_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(FinishWalkRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(WalkServiceServer).FinishWalk(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: WalkService_FinishWalk_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(WalkServiceServer).FinishWalk(ctx, req.(*FinishWalkRequest))
+		return srv.(WalkServiceServer).SyncWalk(ctx, req.(*SyncWalkRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -180,12 +146,8 @@ var WalkService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*WalkServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "StartWalk",
-			Handler:    _WalkService_StartWalk_Handler,
-		},
-		{
-			MethodName: "FinishWalk",
-			Handler:    _WalkService_FinishWalk_Handler,
+			MethodName: "SyncWalk",
+			Handler:    _WalkService_SyncWalk_Handler,
 		},
 		{
 			MethodName: "GetUserStats",

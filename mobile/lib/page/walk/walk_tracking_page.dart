@@ -7,6 +7,7 @@ import '../../auth/auth_storage.dart';
 import '../../grpc_client.dart';
 import '../../generated/championship.pb.dart';
 import '../../generated/championship.pbgrpc.dart';
+import '../../model/walk_models.dart';
 import '../../services/walk_tracking_service.dart';
 import '../../widgets/dark_map_layers.dart';
 
@@ -14,13 +15,15 @@ class WalkTrackingPage extends StatefulWidget {
   const WalkTrackingPage({super.key});
 
   @override
-  State<WalkTrackingPage> createState() => _WalkTrackingPageState();
+  State<WalkTrackingPage> createState() => WalkTrackingPageState();
 }
 
-class _WalkTrackingPageState extends State<WalkTrackingPage> {
+class WalkTrackingPageState extends State<WalkTrackingPage>
+    with WidgetsBindingObserver {
   final _service = WalkTrackingService();
   final _grpcClient = GrpcClient();
   final _authStorage = AuthStorage();
+  final _mapController = MapController();
   bool _tracking = false;
   bool _busy = false;
   Timer? _uiTimer;
@@ -31,6 +34,7 @@ class _WalkTrackingPageState extends State<WalkTrackingPage> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _service.init().then((_) =>
         setState(() {
           _currentCenter = _service.defaultCenter;
@@ -38,28 +42,83 @@ class _WalkTrackingPageState extends State<WalkTrackingPage> {
     _loadChampionships();
     _uiTimer = Timer.periodic(
       const Duration(seconds: 1),
-      (_) => mounted ? setState(() {}) : null,
+      (_) {
+        if (!mounted) return;
+        setState(() {});
+        _followCurrentPosition();
+      },
     );
   }
+
+  // The map only centers on `initialCenter` once — it never follows the
+  // walker on its own, so without this it looks "stuck" wherever it was
+  // last centered (very noticeable after unlocking the phone mid-walk).
+  void _followCurrentPosition() {
+    if (!_tracking) return;
+    final pts = _service.points;
+    if (pts.isEmpty) return;
+
+    try {
+      final zoom = _mapController.camera.zoom;
+      _mapController.move(
+        LatLng(pts.last.latitude, pts.last.longitude),
+        zoom,
+      );
+    } catch (_) {
+      // Map not attached yet — the next tick will retry.
+    }
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      // Snap to the current position right away instead of waiting for the
+      // next 1s tick — this is exactly the "unlocked and the map is stuck"
+      // moment.
+      _followCurrentPosition();
+    }
+  }
+
+  /// Called by [MainTabsPage] whenever this tab becomes visible again, since
+  /// championships created/joined from the other tab wouldn't otherwise be
+  /// picked up here (this page is kept alive by an IndexedStack, so its
+  /// initState only runs once per app session).
+  Future<void> refreshChampionships() => _loadChampionships();
 
   Future<void> _loadChampionships() async {
     final userId = await _authStorage.userId;
     if (userId == null) return;
 
+    List<Championship> championships;
     try {
       final response = await _grpcClient.championship.listChampionships(
         ListChampionshipsRequest()..userId = userId,
       );
-
-      if (!mounted) return;
-      setState(() => _championships = response.championships);
+      championships = response.championships;
+      await _service.cacheChampionships(championships);
     } catch (e) {
-      debugPrint('listChampionships failed: $e');
+      // Offline (or the server's unreachable) — fall back to whatever we
+      // last managed to fetch, so the picker still works.
+      debugPrint('listChampionships failed, using cache: $e');
+      championships = await _service.getCachedChampionships();
+    }
+
+    if (!mounted) return;
+    setState(() => _championships = championships);
+
+    if (_selectedChampionshipId == null) {
+      final lastId = await _service.getLastSelectedChampionship();
+      if (lastId != null &&
+          _championships.any((c) => c.id == lastId) &&
+          mounted) {
+        setState(() => _selectedChampionshipId = lastId);
+      }
     }
   }
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _uiTimer?.cancel();
     if (_tracking) {
       _service.stopWalk().catchError((_) => null);
@@ -83,10 +142,14 @@ class _WalkTrackingPageState extends State<WalkTrackingPage> {
   void _stop() async {
     setState(() => _busy = true);
     try {
-      await _service.stopWalk();
+      final walk = await _service.stopWalk();
       setState(() => _tracking = false);
-    } catch (e) {
-      _showError('Não foi possível fechar o polígono: $e');
+
+      if (walk?.status == WalkStatus.pendingSync) {
+        _showError(
+          'Caminhada salva no celular — vai sincronizar sozinha assim que tiver internet.',
+        );
+      }
     } finally {
       setState(() => _busy = false);
     }
@@ -143,8 +206,10 @@ class _WalkTrackingPageState extends State<WalkTrackingPage> {
                     child: Text(c.name),
                   )),
             ],
-            onChanged: (value) =>
-                setState(() => _selectedChampionshipId = value),
+            onChanged: (value) {
+              setState(() => _selectedChampionshipId = value);
+              _service.setLastSelectedChampionship(value);
+            },
           ),
         ),
       ),
@@ -166,6 +231,7 @@ class _WalkTrackingPageState extends State<WalkTrackingPage> {
       Stack(
         children: [
           FlutterMap(
+            mapController: _mapController,
             options: MapOptions(
               initialCenter: points.isNotEmpty
                   ? points.last
@@ -206,13 +272,15 @@ class _WalkTrackingPageState extends State<WalkTrackingPage> {
             child: Column(
               children: [
                 _buildChampionshipCard(),
-                if (showPolygon && finishedWalk.areaM2 != null) ...[
+                if (showPolygon) ...[
                   const SizedBox(height: 8),
                   Card(
                     child: Padding(
                       padding: const EdgeInsets.all(12),
                       child: Text(
-                        'Área capturada: ${finishedWalk.areaM2!.toStringAsFixed(0)} m²',
+                        finishedWalk.status == WalkStatus.pendingSync
+                            ? 'Aguardando internet pra sincronizar...'
+                            : 'Área capturada: ${finishedWalk.areaM2?.toStringAsFixed(0) ?? '0'} m²',
                         style: const TextStyle(fontWeight: FontWeight.bold),
                         textAlign: TextAlign.center,
                       ),

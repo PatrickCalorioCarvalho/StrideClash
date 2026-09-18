@@ -38,7 +38,10 @@ CREATE TABLE IF NOT EXISTS walks (
     championship_id UUID REFERENCES championships(id) ON DELETE SET NULL,
     started_at TIMESTAMP NOT NULL,
     finished_at TIMESTAMP,
-    polygon GEOMETRY(Polygon, 4326),
+    -- Untyped geometry, not GEOMETRY(Polygon, 4326): repairing a
+    -- self-intersecting walk (ST_MakeValid) or splitting one via
+    -- ST_Difference can legitimately produce a MultiPolygon.
+    polygon GEOMETRY(Geometry, 4326),
     area_m2 DOUBLE PRECISION
 );
 

@@ -15,6 +15,87 @@ import 'dart:convert' as $convert;
 import 'dart:core' as $core;
 import 'dart:typed_data' as $typed_data;
 
+@$core.Deprecated('Use syncWalkRequestDescriptor instead')
+const SyncWalkRequest$json = {
+  '1': 'SyncWalkRequest',
+  '2': [
+    {'1': 'client_walk_id', '3': 1, '4': 1, '5': 9, '10': 'clientWalkId'},
+    {'1': 'user_id', '3': 2, '4': 1, '5': 9, '10': 'userId'},
+    {'1': 'championship_id', '3': 3, '4': 1, '5': 9, '10': 'championshipId'},
+    {
+      '1': 'started_at',
+      '3': 4,
+      '4': 1,
+      '5': 11,
+      '6': '.google.protobuf.Timestamp',
+      '10': 'startedAt'
+    },
+    {
+      '1': 'finished_at',
+      '3': 5,
+      '4': 1,
+      '5': 11,
+      '6': '.google.protobuf.Timestamp',
+      '10': 'finishedAt'
+    },
+    {
+      '1': 'points',
+      '3': 6,
+      '4': 3,
+      '5': 11,
+      '6': '.walk.WalkPoint',
+      '10': 'points'
+    },
+  ],
+};
+
+/// Descriptor for `SyncWalkRequest`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List syncWalkRequestDescriptor = $convert.base64Decode(
+    'Cg9TeW5jV2Fsa1JlcXVlc3QSJAoOY2xpZW50X3dhbGtfaWQYASABKAlSDGNsaWVudFdhbGtJZB'
+    'IXCgd1c2VyX2lkGAIgASgJUgZ1c2VySWQSJwoPY2hhbXBpb25zaGlwX2lkGAMgASgJUg5jaGFt'
+    'cGlvbnNoaXBJZBI5CgpzdGFydGVkX2F0GAQgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdG'
+    'FtcFIJc3RhcnRlZEF0EjsKC2ZpbmlzaGVkX2F0GAUgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRp'
+    'bWVzdGFtcFIKZmluaXNoZWRBdBInCgZwb2ludHMYBiADKAsyDy53YWxrLldhbGtQb2ludFIGcG'
+    '9pbnRz');
+
+@$core.Deprecated('Use syncWalkResponseDescriptor instead')
+const SyncWalkResponse$json = {
+  '1': 'SyncWalkResponse',
+  '2': [
+    {'1': 'polygon_wkt', '3': 1, '4': 1, '5': 9, '10': 'polygonWkt'},
+    {'1': 'area_m2', '3': 2, '4': 1, '5': 1, '10': 'areaM2'},
+  ],
+};
+
+/// Descriptor for `SyncWalkResponse`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List syncWalkResponseDescriptor = $convert.base64Decode(
+    'ChBTeW5jV2Fsa1Jlc3BvbnNlEh8KC3BvbHlnb25fd2t0GAEgASgJUgpwb2x5Z29uV2t0EhcKB2'
+    'FyZWFfbTIYAiABKAFSBmFyZWFNMg==');
+
+@$core.Deprecated('Use walkPointDescriptor instead')
+const WalkPoint$json = {
+  '1': 'WalkPoint',
+  '2': [
+    {'1': 'lat', '3': 1, '4': 1, '5': 1, '10': 'lat'},
+    {'1': 'lng', '3': 2, '4': 1, '5': 1, '10': 'lng'},
+    {
+      '1': 'timestamp',
+      '3': 3,
+      '4': 1,
+      '5': 11,
+      '6': '.google.protobuf.Timestamp',
+      '10': 'timestamp'
+    },
+    {'1': 'speed', '3': 4, '4': 1, '5': 1, '10': 'speed'},
+  ],
+};
+
+/// Descriptor for `WalkPoint`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List walkPointDescriptor = $convert.base64Decode(
+    'CglXYWxrUG9pbnQSEAoDbGF0GAEgASgBUgNsYXQSEAoDbG5nGAIgASgBUgNsbmcSOAoJdGltZX'
+    'N0YW1wGAMgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcFIJdGltZXN0YW1wEhQKBXNw'
+    'ZWVkGAQgASgBUgVzcGVlZA==');
+
 @$core.Deprecated('Use getUserStatsRequestDescriptor instead')
 const GetUserStatsRequest$json = {
   '1': 'GetUserStatsRequest',
@@ -41,97 +122,3 @@ const GetUserStatsResponse$json = {
 final $typed_data.Uint8List getUserStatsResponseDescriptor = $convert.base64Decode(
     'ChRHZXRVc2VyU3RhdHNSZXNwb25zZRIiCg10b3RhbF9hcmVhX20yGAEgASgBUgt0b3RhbEFyZW'
     'FNMhIdCgp3YWxrX2NvdW50GAIgASgFUgl3YWxrQ291bnQ=');
-
-@$core.Deprecated('Use startWalkRequestDescriptor instead')
-const StartWalkRequest$json = {
-  '1': 'StartWalkRequest',
-  '2': [
-    {'1': 'user_id', '3': 1, '4': 1, '5': 9, '10': 'userId'},
-    {'1': 'championship_id', '3': 2, '4': 1, '5': 9, '10': 'championshipId'},
-  ],
-};
-
-/// Descriptor for `StartWalkRequest`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List startWalkRequestDescriptor = $convert.base64Decode(
-    'ChBTdGFydFdhbGtSZXF1ZXN0EhcKB3VzZXJfaWQYASABKAlSBnVzZXJJZBInCg9jaGFtcGlvbn'
-    'NoaXBfaWQYAiABKAlSDmNoYW1waW9uc2hpcElk');
-
-@$core.Deprecated('Use startWalkResponseDescriptor instead')
-const StartWalkResponse$json = {
-  '1': 'StartWalkResponse',
-  '2': [
-    {'1': 'walk_id', '3': 1, '4': 1, '5': 9, '10': 'walkId'},
-    {
-      '1': 'started_at',
-      '3': 2,
-      '4': 1,
-      '5': 11,
-      '6': '.google.protobuf.Timestamp',
-      '10': 'startedAt'
-    },
-  ],
-};
-
-/// Descriptor for `StartWalkResponse`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List startWalkResponseDescriptor = $convert.base64Decode(
-    'ChFTdGFydFdhbGtSZXNwb25zZRIXCgd3YWxrX2lkGAEgASgJUgZ3YWxrSWQSOQoKc3RhcnRlZF'
-    '9hdBgCIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXBSCXN0YXJ0ZWRBdA==');
-
-@$core.Deprecated('Use finishWalkRequestDescriptor instead')
-const FinishWalkRequest$json = {
-  '1': 'FinishWalkRequest',
-  '2': [
-    {'1': 'walk_id', '3': 1, '4': 1, '5': 9, '10': 'walkId'},
-    {
-      '1': 'points',
-      '3': 2,
-      '4': 3,
-      '5': 11,
-      '6': '.walk.WalkPoint',
-      '10': 'points'
-    },
-  ],
-};
-
-/// Descriptor for `FinishWalkRequest`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List finishWalkRequestDescriptor = $convert.base64Decode(
-    'ChFGaW5pc2hXYWxrUmVxdWVzdBIXCgd3YWxrX2lkGAEgASgJUgZ3YWxrSWQSJwoGcG9pbnRzGA'
-    'IgAygLMg8ud2Fsay5XYWxrUG9pbnRSBnBvaW50cw==');
-
-@$core.Deprecated('Use finishWalkResponseDescriptor instead')
-const FinishWalkResponse$json = {
-  '1': 'FinishWalkResponse',
-  '2': [
-    {'1': 'polygon_wkt', '3': 1, '4': 1, '5': 9, '10': 'polygonWkt'},
-    {'1': 'area_m2', '3': 2, '4': 1, '5': 1, '10': 'areaM2'},
-  ],
-};
-
-/// Descriptor for `FinishWalkResponse`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List finishWalkResponseDescriptor = $convert.base64Decode(
-    'ChJGaW5pc2hXYWxrUmVzcG9uc2USHwoLcG9seWdvbl93a3QYASABKAlSCnBvbHlnb25Xa3QSFw'
-    'oHYXJlYV9tMhgCIAEoAVIGYXJlYU0y');
-
-@$core.Deprecated('Use walkPointDescriptor instead')
-const WalkPoint$json = {
-  '1': 'WalkPoint',
-  '2': [
-    {'1': 'lat', '3': 1, '4': 1, '5': 1, '10': 'lat'},
-    {'1': 'lng', '3': 2, '4': 1, '5': 1, '10': 'lng'},
-    {
-      '1': 'timestamp',
-      '3': 3,
-      '4': 1,
-      '5': 11,
-      '6': '.google.protobuf.Timestamp',
-      '10': 'timestamp'
-    },
-    {'1': 'speed', '3': 4, '4': 1, '5': 1, '10': 'speed'},
-  ],
-};
-
-/// Descriptor for `WalkPoint`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List walkPointDescriptor = $convert.base64Decode(
-    'CglXYWxrUG9pbnQSEAoDbGF0GAEgASgBUgNsYXQSEAoDbG5nGAIgASgBUgNsbmcSOAoJdGltZX'
-    'N0YW1wGAMgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcFIJdGltZXN0YW1wEhQKBXNw'
-    'ZWVkGAQgASgBUgVzcGVlZA==');

@@ -22,125 +22,37 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type GetUserStatsRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	UserId        string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *GetUserStatsRequest) Reset() {
-	*x = GetUserStatsRequest{}
-	mi := &file_proto_walk_proto_msgTypes[0]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *GetUserStatsRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*GetUserStatsRequest) ProtoMessage() {}
-
-func (x *GetUserStatsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_walk_proto_msgTypes[0]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use GetUserStatsRequest.ProtoReflect.Descriptor instead.
-func (*GetUserStatsRequest) Descriptor() ([]byte, []int) {
-	return file_proto_walk_proto_rawDescGZIP(), []int{0}
-}
-
-func (x *GetUserStatsRequest) GetUserId() string {
-	if x != nil {
-		return x.UserId
-	}
-	return ""
-}
-
-type GetUserStatsResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	TotalAreaM2   float64                `protobuf:"fixed64,1,opt,name=total_area_m2,json=totalAreaM2,proto3" json:"total_area_m2,omitempty"`
-	WalkCount     int32                  `protobuf:"varint,2,opt,name=walk_count,json=walkCount,proto3" json:"walk_count,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *GetUserStatsResponse) Reset() {
-	*x = GetUserStatsResponse{}
-	mi := &file_proto_walk_proto_msgTypes[1]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *GetUserStatsResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*GetUserStatsResponse) ProtoMessage() {}
-
-func (x *GetUserStatsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_walk_proto_msgTypes[1]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use GetUserStatsResponse.ProtoReflect.Descriptor instead.
-func (*GetUserStatsResponse) Descriptor() ([]byte, []int) {
-	return file_proto_walk_proto_rawDescGZIP(), []int{1}
-}
-
-func (x *GetUserStatsResponse) GetTotalAreaM2() float64 {
-	if x != nil {
-		return x.TotalAreaM2
-	}
-	return 0
-}
-
-func (x *GetUserStatsResponse) GetWalkCount() int32 {
-	if x != nil {
-		return x.WalkCount
-	}
-	return 0
-}
-
-type StartWalkRequest struct {
+// SyncWalk uploads a walk recorded entirely offline: the client generates
+// its own id and keeps the walk (and every GPS point) locally the whole
+// time, then calls this once network is available. Safe to retry —
+// syncing the same client_walk_id twice just replays the same result.
+type SyncWalkRequest struct {
 	state          protoimpl.MessageState `protogen:"open.v1"`
-	UserId         string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
-	ChampionshipId string                 `protobuf:"bytes,2,opt,name=championship_id,json=championshipId,proto3" json:"championship_id,omitempty"`
+	ClientWalkId   string                 `protobuf:"bytes,1,opt,name=client_walk_id,json=clientWalkId,proto3" json:"client_walk_id,omitempty"`
+	UserId         string                 `protobuf:"bytes,2,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	ChampionshipId string                 `protobuf:"bytes,3,opt,name=championship_id,json=championshipId,proto3" json:"championship_id,omitempty"`
+	StartedAt      *timestamppb.Timestamp `protobuf:"bytes,4,opt,name=started_at,json=startedAt,proto3" json:"started_at,omitempty"`
+	FinishedAt     *timestamppb.Timestamp `protobuf:"bytes,5,opt,name=finished_at,json=finishedAt,proto3" json:"finished_at,omitempty"`
+	Points         []*WalkPoint           `protobuf:"bytes,6,rep,name=points,proto3" json:"points,omitempty"`
 	unknownFields  protoimpl.UnknownFields
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *StartWalkRequest) Reset() {
-	*x = StartWalkRequest{}
-	mi := &file_proto_walk_proto_msgTypes[2]
+func (x *SyncWalkRequest) Reset() {
+	*x = SyncWalkRequest{}
+	mi := &file_proto_walk_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *StartWalkRequest) String() string {
+func (x *SyncWalkRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*StartWalkRequest) ProtoMessage() {}
+func (*SyncWalkRequest) ProtoMessage() {}
 
-func (x *StartWalkRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_walk_proto_msgTypes[2]
+func (x *SyncWalkRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_walk_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -151,130 +63,54 @@ func (x *StartWalkRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use StartWalkRequest.ProtoReflect.Descriptor instead.
-func (*StartWalkRequest) Descriptor() ([]byte, []int) {
-	return file_proto_walk_proto_rawDescGZIP(), []int{2}
+// Deprecated: Use SyncWalkRequest.ProtoReflect.Descriptor instead.
+func (*SyncWalkRequest) Descriptor() ([]byte, []int) {
+	return file_proto_walk_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *StartWalkRequest) GetUserId() string {
+func (x *SyncWalkRequest) GetClientWalkId() string {
+	if x != nil {
+		return x.ClientWalkId
+	}
+	return ""
+}
+
+func (x *SyncWalkRequest) GetUserId() string {
 	if x != nil {
 		return x.UserId
 	}
 	return ""
 }
 
-func (x *StartWalkRequest) GetChampionshipId() string {
+func (x *SyncWalkRequest) GetChampionshipId() string {
 	if x != nil {
 		return x.ChampionshipId
 	}
 	return ""
 }
 
-type StartWalkResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	WalkId        string                 `protobuf:"bytes,1,opt,name=walk_id,json=walkId,proto3" json:"walk_id,omitempty"`
-	StartedAt     *timestamppb.Timestamp `protobuf:"bytes,2,opt,name=started_at,json=startedAt,proto3" json:"started_at,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *StartWalkResponse) Reset() {
-	*x = StartWalkResponse{}
-	mi := &file_proto_walk_proto_msgTypes[3]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *StartWalkResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*StartWalkResponse) ProtoMessage() {}
-
-func (x *StartWalkResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_walk_proto_msgTypes[3]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use StartWalkResponse.ProtoReflect.Descriptor instead.
-func (*StartWalkResponse) Descriptor() ([]byte, []int) {
-	return file_proto_walk_proto_rawDescGZIP(), []int{3}
-}
-
-func (x *StartWalkResponse) GetWalkId() string {
-	if x != nil {
-		return x.WalkId
-	}
-	return ""
-}
-
-func (x *StartWalkResponse) GetStartedAt() *timestamppb.Timestamp {
+func (x *SyncWalkRequest) GetStartedAt() *timestamppb.Timestamp {
 	if x != nil {
 		return x.StartedAt
 	}
 	return nil
 }
 
-type FinishWalkRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	WalkId        string                 `protobuf:"bytes,1,opt,name=walk_id,json=walkId,proto3" json:"walk_id,omitempty"`
-	Points        []*WalkPoint           `protobuf:"bytes,2,rep,name=points,proto3" json:"points,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *FinishWalkRequest) Reset() {
-	*x = FinishWalkRequest{}
-	mi := &file_proto_walk_proto_msgTypes[4]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *FinishWalkRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*FinishWalkRequest) ProtoMessage() {}
-
-func (x *FinishWalkRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_walk_proto_msgTypes[4]
+func (x *SyncWalkRequest) GetFinishedAt() *timestamppb.Timestamp {
 	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
+		return x.FinishedAt
 	}
-	return mi.MessageOf(x)
+	return nil
 }
 
-// Deprecated: Use FinishWalkRequest.ProtoReflect.Descriptor instead.
-func (*FinishWalkRequest) Descriptor() ([]byte, []int) {
-	return file_proto_walk_proto_rawDescGZIP(), []int{4}
-}
-
-func (x *FinishWalkRequest) GetWalkId() string {
-	if x != nil {
-		return x.WalkId
-	}
-	return ""
-}
-
-func (x *FinishWalkRequest) GetPoints() []*WalkPoint {
+func (x *SyncWalkRequest) GetPoints() []*WalkPoint {
 	if x != nil {
 		return x.Points
 	}
 	return nil
 }
 
-type FinishWalkResponse struct {
+type SyncWalkResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	PolygonWkt    string                 `protobuf:"bytes,1,opt,name=polygon_wkt,json=polygonWkt,proto3" json:"polygon_wkt,omitempty"`
 	AreaM2        float64                `protobuf:"fixed64,2,opt,name=area_m2,json=areaM2,proto3" json:"area_m2,omitempty"`
@@ -282,21 +118,21 @@ type FinishWalkResponse struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *FinishWalkResponse) Reset() {
-	*x = FinishWalkResponse{}
-	mi := &file_proto_walk_proto_msgTypes[5]
+func (x *SyncWalkResponse) Reset() {
+	*x = SyncWalkResponse{}
+	mi := &file_proto_walk_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *FinishWalkResponse) String() string {
+func (x *SyncWalkResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*FinishWalkResponse) ProtoMessage() {}
+func (*SyncWalkResponse) ProtoMessage() {}
 
-func (x *FinishWalkResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_walk_proto_msgTypes[5]
+func (x *SyncWalkResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_walk_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -307,19 +143,19 @@ func (x *FinishWalkResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use FinishWalkResponse.ProtoReflect.Descriptor instead.
-func (*FinishWalkResponse) Descriptor() ([]byte, []int) {
-	return file_proto_walk_proto_rawDescGZIP(), []int{5}
+// Deprecated: Use SyncWalkResponse.ProtoReflect.Descriptor instead.
+func (*SyncWalkResponse) Descriptor() ([]byte, []int) {
+	return file_proto_walk_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *FinishWalkResponse) GetPolygonWkt() string {
+func (x *SyncWalkResponse) GetPolygonWkt() string {
 	if x != nil {
 		return x.PolygonWkt
 	}
 	return ""
 }
 
-func (x *FinishWalkResponse) GetAreaM2() float64 {
+func (x *SyncWalkResponse) GetAreaM2() float64 {
 	if x != nil {
 		return x.AreaM2
 	}
@@ -338,7 +174,7 @@ type WalkPoint struct {
 
 func (x *WalkPoint) Reset() {
 	*x = WalkPoint{}
-	mi := &file_proto_walk_proto_msgTypes[6]
+	mi := &file_proto_walk_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -350,7 +186,7 @@ func (x *WalkPoint) String() string {
 func (*WalkPoint) ProtoMessage() {}
 
 func (x *WalkPoint) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_walk_proto_msgTypes[6]
+	mi := &file_proto_walk_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -363,7 +199,7 @@ func (x *WalkPoint) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use WalkPoint.ProtoReflect.Descriptor instead.
 func (*WalkPoint) Descriptor() ([]byte, []int) {
-	return file_proto_walk_proto_rawDescGZIP(), []int{6}
+	return file_proto_walk_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *WalkPoint) GetLat() float64 {
@@ -394,28 +230,117 @@ func (x *WalkPoint) GetSpeed() float64 {
 	return 0
 }
 
+type GetUserStatsRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	UserId        string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetUserStatsRequest) Reset() {
+	*x = GetUserStatsRequest{}
+	mi := &file_proto_walk_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetUserStatsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetUserStatsRequest) ProtoMessage() {}
+
+func (x *GetUserStatsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_walk_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetUserStatsRequest.ProtoReflect.Descriptor instead.
+func (*GetUserStatsRequest) Descriptor() ([]byte, []int) {
+	return file_proto_walk_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *GetUserStatsRequest) GetUserId() string {
+	if x != nil {
+		return x.UserId
+	}
+	return ""
+}
+
+type GetUserStatsResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	TotalAreaM2   float64                `protobuf:"fixed64,1,opt,name=total_area_m2,json=totalAreaM2,proto3" json:"total_area_m2,omitempty"`
+	WalkCount     int32                  `protobuf:"varint,2,opt,name=walk_count,json=walkCount,proto3" json:"walk_count,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetUserStatsResponse) Reset() {
+	*x = GetUserStatsResponse{}
+	mi := &file_proto_walk_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetUserStatsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetUserStatsResponse) ProtoMessage() {}
+
+func (x *GetUserStatsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_walk_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetUserStatsResponse.ProtoReflect.Descriptor instead.
+func (*GetUserStatsResponse) Descriptor() ([]byte, []int) {
+	return file_proto_walk_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *GetUserStatsResponse) GetTotalAreaM2() float64 {
+	if x != nil {
+		return x.TotalAreaM2
+	}
+	return 0
+}
+
+func (x *GetUserStatsResponse) GetWalkCount() int32 {
+	if x != nil {
+		return x.WalkCount
+	}
+	return 0
+}
+
 var File_proto_walk_proto protoreflect.FileDescriptor
 
 const file_proto_walk_proto_rawDesc = "" +
 	"\n" +
-	"\x10proto/walk.proto\x12\x04walk\x1a\x1fgoogle/protobuf/timestamp.proto\".\n" +
-	"\x13GetUserStatsRequest\x12\x17\n" +
-	"\auser_id\x18\x01 \x01(\tR\x06userId\"Y\n" +
-	"\x14GetUserStatsResponse\x12\"\n" +
-	"\rtotal_area_m2\x18\x01 \x01(\x01R\vtotalAreaM2\x12\x1d\n" +
+	"\x10proto/walk.proto\x12\x04walk\x1a\x1fgoogle/protobuf/timestamp.proto\"\x9a\x02\n" +
+	"\x0fSyncWalkRequest\x12$\n" +
+	"\x0eclient_walk_id\x18\x01 \x01(\tR\fclientWalkId\x12\x17\n" +
+	"\auser_id\x18\x02 \x01(\tR\x06userId\x12'\n" +
+	"\x0fchampionship_id\x18\x03 \x01(\tR\x0echampionshipId\x129\n" +
 	"\n" +
-	"walk_count\x18\x02 \x01(\x05R\twalkCount\"T\n" +
-	"\x10StartWalkRequest\x12\x17\n" +
-	"\auser_id\x18\x01 \x01(\tR\x06userId\x12'\n" +
-	"\x0fchampionship_id\x18\x02 \x01(\tR\x0echampionshipId\"g\n" +
-	"\x11StartWalkResponse\x12\x17\n" +
-	"\awalk_id\x18\x01 \x01(\tR\x06walkId\x129\n" +
-	"\n" +
-	"started_at\x18\x02 \x01(\v2\x1a.google.protobuf.TimestampR\tstartedAt\"U\n" +
-	"\x11FinishWalkRequest\x12\x17\n" +
-	"\awalk_id\x18\x01 \x01(\tR\x06walkId\x12'\n" +
-	"\x06points\x18\x02 \x03(\v2\x0f.walk.WalkPointR\x06points\"N\n" +
-	"\x12FinishWalkResponse\x12\x1f\n" +
+	"started_at\x18\x04 \x01(\v2\x1a.google.protobuf.TimestampR\tstartedAt\x12;\n" +
+	"\vfinished_at\x18\x05 \x01(\v2\x1a.google.protobuf.TimestampR\n" +
+	"finishedAt\x12'\n" +
+	"\x06points\x18\x06 \x03(\v2\x0f.walk.WalkPointR\x06points\"L\n" +
+	"\x10SyncWalkResponse\x12\x1f\n" +
 	"\vpolygon_wkt\x18\x01 \x01(\tR\n" +
 	"polygonWkt\x12\x17\n" +
 	"\aarea_m2\x18\x02 \x01(\x01R\x06areaM2\"\x7f\n" +
@@ -423,11 +348,15 @@ const file_proto_walk_proto_rawDesc = "" +
 	"\x03lat\x18\x01 \x01(\x01R\x03lat\x12\x10\n" +
 	"\x03lng\x18\x02 \x01(\x01R\x03lng\x128\n" +
 	"\ttimestamp\x18\x03 \x01(\v2\x1a.google.protobuf.TimestampR\ttimestamp\x12\x14\n" +
-	"\x05speed\x18\x04 \x01(\x01R\x05speed2\xd3\x01\n" +
-	"\vWalkService\x12<\n" +
-	"\tStartWalk\x12\x16.walk.StartWalkRequest\x1a\x17.walk.StartWalkResponse\x12?\n" +
+	"\x05speed\x18\x04 \x01(\x01R\x05speed\".\n" +
+	"\x13GetUserStatsRequest\x12\x17\n" +
+	"\auser_id\x18\x01 \x01(\tR\x06userId\"Y\n" +
+	"\x14GetUserStatsResponse\x12\"\n" +
+	"\rtotal_area_m2\x18\x01 \x01(\x01R\vtotalAreaM2\x12\x1d\n" +
 	"\n" +
-	"FinishWalk\x12\x17.walk.FinishWalkRequest\x1a\x18.walk.FinishWalkResponse\x12E\n" +
+	"walk_count\x18\x02 \x01(\x05R\twalkCount2\x8f\x01\n" +
+	"\vWalkService\x129\n" +
+	"\bSyncWalk\x12\x15.walk.SyncWalkRequest\x1a\x16.walk.SyncWalkResponse\x12E\n" +
 	"\fGetUserStats\x12\x19.walk.GetUserStatsRequest\x1a\x1a.walk.GetUserStatsResponseB@Z>github.com/PatrickCalorioCarvalho/StrideClash/backend/proto;pbb\x06proto3"
 
 var (
@@ -442,32 +371,29 @@ func file_proto_walk_proto_rawDescGZIP() []byte {
 	return file_proto_walk_proto_rawDescData
 }
 
-var file_proto_walk_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
+var file_proto_walk_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
 var file_proto_walk_proto_goTypes = []any{
-	(*GetUserStatsRequest)(nil),   // 0: walk.GetUserStatsRequest
-	(*GetUserStatsResponse)(nil),  // 1: walk.GetUserStatsResponse
-	(*StartWalkRequest)(nil),      // 2: walk.StartWalkRequest
-	(*StartWalkResponse)(nil),     // 3: walk.StartWalkResponse
-	(*FinishWalkRequest)(nil),     // 4: walk.FinishWalkRequest
-	(*FinishWalkResponse)(nil),    // 5: walk.FinishWalkResponse
-	(*WalkPoint)(nil),             // 6: walk.WalkPoint
-	(*timestamppb.Timestamp)(nil), // 7: google.protobuf.Timestamp
+	(*SyncWalkRequest)(nil),       // 0: walk.SyncWalkRequest
+	(*SyncWalkResponse)(nil),      // 1: walk.SyncWalkResponse
+	(*WalkPoint)(nil),             // 2: walk.WalkPoint
+	(*GetUserStatsRequest)(nil),   // 3: walk.GetUserStatsRequest
+	(*GetUserStatsResponse)(nil),  // 4: walk.GetUserStatsResponse
+	(*timestamppb.Timestamp)(nil), // 5: google.protobuf.Timestamp
 }
 var file_proto_walk_proto_depIdxs = []int32{
-	7, // 0: walk.StartWalkResponse.started_at:type_name -> google.protobuf.Timestamp
-	6, // 1: walk.FinishWalkRequest.points:type_name -> walk.WalkPoint
-	7, // 2: walk.WalkPoint.timestamp:type_name -> google.protobuf.Timestamp
-	2, // 3: walk.WalkService.StartWalk:input_type -> walk.StartWalkRequest
-	4, // 4: walk.WalkService.FinishWalk:input_type -> walk.FinishWalkRequest
-	0, // 5: walk.WalkService.GetUserStats:input_type -> walk.GetUserStatsRequest
-	3, // 6: walk.WalkService.StartWalk:output_type -> walk.StartWalkResponse
-	5, // 7: walk.WalkService.FinishWalk:output_type -> walk.FinishWalkResponse
-	1, // 8: walk.WalkService.GetUserStats:output_type -> walk.GetUserStatsResponse
-	6, // [6:9] is the sub-list for method output_type
-	3, // [3:6] is the sub-list for method input_type
-	3, // [3:3] is the sub-list for extension type_name
-	3, // [3:3] is the sub-list for extension extendee
-	0, // [0:3] is the sub-list for field type_name
+	5, // 0: walk.SyncWalkRequest.started_at:type_name -> google.protobuf.Timestamp
+	5, // 1: walk.SyncWalkRequest.finished_at:type_name -> google.protobuf.Timestamp
+	2, // 2: walk.SyncWalkRequest.points:type_name -> walk.WalkPoint
+	5, // 3: walk.WalkPoint.timestamp:type_name -> google.protobuf.Timestamp
+	0, // 4: walk.WalkService.SyncWalk:input_type -> walk.SyncWalkRequest
+	3, // 5: walk.WalkService.GetUserStats:input_type -> walk.GetUserStatsRequest
+	1, // 6: walk.WalkService.SyncWalk:output_type -> walk.SyncWalkResponse
+	4, // 7: walk.WalkService.GetUserStats:output_type -> walk.GetUserStatsResponse
+	6, // [6:8] is the sub-list for method output_type
+	4, // [4:6] is the sub-list for method input_type
+	4, // [4:4] is the sub-list for extension type_name
+	4, // [4:4] is the sub-list for extension extendee
+	0, // [0:4] is the sub-list for field type_name
 }
 
 func init() { file_proto_walk_proto_init() }
@@ -481,7 +407,7 @@ func file_proto_walk_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_walk_proto_rawDesc), len(file_proto_walk_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   7,
+			NumMessages:   5,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

@@ -3,6 +3,7 @@ package services
 import (
 	"context"
 	"fmt"
+	"math"
 	"strings"
 
 	pb "github.com/PatrickCalorioCarvalho/StrideClash/backend/proto"
@@ -10,7 +11,6 @@ import (
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 // minPolygonPoints is the smallest ring that can enclose a non-zero area.
@@ -21,36 +21,36 @@ const minPolygonPoints = 3
 // non-zero but bogus area. Real captures cover much more than this.
 const minValidAreaM2 = 25.0
 
+// maxClosingGapMeters caps how far apart the walker's first and last real
+// GPS fixes can be and still count as "closed the loop". Beyond this, the
+// straight line closeRing draws between them isn't the walker's actual
+// path — for an open route (there-and-back, a spiral, anything that
+// doesn't return near its start) that invented edge can sweep a much
+// bigger area than what was really walked, so it's better to capture
+// nothing than to report a misleading number.
+const maxClosingGapMeters = 50.0
+
+// maxWalkingSpeedMps (~25 km/h, a hard sprint) caps how fast the walker can
+// go between two consecutive GPS fixes and still count as being on foot.
+// Standing still or pausing is never a problem here — it's specifically the
+// distance/time ratio between fixes that's checked, so a long pause with no
+// movement just reads as 0 m/s, not a violation. Sustained speeds above
+// this look like a bike, motorcycle, or car instead.
+const maxWalkingSpeedMps = 7.0
+
 type WalkService struct {
 	pb.UnimplementedWalkServiceServer
 	Walks *repository.WalkRepository
 }
 
-func (s *WalkService) StartWalk(
+// SyncWalk uploads a walk the client recorded entirely on its own — offline
+// the whole time, or synced right away, it makes no difference here. Safe
+// to retry: replaying an already-finished client_walk_id just returns the
+// same result instead of reprocessing it.
+func (s *WalkService) SyncWalk(
 	ctx context.Context,
-	req *pb.StartWalkRequest,
-) (*pb.StartWalkResponse, error) {
-
-	var championshipID *string
-	if req.ChampionshipId != "" {
-		championshipID = &req.ChampionshipId
-	}
-
-	walk, err := s.Walks.Create(req.UserId, championshipID)
-	if err != nil {
-		return nil, err
-	}
-
-	return &pb.StartWalkResponse{
-		WalkId:    walk.ID,
-		StartedAt: timestamppb.New(walk.StartedAt),
-	}, nil
-}
-
-func (s *WalkService) FinishWalk(
-	ctx context.Context,
-	req *pb.FinishWalkRequest,
-) (*pb.FinishWalkResponse, error) {
+	req *pb.SyncWalkRequest,
+) (*pb.SyncWalkResponse, error) {
 
 	if len(req.Points) < minPolygonPoints {
 		return nil, status.Errorf(
@@ -60,25 +60,52 @@ func (s *WalkService) FinishWalk(
 		)
 	}
 
-	if err := s.Walks.AddPoints(req.WalkId, req.Points); err != nil {
+	_, finished, existingArea, err := s.Walks.GetSyncState(req.ClientWalkId)
+	if err != nil {
+		return nil, err
+	}
+	if finished {
+		return &pb.SyncWalkResponse{AreaM2: existingArea}, nil
+	}
+
+	var championshipID *string
+	if req.ChampionshipId != "" {
+		championshipID = &req.ChampionshipId
+	}
+
+	if err := s.Walks.EnsureCreated(
+		req.ClientWalkId, req.UserId, championshipID, req.StartedAt.AsTime(),
+	); err != nil {
+		return nil, err
+	}
+
+	if err := s.Walks.ReplacePoints(req.ClientWalkId, req.Points); err != nil {
 		return nil, err
 	}
 
 	polygonWKT := buildPolygonWKT(closeRing(req.Points))
 
-	areaM2, err := s.Walks.Finish(req.WalkId, polygonWKT)
+	areaM2, err := s.Walks.Finish(req.ClientWalkId, polygonWKT, req.FinishedAt.AsTime())
 	if err != nil {
 		return nil, err
 	}
 
-	if areaM2 < minValidAreaM2 {
-		if err := s.Walks.ClearPolygon(req.WalkId); err != nil {
+	first, last := req.Points[0], req.Points[len(req.Points)-1]
+	closingGapM := haversineMeters(first.Lat, first.Lng, last.Lat, last.Lng)
+
+	if areaM2 < minValidAreaM2 || closingGapM > maxClosingGapMeters || exceedsHumanSpeed(req.Points) {
+		if err := s.Walks.ClearPolygon(req.ClientWalkId); err != nil {
 			return nil, err
 		}
-		return &pb.FinishWalkResponse{PolygonWkt: "", AreaM2: 0}, nil
+		return &pb.SyncWalkResponse{PolygonWkt: "", AreaM2: 0}, nil
 	}
 
-	return &pb.FinishWalkResponse{
+	// A real capture — claim any territory it overlaps from earlier walks.
+	if err := s.Walks.ResolveOverlaps(req.ClientWalkId, polygonWKT); err != nil {
+		return nil, err
+	}
+
+	return &pb.SyncWalkResponse{
 		PolygonWkt: polygonWKT,
 		AreaM2:     areaM2,
 	}, nil
@@ -122,4 +149,42 @@ func buildPolygonWKT(ring []*pb.WalkPoint) string {
 	}
 
 	return fmt.Sprintf("POLYGON((%s))", strings.Join(coords, ", "))
+}
+
+// exceedsHumanSpeed checks every consecutive pair of fixes for a speed no
+// person walking or running could sustain. A long pause between two points
+// just yields a small distance over a large time — near-zero speed, never
+// flagged — so resting mid-walk is never mistaken for cheating.
+func exceedsHumanSpeed(points []*pb.WalkPoint) bool {
+	for i := 1; i < len(points); i++ {
+		prev, cur := points[i-1], points[i]
+
+		dt := cur.Timestamp.AsTime().Sub(prev.Timestamp.AsTime()).Seconds()
+		if dt <= 0 {
+			continue
+		}
+
+		dist := haversineMeters(prev.Lat, prev.Lng, cur.Lat, cur.Lng)
+		if dist/dt > maxWalkingSpeedMps {
+			return true
+		}
+	}
+
+	return false
+}
+
+// haversineMeters is the great-circle distance between two lat/lng points,
+// in meters — good enough at walking-route scale, no need for PostGIS here.
+func haversineMeters(lat1, lng1, lat2, lng2 float64) float64 {
+	const earthRadiusM = 6371000.0
+
+	toRad := func(deg float64) float64 { return deg * math.Pi / 180 }
+	dLat := toRad(lat2 - lat1)
+	dLng := toRad(lng2 - lng1)
+
+	a := math.Sin(dLat/2)*math.Sin(dLat/2) +
+		math.Cos(toRad(lat1))*math.Cos(toRad(lat2))*math.Sin(dLng/2)*math.Sin(dLng/2)
+	c := 2 * math.Atan2(math.Sqrt(a), math.Sqrt(1-a))
+
+	return earthRadiusM * c
 }

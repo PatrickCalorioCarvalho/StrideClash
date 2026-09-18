@@ -16,11 +16,23 @@ class _MainTabsPageState extends State<MainTabsPage> {
   // Campeonato ficam de cada lado dela na barra inferior.
   int _index = 1;
 
-  final _pages = const [
-    ProfilePage(),
-    WalkTrackingPage(),
-    ChampionshipPage(),
+  final _walkPageKey = GlobalKey<WalkTrackingPageState>();
+
+  late final _pages = [
+    const ProfilePage(),
+    WalkTrackingPage(key: _walkPageKey),
+    const ChampionshipPage(),
   ];
+
+  void _onTap(int index) {
+    setState(() => _index = index);
+    // The walk tab keeps its championship list loaded only once (it's kept
+    // alive by the IndexedStack below), so refresh it whenever it becomes
+    // visible in case one was created/joined from the Campeonato tab.
+    if (index == 1) {
+      _walkPageKey.currentState?.refreshChampionships();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +43,7 @@ class _MainTabsPageState extends State<MainTabsPage> {
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _index,
-        onTap: (i) => setState(() => _index = i),
+        onTap: _onTap,
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
