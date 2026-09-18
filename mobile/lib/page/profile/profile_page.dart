@@ -118,10 +118,39 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                   ),
                 ),
+                if (stats != null && stats.byChampionship.isNotEmpty) ...[
+                  const SizedBox(height: 24),
+                  const Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      'Por campeonato',
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  ...stats.byChampionship.map(_buildChampionshipStatTile),
+                ],
               ],
             ),
           );
         },
+      ),
+    );
+  }
+
+  Widget _buildChampionshipStatTile(ChampionshipStat stat) {
+    final noChampionship = stat.championshipId.isEmpty;
+    return Card(
+      child: ListTile(
+        leading: Icon(
+          noChampionship ? Icons.directions_walk : Icons.emoji_events_outlined,
+        ),
+        title: Text(stat.championshipName),
+        subtitle: Text('${stat.walkCount} caminhada(s)'),
+        trailing: Text(
+          '${stat.areaM2.toStringAsFixed(0)} m²',
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
       ),
     );
   }

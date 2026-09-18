@@ -43,4 +43,15 @@ message GetUserStatsRequest {
 message GetUserStatsResponse {
   double total_area_m2 = 1;
   int32 walk_count = 2;
+  repeated ChampionshipStat by_championship = 3;
+}
+
+// Per-championship breakdown of a user's walked area. Walks whose
+// championship was deleted (championship_id set NULL) or that were never
+// tied to one are grouped together with championship_id empty.
+message ChampionshipStat {
+  string championship_id = 1;
+  string championship_name = 2;
+  double area_m2 = 3;
+  int32 walk_count = 4;
 }

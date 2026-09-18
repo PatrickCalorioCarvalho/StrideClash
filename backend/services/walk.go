@@ -121,9 +121,25 @@ func (s *WalkService) GetUserStats(
 		return nil, err
 	}
 
+	byChampionship, err := s.Walks.GetUserStatsByChampionship(req.UserId)
+	if err != nil {
+		return nil, err
+	}
+
+	stats := make([]*pb.ChampionshipStat, len(byChampionship))
+	for i, s := range byChampionship {
+		stats[i] = &pb.ChampionshipStat{
+			ChampionshipId:   s.ChampionshipID,
+			ChampionshipName: s.ChampionshipName,
+			AreaM2:           s.AreaM2,
+			WalkCount:        int32(s.WalkCount),
+		}
+	}
+
 	return &pb.GetUserStatsResponse{
-		TotalAreaM2: totalAreaM2,
-		WalkCount:   int32(walkCount),
+		TotalAreaM2:    totalAreaM2,
+		WalkCount:      int32(walkCount),
+		ByChampionship: stats,
 	}, nil
 }
 

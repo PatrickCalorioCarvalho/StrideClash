@@ -163,3 +163,41 @@ func (r *WalkRepository) GetUserStats(userID string) (totalAreaM2 float64, walkC
 
 	return totalAreaM2, walkCount, err
 }
+
+type ChampionshipStat struct {
+	ChampionshipID   string
+	ChampionshipName string
+	AreaM2           float64
+	WalkCount        int
+}
+
+// GetUserStatsByChampionship breaks GetUserStats' total down per
+// championship. A walk left without one — never assigned, or its
+// championship since deleted (championship_id is ON DELETE SET NULL) — is
+// grouped under an empty ChampionshipID/"Sem campeonato".
+func (r *WalkRepository) GetUserStatsByChampionship(userID string) ([]ChampionshipStat, error) {
+	rows, err := r.DB.Query(`
+		SELECT COALESCE(c.id::text, ''), COALESCE(c.name, 'Sem campeonato'),
+			COALESCE(SUM(w.area_m2), 0), COUNT(*)
+		FROM walks w
+		LEFT JOIN championships c ON c.id = w.championship_id
+		WHERE w.user_id = $1 AND w.finished_at IS NOT NULL AND w.polygon IS NOT NULL
+		GROUP BY c.id, c.name
+		ORDER BY 3 DESC
+	`, userID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var stats []ChampionshipStat
+	for rows.Next() {
+		var s ChampionshipStat
+		if err := rows.Scan(&s.ChampionshipID, &s.ChampionshipName, &s.AreaM2, &s.WalkCount); err != nil {
+			return nil, err
+		}
+		stats = append(stats, s)
+	}
+
+	return stats, rows.Err()
+}

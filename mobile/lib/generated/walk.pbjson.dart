@@ -115,10 +115,42 @@ const GetUserStatsResponse$json = {
   '2': [
     {'1': 'total_area_m2', '3': 1, '4': 1, '5': 1, '10': 'totalAreaM2'},
     {'1': 'walk_count', '3': 2, '4': 1, '5': 5, '10': 'walkCount'},
+    {
+      '1': 'by_championship',
+      '3': 3,
+      '4': 3,
+      '5': 11,
+      '6': '.walk.ChampionshipStat',
+      '10': 'byChampionship'
+    },
   ],
 };
 
 /// Descriptor for `GetUserStatsResponse`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List getUserStatsResponseDescriptor = $convert.base64Decode(
     'ChRHZXRVc2VyU3RhdHNSZXNwb25zZRIiCg10b3RhbF9hcmVhX20yGAEgASgBUgt0b3RhbEFyZW'
-    'FNMhIdCgp3YWxrX2NvdW50GAIgASgFUgl3YWxrQ291bnQ=');
+    'FNMhIdCgp3YWxrX2NvdW50GAIgASgFUgl3YWxrQ291bnQSPwoPYnlfY2hhbXBpb25zaGlwGAMg'
+    'AygLMhYud2Fsay5DaGFtcGlvbnNoaXBTdGF0Ug5ieUNoYW1waW9uc2hpcA==');
+
+@$core.Deprecated('Use championshipStatDescriptor instead')
+const ChampionshipStat$json = {
+  '1': 'ChampionshipStat',
+  '2': [
+    {'1': 'championship_id', '3': 1, '4': 1, '5': 9, '10': 'championshipId'},
+    {
+      '1': 'championship_name',
+      '3': 2,
+      '4': 1,
+      '5': 9,
+      '10': 'championshipName'
+    },
+    {'1': 'area_m2', '3': 3, '4': 1, '5': 1, '10': 'areaM2'},
+    {'1': 'walk_count', '3': 4, '4': 1, '5': 5, '10': 'walkCount'},
+  ],
+};
+
+/// Descriptor for `ChampionshipStat`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List championshipStatDescriptor = $convert.base64Decode(
+    'ChBDaGFtcGlvbnNoaXBTdGF0EicKD2NoYW1waW9uc2hpcF9pZBgBIAEoCVIOY2hhbXBpb25zaG'
+    'lwSWQSKwoRY2hhbXBpb25zaGlwX25hbWUYAiABKAlSEGNoYW1waW9uc2hpcE5hbWUSFwoHYXJl'
+    'YV9tMhgDIAEoAVIGYXJlYU0yEh0KCndhbGtfY291bnQYBCABKAVSCXdhbGtDb3VudA==');

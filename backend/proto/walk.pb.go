@@ -275,11 +275,12 @@ func (x *GetUserStatsRequest) GetUserId() string {
 }
 
 type GetUserStatsResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	TotalAreaM2   float64                `protobuf:"fixed64,1,opt,name=total_area_m2,json=totalAreaM2,proto3" json:"total_area_m2,omitempty"`
-	WalkCount     int32                  `protobuf:"varint,2,opt,name=walk_count,json=walkCount,proto3" json:"walk_count,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state          protoimpl.MessageState `protogen:"open.v1"`
+	TotalAreaM2    float64                `protobuf:"fixed64,1,opt,name=total_area_m2,json=totalAreaM2,proto3" json:"total_area_m2,omitempty"`
+	WalkCount      int32                  `protobuf:"varint,2,opt,name=walk_count,json=walkCount,proto3" json:"walk_count,omitempty"`
+	ByChampionship []*ChampionshipStat    `protobuf:"bytes,3,rep,name=by_championship,json=byChampionship,proto3" json:"by_championship,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
 }
 
 func (x *GetUserStatsResponse) Reset() {
@@ -326,6 +327,84 @@ func (x *GetUserStatsResponse) GetWalkCount() int32 {
 	return 0
 }
 
+func (x *GetUserStatsResponse) GetByChampionship() []*ChampionshipStat {
+	if x != nil {
+		return x.ByChampionship
+	}
+	return nil
+}
+
+// Per-championship breakdown of a user's walked area. Walks whose
+// championship was deleted (championship_id set NULL) or that were never
+// tied to one are grouped together with championship_id empty.
+type ChampionshipStat struct {
+	state            protoimpl.MessageState `protogen:"open.v1"`
+	ChampionshipId   string                 `protobuf:"bytes,1,opt,name=championship_id,json=championshipId,proto3" json:"championship_id,omitempty"`
+	ChampionshipName string                 `protobuf:"bytes,2,opt,name=championship_name,json=championshipName,proto3" json:"championship_name,omitempty"`
+	AreaM2           float64                `protobuf:"fixed64,3,opt,name=area_m2,json=areaM2,proto3" json:"area_m2,omitempty"`
+	WalkCount        int32                  `protobuf:"varint,4,opt,name=walk_count,json=walkCount,proto3" json:"walk_count,omitempty"`
+	unknownFields    protoimpl.UnknownFields
+	sizeCache        protoimpl.SizeCache
+}
+
+func (x *ChampionshipStat) Reset() {
+	*x = ChampionshipStat{}
+	mi := &file_proto_walk_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ChampionshipStat) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ChampionshipStat) ProtoMessage() {}
+
+func (x *ChampionshipStat) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_walk_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ChampionshipStat.ProtoReflect.Descriptor instead.
+func (*ChampionshipStat) Descriptor() ([]byte, []int) {
+	return file_proto_walk_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *ChampionshipStat) GetChampionshipId() string {
+	if x != nil {
+		return x.ChampionshipId
+	}
+	return ""
+}
+
+func (x *ChampionshipStat) GetChampionshipName() string {
+	if x != nil {
+		return x.ChampionshipName
+	}
+	return ""
+}
+
+func (x *ChampionshipStat) GetAreaM2() float64 {
+	if x != nil {
+		return x.AreaM2
+	}
+	return 0
+}
+
+func (x *ChampionshipStat) GetWalkCount() int32 {
+	if x != nil {
+		return x.WalkCount
+	}
+	return 0
+}
+
 var File_proto_walk_proto protoreflect.FileDescriptor
 
 const file_proto_walk_proto_rawDesc = "" +
@@ -350,11 +429,18 @@ const file_proto_walk_proto_rawDesc = "" +
 	"\ttimestamp\x18\x03 \x01(\v2\x1a.google.protobuf.TimestampR\ttimestamp\x12\x14\n" +
 	"\x05speed\x18\x04 \x01(\x01R\x05speed\".\n" +
 	"\x13GetUserStatsRequest\x12\x17\n" +
-	"\auser_id\x18\x01 \x01(\tR\x06userId\"Y\n" +
+	"\auser_id\x18\x01 \x01(\tR\x06userId\"\x9a\x01\n" +
 	"\x14GetUserStatsResponse\x12\"\n" +
 	"\rtotal_area_m2\x18\x01 \x01(\x01R\vtotalAreaM2\x12\x1d\n" +
 	"\n" +
-	"walk_count\x18\x02 \x01(\x05R\twalkCount2\x8f\x01\n" +
+	"walk_count\x18\x02 \x01(\x05R\twalkCount\x12?\n" +
+	"\x0fby_championship\x18\x03 \x03(\v2\x16.walk.ChampionshipStatR\x0ebyChampionship\"\xa0\x01\n" +
+	"\x10ChampionshipStat\x12'\n" +
+	"\x0fchampionship_id\x18\x01 \x01(\tR\x0echampionshipId\x12+\n" +
+	"\x11championship_name\x18\x02 \x01(\tR\x10championshipName\x12\x17\n" +
+	"\aarea_m2\x18\x03 \x01(\x01R\x06areaM2\x12\x1d\n" +
+	"\n" +
+	"walk_count\x18\x04 \x01(\x05R\twalkCount2\x8f\x01\n" +
 	"\vWalkService\x129\n" +
 	"\bSyncWalk\x12\x15.walk.SyncWalkRequest\x1a\x16.walk.SyncWalkResponse\x12E\n" +
 	"\fGetUserStats\x12\x19.walk.GetUserStatsRequest\x1a\x1a.walk.GetUserStatsResponseB@Z>github.com/PatrickCalorioCarvalho/StrideClash/backend/proto;pbb\x06proto3"
@@ -371,29 +457,31 @@ func file_proto_walk_proto_rawDescGZIP() []byte {
 	return file_proto_walk_proto_rawDescData
 }
 
-var file_proto_walk_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
+var file_proto_walk_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
 var file_proto_walk_proto_goTypes = []any{
 	(*SyncWalkRequest)(nil),       // 0: walk.SyncWalkRequest
 	(*SyncWalkResponse)(nil),      // 1: walk.SyncWalkResponse
 	(*WalkPoint)(nil),             // 2: walk.WalkPoint
 	(*GetUserStatsRequest)(nil),   // 3: walk.GetUserStatsRequest
 	(*GetUserStatsResponse)(nil),  // 4: walk.GetUserStatsResponse
-	(*timestamppb.Timestamp)(nil), // 5: google.protobuf.Timestamp
+	(*ChampionshipStat)(nil),      // 5: walk.ChampionshipStat
+	(*timestamppb.Timestamp)(nil), // 6: google.protobuf.Timestamp
 }
 var file_proto_walk_proto_depIdxs = []int32{
-	5, // 0: walk.SyncWalkRequest.started_at:type_name -> google.protobuf.Timestamp
-	5, // 1: walk.SyncWalkRequest.finished_at:type_name -> google.protobuf.Timestamp
+	6, // 0: walk.SyncWalkRequest.started_at:type_name -> google.protobuf.Timestamp
+	6, // 1: walk.SyncWalkRequest.finished_at:type_name -> google.protobuf.Timestamp
 	2, // 2: walk.SyncWalkRequest.points:type_name -> walk.WalkPoint
-	5, // 3: walk.WalkPoint.timestamp:type_name -> google.protobuf.Timestamp
-	0, // 4: walk.WalkService.SyncWalk:input_type -> walk.SyncWalkRequest
-	3, // 5: walk.WalkService.GetUserStats:input_type -> walk.GetUserStatsRequest
-	1, // 6: walk.WalkService.SyncWalk:output_type -> walk.SyncWalkResponse
-	4, // 7: walk.WalkService.GetUserStats:output_type -> walk.GetUserStatsResponse
-	6, // [6:8] is the sub-list for method output_type
-	4, // [4:6] is the sub-list for method input_type
-	4, // [4:4] is the sub-list for extension type_name
-	4, // [4:4] is the sub-list for extension extendee
-	0, // [0:4] is the sub-list for field type_name
+	6, // 3: walk.WalkPoint.timestamp:type_name -> google.protobuf.Timestamp
+	5, // 4: walk.GetUserStatsResponse.by_championship:type_name -> walk.ChampionshipStat
+	0, // 5: walk.WalkService.SyncWalk:input_type -> walk.SyncWalkRequest
+	3, // 6: walk.WalkService.GetUserStats:input_type -> walk.GetUserStatsRequest
+	1, // 7: walk.WalkService.SyncWalk:output_type -> walk.SyncWalkResponse
+	4, // 8: walk.WalkService.GetUserStats:output_type -> walk.GetUserStatsResponse
+	7, // [7:9] is the sub-list for method output_type
+	5, // [5:7] is the sub-list for method input_type
+	5, // [5:5] is the sub-list for extension type_name
+	5, // [5:5] is the sub-list for extension extendee
+	0, // [0:5] is the sub-list for field type_name
 }
 
 func init() { file_proto_walk_proto_init() }
@@ -407,7 +495,7 @@ func file_proto_walk_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_walk_proto_rawDesc), len(file_proto_walk_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   5,
+			NumMessages:   6,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

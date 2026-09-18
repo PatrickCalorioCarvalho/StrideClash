@@ -353,10 +353,12 @@ class GetUserStatsResponse extends $pb.GeneratedMessage {
   factory GetUserStatsResponse({
     $core.double? totalAreaM2,
     $core.int? walkCount,
+    $core.Iterable<ChampionshipStat>? byChampionship,
   }) {
     final result = create();
     if (totalAreaM2 != null) result.totalAreaM2 = totalAreaM2;
     if (walkCount != null) result.walkCount = walkCount;
+    if (byChampionship != null) result.byChampionship.addAll(byChampionship);
     return result;
   }
 
@@ -375,6 +377,8 @@ class GetUserStatsResponse extends $pb.GeneratedMessage {
       createEmptyInstance: create)
     ..aD(1, _omitFieldNames ? '' : 'totalAreaM2')
     ..aI(2, _omitFieldNames ? '' : 'walkCount')
+    ..pPM<ChampionshipStat>(3, _omitFieldNames ? '' : 'byChampionship',
+        subBuilder: ChampionshipStat.create)
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -413,6 +417,102 @@ class GetUserStatsResponse extends $pb.GeneratedMessage {
   $core.bool hasWalkCount() => $_has(1);
   @$pb.TagNumber(2)
   void clearWalkCount() => $_clearField(2);
+
+  @$pb.TagNumber(3)
+  $pb.PbList<ChampionshipStat> get byChampionship => $_getList(2);
+}
+
+/// Per-championship breakdown of a user's walked area. Walks whose
+/// championship was deleted (championship_id set NULL) or that were never
+/// tied to one are grouped together with championship_id empty.
+class ChampionshipStat extends $pb.GeneratedMessage {
+  factory ChampionshipStat({
+    $core.String? championshipId,
+    $core.String? championshipName,
+    $core.double? areaM2,
+    $core.int? walkCount,
+  }) {
+    final result = create();
+    if (championshipId != null) result.championshipId = championshipId;
+    if (championshipName != null) result.championshipName = championshipName;
+    if (areaM2 != null) result.areaM2 = areaM2;
+    if (walkCount != null) result.walkCount = walkCount;
+    return result;
+  }
+
+  ChampionshipStat._();
+
+  factory ChampionshipStat.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(data, registry);
+  factory ChampionshipStat.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'ChampionshipStat',
+      package: const $pb.PackageName(_omitMessageNames ? '' : 'walk'),
+      createEmptyInstance: create)
+    ..aOS(1, _omitFieldNames ? '' : 'championshipId')
+    ..aOS(2, _omitFieldNames ? '' : 'championshipName')
+    ..aD(3, _omitFieldNames ? '' : 'areaM2')
+    ..aI(4, _omitFieldNames ? '' : 'walkCount')
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  ChampionshipStat clone() => deepCopy();
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  ChampionshipStat copyWith(void Function(ChampionshipStat) updates) =>
+      super.copyWith((message) => updates(message as ChampionshipStat))
+          as ChampionshipStat;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static ChampionshipStat create() => ChampionshipStat._();
+  @$core.override
+  ChampionshipStat createEmptyInstance() => create();
+  @$core.pragma('dart2js:noInline')
+  static ChampionshipStat getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<ChampionshipStat>(create);
+  static ChampionshipStat? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get championshipId => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set championshipId($core.String value) => $_setString(0, value);
+  @$pb.TagNumber(1)
+  $core.bool hasChampionshipId() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearChampionshipId() => $_clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.String get championshipName => $_getSZ(1);
+  @$pb.TagNumber(2)
+  set championshipName($core.String value) => $_setString(1, value);
+  @$pb.TagNumber(2)
+  $core.bool hasChampionshipName() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearChampionshipName() => $_clearField(2);
+
+  @$pb.TagNumber(3)
+  $core.double get areaM2 => $_getN(2);
+  @$pb.TagNumber(3)
+  set areaM2($core.double value) => $_setDouble(2, value);
+  @$pb.TagNumber(3)
+  $core.bool hasAreaM2() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearAreaM2() => $_clearField(3);
+
+  @$pb.TagNumber(4)
+  $core.int get walkCount => $_getIZ(3);
+  @$pb.TagNumber(4)
+  set walkCount($core.int value) => $_setSignedInt32(3, value);
+  @$pb.TagNumber(4)
+  $core.bool hasWalkCount() => $_has(3);
+  @$pb.TagNumber(4)
+  void clearWalkCount() => $_clearField(4);
 }
 
 const $core.bool _omitFieldNames =
