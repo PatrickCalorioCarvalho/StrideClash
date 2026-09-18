@@ -37,6 +37,23 @@ jobs:
           GRPC_USE_TLS=${{ secrets.MOBILE_GRPC_USE_TLS }}
           EOF
 
+      # A chave de release é fixa (gitignored) pra manter sempre o mesmo
+      # SHA-1 — o Google Sign-In é vinculado a ele, e a chave debug que o
+      # Gradle geraria sozinha no runner é aleatória a cada build (foi o que
+      # quebrou o login no primeiro APK gerado pelo CI). Secrets necessários:
+      #   RELEASE_KEYSTORE_BASE64 (keystore .jks em base64),
+      #   RELEASE_KEYSTORE_PASSWORD, RELEASE_KEY_ALIAS
+      - name: Create release keystore
+        working-directory: mobile/android
+        run: |
+          echo "${{ secrets.RELEASE_KEYSTORE_BASE64 }}" | base64 -d > app/upload-keystore.jks
+          cat > key.properties << EOF
+          storePassword=${{ secrets.RELEASE_KEYSTORE_PASSWORD }}
+          keyPassword=${{ secrets.RELEASE_KEYSTORE_PASSWORD }}
+          keyAlias=${{ secrets.RELEASE_KEY_ALIAS }}
+          storeFile=upload-keystore.jks
+          EOF
+
       - name: Install dependencies
         working-directory: mobile
         run: flutter pub get
