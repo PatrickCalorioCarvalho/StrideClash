@@ -10,14 +10,23 @@ class GrpcClient {
   late AuthServiceClient auth;
   late WalkServiceClient walk;
   GrpcClient() {
+    final host = dotenv.env['GRPC_HOST'];
+    final port = dotenv.env['GRPC_PORT'];
+    if (host == null || host.isEmpty || port == null || port.isEmpty) {
+      throw StateError(
+        'mobile/.env sem GRPC_HOST/GRPC_PORT — esse build foi gerado sem '
+        'as variáveis de ambiente configuradas (secrets do CI ausentes).',
+      );
+    }
+
     // GRPC_USE_TLS=true quando o destino é o túnel ngrok (que termina TLS
     // na borda e expõe https://...) — pro backend direto (dev local/LAN,
     // sem TLS nenhum), deixe em branco/false pra usar o canal insecure.
     final useTls = dotenv.env['GRPC_USE_TLS']?.toLowerCase() == 'true';
 
     final channel = ClientChannel(
-      dotenv.env['GRPC_HOST']!,
-      port: int.parse(dotenv.env['GRPC_PORT']!),
+      host,
+      port: int.parse(port),
       options: ChannelOptions(
         credentials: useTls
             ? const ChannelCredentials.secure()
