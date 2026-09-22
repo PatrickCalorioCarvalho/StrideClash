@@ -201,3 +201,64 @@ func (r *WalkRepository) GetUserStatsByChampionship(userID string) ([]Championsh
 
 	return stats, rows.Err()
 }
+
+type WalkSummary struct {
+	ID         string
+	StartedAt  time.Time
+	FinishedAt time.Time
+	AreaM2     float64
+}
+
+// ListByUserAndChampionship drills into one GetUserStatsByChampionship
+// group — championshipID empty means the same "sem campeonato" group
+// (no championship, or its championship since deleted).
+func (r *WalkRepository) ListByUserAndChampionship(userID, championshipID string) ([]WalkSummary, error) {
+	var rows *sql.Rows
+	var err error
+
+	if championshipID == "" {
+		rows, err = r.DB.Query(`
+			SELECT id, started_at, finished_at, area_m2
+			FROM walks
+			WHERE user_id = $1 AND championship_id IS NULL
+			  AND finished_at IS NOT NULL AND polygon IS NOT NULL
+			ORDER BY finished_at DESC
+		`, userID)
+	} else {
+		rows, err = r.DB.Query(`
+			SELECT id, started_at, finished_at, area_m2
+			FROM walks
+			WHERE user_id = $1 AND championship_id = $2
+			  AND finished_at IS NOT NULL AND polygon IS NOT NULL
+			ORDER BY finished_at DESC
+		`, userID, championshipID)
+	}
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var out []WalkSummary
+	for rows.Next() {
+		var w WalkSummary
+		if err := rows.Scan(&w.ID, &w.StartedAt, &w.FinishedAt, &w.AreaM2); err != nil {
+			return nil, err
+		}
+		out = append(out, w)
+	}
+
+	return out, rows.Err()
+}
+
+// DeleteOwnedByUser removes a walk (and its points, via ON DELETE CASCADE)
+// but only if it actually belongs to userID — reports false instead of
+// erroring if it doesn't exist or belongs to someone else.
+func (r *WalkRepository) DeleteOwnedByUser(walkID, userID string) (bool, error) {
+	res, err := r.DB.Exec(`DELETE FROM walks WHERE id = $1 AND user_id = $2`, walkID, userID)
+	if err != nil {
+		return false, err
+	}
+
+	n, err := res.RowsAffected()
+	return n > 0, err
+}

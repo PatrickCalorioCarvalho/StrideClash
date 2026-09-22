@@ -154,3 +154,96 @@ final $typed_data.Uint8List championshipStatDescriptor = $convert.base64Decode(
     'ChBDaGFtcGlvbnNoaXBTdGF0EicKD2NoYW1waW9uc2hpcF9pZBgBIAEoCVIOY2hhbXBpb25zaG'
     'lwSWQSKwoRY2hhbXBpb25zaGlwX25hbWUYAiABKAlSEGNoYW1waW9uc2hpcE5hbWUSFwoHYXJl'
     'YV9tMhgDIAEoAVIGYXJlYU0yEh0KCndhbGtfY291bnQYBCABKAVSCXdhbGtDb3VudA==');
+
+@$core.Deprecated('Use listMyWalksRequestDescriptor instead')
+const ListMyWalksRequest$json = {
+  '1': 'ListMyWalksRequest',
+  '2': [
+    {'1': 'user_id', '3': 1, '4': 1, '5': 9, '10': 'userId'},
+    {'1': 'championship_id', '3': 2, '4': 1, '5': 9, '10': 'championshipId'},
+  ],
+};
+
+/// Descriptor for `ListMyWalksRequest`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List listMyWalksRequestDescriptor = $convert.base64Decode(
+    'ChJMaXN0TXlXYWxrc1JlcXVlc3QSFwoHdXNlcl9pZBgBIAEoCVIGdXNlcklkEicKD2NoYW1waW'
+    '9uc2hpcF9pZBgCIAEoCVIOY2hhbXBpb25zaGlwSWQ=');
+
+@$core.Deprecated('Use listMyWalksResponseDescriptor instead')
+const ListMyWalksResponse$json = {
+  '1': 'ListMyWalksResponse',
+  '2': [
+    {
+      '1': 'walks',
+      '3': 1,
+      '4': 3,
+      '5': 11,
+      '6': '.walk.WalkSummary',
+      '10': 'walks'
+    },
+  ],
+};
+
+/// Descriptor for `ListMyWalksResponse`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List listMyWalksResponseDescriptor = $convert.base64Decode(
+    'ChNMaXN0TXlXYWxrc1Jlc3BvbnNlEicKBXdhbGtzGAEgAygLMhEud2Fsay5XYWxrU3VtbWFyeV'
+    'IFd2Fsa3M=');
+
+@$core.Deprecated('Use walkSummaryDescriptor instead')
+const WalkSummary$json = {
+  '1': 'WalkSummary',
+  '2': [
+    {'1': 'id', '3': 1, '4': 1, '5': 9, '10': 'id'},
+    {
+      '1': 'started_at',
+      '3': 2,
+      '4': 1,
+      '5': 11,
+      '6': '.google.protobuf.Timestamp',
+      '10': 'startedAt'
+    },
+    {
+      '1': 'finished_at',
+      '3': 3,
+      '4': 1,
+      '5': 11,
+      '6': '.google.protobuf.Timestamp',
+      '10': 'finishedAt'
+    },
+    {'1': 'area_m2', '3': 4, '4': 1, '5': 1, '10': 'areaM2'},
+  ],
+};
+
+/// Descriptor for `WalkSummary`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List walkSummaryDescriptor = $convert.base64Decode(
+    'CgtXYWxrU3VtbWFyeRIOCgJpZBgBIAEoCVICaWQSOQoKc3RhcnRlZF9hdBgCIAEoCzIaLmdvb2'
+    'dsZS5wcm90b2J1Zi5UaW1lc3RhbXBSCXN0YXJ0ZWRBdBI7CgtmaW5pc2hlZF9hdBgDIAEoCzIa'
+    'Lmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXBSCmZpbmlzaGVkQXQSFwoHYXJlYV9tMhgEIAEoAV'
+    'IGYXJlYU0y');
+
+@$core.Deprecated('Use deleteWalkRequestDescriptor instead')
+const DeleteWalkRequest$json = {
+  '1': 'DeleteWalkRequest',
+  '2': [
+    {'1': 'walk_id', '3': 1, '4': 1, '5': 9, '10': 'walkId'},
+    {'1': 'user_id', '3': 2, '4': 1, '5': 9, '10': 'userId'},
+  ],
+};
+
+/// Descriptor for `DeleteWalkRequest`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List deleteWalkRequestDescriptor = $convert.base64Decode(
+    'ChFEZWxldGVXYWxrUmVxdWVzdBIXCgd3YWxrX2lkGAEgASgJUgZ3YWxrSWQSFwoHdXNlcl9pZB'
+    'gCIAEoCVIGdXNlcklk');
+
+@$core.Deprecated('Use deleteWalkResponseDescriptor instead')
+const DeleteWalkResponse$json = {
+  '1': 'DeleteWalkResponse',
+  '2': [
+    {'1': 'success', '3': 1, '4': 1, '5': 8, '10': 'success'},
+  ],
+};
+
+/// Descriptor for `DeleteWalkResponse`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List deleteWalkResponseDescriptor =
+    $convert.base64Decode(
+        'ChJEZWxldGVXYWxrUmVzcG9uc2USGAoHc3VjY2VzcxgBIAEoCFIHc3VjY2Vzcw==');

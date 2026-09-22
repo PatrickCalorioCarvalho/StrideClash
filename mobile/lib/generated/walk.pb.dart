@@ -515,6 +515,339 @@ class ChampionshipStat extends $pb.GeneratedMessage {
   void clearWalkCount() => $_clearField(4);
 }
 
+/// Drills into one ChampionshipStat group — championship_id empty means the
+/// same "sem campeonato" group ChampionshipStat groups under an empty id.
+class ListMyWalksRequest extends $pb.GeneratedMessage {
+  factory ListMyWalksRequest({
+    $core.String? userId,
+    $core.String? championshipId,
+  }) {
+    final result = create();
+    if (userId != null) result.userId = userId;
+    if (championshipId != null) result.championshipId = championshipId;
+    return result;
+  }
+
+  ListMyWalksRequest._();
+
+  factory ListMyWalksRequest.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(data, registry);
+  factory ListMyWalksRequest.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'ListMyWalksRequest',
+      package: const $pb.PackageName(_omitMessageNames ? '' : 'walk'),
+      createEmptyInstance: create)
+    ..aOS(1, _omitFieldNames ? '' : 'userId')
+    ..aOS(2, _omitFieldNames ? '' : 'championshipId')
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  ListMyWalksRequest clone() => deepCopy();
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  ListMyWalksRequest copyWith(void Function(ListMyWalksRequest) updates) =>
+      super.copyWith((message) => updates(message as ListMyWalksRequest))
+          as ListMyWalksRequest;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static ListMyWalksRequest create() => ListMyWalksRequest._();
+  @$core.override
+  ListMyWalksRequest createEmptyInstance() => create();
+  @$core.pragma('dart2js:noInline')
+  static ListMyWalksRequest getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<ListMyWalksRequest>(create);
+  static ListMyWalksRequest? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get userId => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set userId($core.String value) => $_setString(0, value);
+  @$pb.TagNumber(1)
+  $core.bool hasUserId() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearUserId() => $_clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.String get championshipId => $_getSZ(1);
+  @$pb.TagNumber(2)
+  set championshipId($core.String value) => $_setString(1, value);
+  @$pb.TagNumber(2)
+  $core.bool hasChampionshipId() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearChampionshipId() => $_clearField(2);
+}
+
+class ListMyWalksResponse extends $pb.GeneratedMessage {
+  factory ListMyWalksResponse({
+    $core.Iterable<WalkSummary>? walks,
+  }) {
+    final result = create();
+    if (walks != null) result.walks.addAll(walks);
+    return result;
+  }
+
+  ListMyWalksResponse._();
+
+  factory ListMyWalksResponse.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(data, registry);
+  factory ListMyWalksResponse.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'ListMyWalksResponse',
+      package: const $pb.PackageName(_omitMessageNames ? '' : 'walk'),
+      createEmptyInstance: create)
+    ..pPM<WalkSummary>(1, _omitFieldNames ? '' : 'walks',
+        subBuilder: WalkSummary.create)
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  ListMyWalksResponse clone() => deepCopy();
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  ListMyWalksResponse copyWith(void Function(ListMyWalksResponse) updates) =>
+      super.copyWith((message) => updates(message as ListMyWalksResponse))
+          as ListMyWalksResponse;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static ListMyWalksResponse create() => ListMyWalksResponse._();
+  @$core.override
+  ListMyWalksResponse createEmptyInstance() => create();
+  @$core.pragma('dart2js:noInline')
+  static ListMyWalksResponse getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<ListMyWalksResponse>(create);
+  static ListMyWalksResponse? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $pb.PbList<WalkSummary> get walks => $_getList(0);
+}
+
+class WalkSummary extends $pb.GeneratedMessage {
+  factory WalkSummary({
+    $core.String? id,
+    $1.Timestamp? startedAt,
+    $1.Timestamp? finishedAt,
+    $core.double? areaM2,
+  }) {
+    final result = create();
+    if (id != null) result.id = id;
+    if (startedAt != null) result.startedAt = startedAt;
+    if (finishedAt != null) result.finishedAt = finishedAt;
+    if (areaM2 != null) result.areaM2 = areaM2;
+    return result;
+  }
+
+  WalkSummary._();
+
+  factory WalkSummary.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(data, registry);
+  factory WalkSummary.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'WalkSummary',
+      package: const $pb.PackageName(_omitMessageNames ? '' : 'walk'),
+      createEmptyInstance: create)
+    ..aOS(1, _omitFieldNames ? '' : 'id')
+    ..aOM<$1.Timestamp>(2, _omitFieldNames ? '' : 'startedAt',
+        subBuilder: $1.Timestamp.create)
+    ..aOM<$1.Timestamp>(3, _omitFieldNames ? '' : 'finishedAt',
+        subBuilder: $1.Timestamp.create)
+    ..aD(4, _omitFieldNames ? '' : 'areaM2')
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  WalkSummary clone() => deepCopy();
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  WalkSummary copyWith(void Function(WalkSummary) updates) =>
+      super.copyWith((message) => updates(message as WalkSummary))
+          as WalkSummary;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static WalkSummary create() => WalkSummary._();
+  @$core.override
+  WalkSummary createEmptyInstance() => create();
+  @$core.pragma('dart2js:noInline')
+  static WalkSummary getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<WalkSummary>(create);
+  static WalkSummary? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get id => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set id($core.String value) => $_setString(0, value);
+  @$pb.TagNumber(1)
+  $core.bool hasId() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearId() => $_clearField(1);
+
+  @$pb.TagNumber(2)
+  $1.Timestamp get startedAt => $_getN(1);
+  @$pb.TagNumber(2)
+  set startedAt($1.Timestamp value) => $_setField(2, value);
+  @$pb.TagNumber(2)
+  $core.bool hasStartedAt() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearStartedAt() => $_clearField(2);
+  @$pb.TagNumber(2)
+  $1.Timestamp ensureStartedAt() => $_ensure(1);
+
+  @$pb.TagNumber(3)
+  $1.Timestamp get finishedAt => $_getN(2);
+  @$pb.TagNumber(3)
+  set finishedAt($1.Timestamp value) => $_setField(3, value);
+  @$pb.TagNumber(3)
+  $core.bool hasFinishedAt() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearFinishedAt() => $_clearField(3);
+  @$pb.TagNumber(3)
+  $1.Timestamp ensureFinishedAt() => $_ensure(2);
+
+  @$pb.TagNumber(4)
+  $core.double get areaM2 => $_getN(3);
+  @$pb.TagNumber(4)
+  set areaM2($core.double value) => $_setDouble(3, value);
+  @$pb.TagNumber(4)
+  $core.bool hasAreaM2() => $_has(3);
+  @$pb.TagNumber(4)
+  void clearAreaM2() => $_clearField(4);
+}
+
+class DeleteWalkRequest extends $pb.GeneratedMessage {
+  factory DeleteWalkRequest({
+    $core.String? walkId,
+    $core.String? userId,
+  }) {
+    final result = create();
+    if (walkId != null) result.walkId = walkId;
+    if (userId != null) result.userId = userId;
+    return result;
+  }
+
+  DeleteWalkRequest._();
+
+  factory DeleteWalkRequest.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(data, registry);
+  factory DeleteWalkRequest.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'DeleteWalkRequest',
+      package: const $pb.PackageName(_omitMessageNames ? '' : 'walk'),
+      createEmptyInstance: create)
+    ..aOS(1, _omitFieldNames ? '' : 'walkId')
+    ..aOS(2, _omitFieldNames ? '' : 'userId')
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  DeleteWalkRequest clone() => deepCopy();
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  DeleteWalkRequest copyWith(void Function(DeleteWalkRequest) updates) =>
+      super.copyWith((message) => updates(message as DeleteWalkRequest))
+          as DeleteWalkRequest;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static DeleteWalkRequest create() => DeleteWalkRequest._();
+  @$core.override
+  DeleteWalkRequest createEmptyInstance() => create();
+  @$core.pragma('dart2js:noInline')
+  static DeleteWalkRequest getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<DeleteWalkRequest>(create);
+  static DeleteWalkRequest? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get walkId => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set walkId($core.String value) => $_setString(0, value);
+  @$pb.TagNumber(1)
+  $core.bool hasWalkId() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearWalkId() => $_clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.String get userId => $_getSZ(1);
+  @$pb.TagNumber(2)
+  set userId($core.String value) => $_setString(1, value);
+  @$pb.TagNumber(2)
+  $core.bool hasUserId() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearUserId() => $_clearField(2);
+}
+
+class DeleteWalkResponse extends $pb.GeneratedMessage {
+  factory DeleteWalkResponse({
+    $core.bool? success,
+  }) {
+    final result = create();
+    if (success != null) result.success = success;
+    return result;
+  }
+
+  DeleteWalkResponse._();
+
+  factory DeleteWalkResponse.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(data, registry);
+  factory DeleteWalkResponse.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'DeleteWalkResponse',
+      package: const $pb.PackageName(_omitMessageNames ? '' : 'walk'),
+      createEmptyInstance: create)
+    ..aOB(1, _omitFieldNames ? '' : 'success')
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  DeleteWalkResponse clone() => deepCopy();
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  DeleteWalkResponse copyWith(void Function(DeleteWalkResponse) updates) =>
+      super.copyWith((message) => updates(message as DeleteWalkResponse))
+          as DeleteWalkResponse;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static DeleteWalkResponse create() => DeleteWalkResponse._();
+  @$core.override
+  DeleteWalkResponse createEmptyInstance() => create();
+  @$core.pragma('dart2js:noInline')
+  static DeleteWalkResponse getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<DeleteWalkResponse>(create);
+  static DeleteWalkResponse? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.bool get success => $_getBF(0);
+  @$pb.TagNumber(1)
+  set success($core.bool value) => $_setBool(0, value);
+  @$pb.TagNumber(1)
+  $core.bool hasSuccess() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearSuccess() => $_clearField(1);
+}
+
 const $core.bool _omitFieldNames =
     $core.bool.fromEnvironment('protobuf.omit_field_names');
 const $core.bool _omitMessageNames =

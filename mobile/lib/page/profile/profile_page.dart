@@ -4,6 +4,7 @@ import '../../auth/auth_storage.dart';
 import '../../grpc_client.dart';
 import '../../generated/walk.pbgrpc.dart';
 import '../auth/login_page.dart';
+import 'walk_list_page.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -146,11 +147,23 @@ class _ProfilePageState extends State<ProfilePage> {
           noChampionship ? Icons.directions_walk : Icons.emoji_events_outlined,
         ),
         title: Text(stat.championshipName),
-        subtitle: Text('${stat.walkCount} caminhada(s)'),
+        subtitle: Text('${stat.walkCount} caminhada(s) — toque pra ver/apagar'),
         trailing: Text(
           '${stat.areaM2.toStringAsFixed(0)} m²',
           style: const TextStyle(fontWeight: FontWeight.bold),
         ),
+        onTap: () async {
+          final changed = await Navigator.push<bool>(
+            context,
+            MaterialPageRoute(
+              builder: (_) => WalkListPage(
+                championshipId: stat.championshipId,
+                championshipName: stat.championshipName,
+              ),
+            ),
+          );
+          if (changed == true && mounted) setState(() {});
+        },
       ),
     );
   }

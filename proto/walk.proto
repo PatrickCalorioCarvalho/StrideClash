@@ -9,6 +9,8 @@ import "google/protobuf/timestamp.proto";
 service WalkService {
   rpc SyncWalk(SyncWalkRequest) returns (SyncWalkResponse);
   rpc GetUserStats(GetUserStatsRequest) returns (GetUserStatsResponse);
+  rpc ListMyWalks(ListMyWalksRequest) returns (ListMyWalksResponse);
+  rpc DeleteWalk(DeleteWalkRequest) returns (DeleteWalkResponse);
 }
 
 // SyncWalk uploads a walk recorded entirely offline: the client generates
@@ -54,4 +56,31 @@ message ChampionshipStat {
   string championship_name = 2;
   double area_m2 = 3;
   int32 walk_count = 4;
+}
+
+// Drills into one ChampionshipStat group — championship_id empty means the
+// same "sem campeonato" group ChampionshipStat groups under an empty id.
+message ListMyWalksRequest {
+  string user_id = 1;
+  string championship_id = 2;
+}
+
+message ListMyWalksResponse {
+  repeated WalkSummary walks = 1;
+}
+
+message WalkSummary {
+  string id = 1;
+  google.protobuf.Timestamp started_at = 2;
+  google.protobuf.Timestamp finished_at = 3;
+  double area_m2 = 4;
+}
+
+message DeleteWalkRequest {
+  string walk_id = 1;
+  string user_id = 2;
+}
+
+message DeleteWalkResponse {
+  bool success = 1;
 }

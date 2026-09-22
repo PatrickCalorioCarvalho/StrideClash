@@ -11,6 +11,7 @@ import (
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 // minPolygonPoints is the smallest ring that can enclose a non-zero area.
@@ -141,6 +142,50 @@ func (s *WalkService) GetUserStats(
 		WalkCount:      int32(walkCount),
 		ByChampionship: stats,
 	}, nil
+}
+
+// ListMyWalks drills into one ChampionshipStat group from GetUserStats —
+// ChampionshipId empty lists the "sem campeonato" group.
+func (s *WalkService) ListMyWalks(
+	ctx context.Context,
+	req *pb.ListMyWalksRequest,
+) (*pb.ListMyWalksResponse, error) {
+
+	walks, err := s.Walks.ListByUserAndChampionship(req.UserId, req.ChampionshipId)
+	if err != nil {
+		return nil, err
+	}
+
+	out := make([]*pb.WalkSummary, len(walks))
+	for i, w := range walks {
+		out[i] = &pb.WalkSummary{
+			Id:         w.ID,
+			StartedAt:  timestamppb.New(w.StartedAt),
+			FinishedAt: timestamppb.New(w.FinishedAt),
+			AreaM2:     w.AreaM2,
+		}
+	}
+
+	return &pb.ListMyWalksResponse{Walks: out}, nil
+}
+
+// DeleteWalk removes a walk the user no longer wants counted — e.g. a test
+// walk that landed in "sem campeonato". Only the walk's own owner can delete
+// it.
+func (s *WalkService) DeleteWalk(
+	ctx context.Context,
+	req *pb.DeleteWalkRequest,
+) (*pb.DeleteWalkResponse, error) {
+
+	ok, err := s.Walks.DeleteOwnedByUser(req.WalkId, req.UserId)
+	if err != nil {
+		return nil, err
+	}
+	if !ok {
+		return nil, status.Errorf(codes.NotFound, "caminhada não encontrada")
+	}
+
+	return &pb.DeleteWalkResponse{Success: true}, nil
 }
 
 // closeRing appends the starting point to the end of the trail if the walker

@@ -46,6 +46,20 @@ class WalkServiceClient extends $grpc.Client {
     return $createUnaryCall(_$getUserStats, request, options: options);
   }
 
+  $grpc.ResponseFuture<$0.ListMyWalksResponse> listMyWalks(
+    $0.ListMyWalksRequest request, {
+    $grpc.CallOptions? options,
+  }) {
+    return $createUnaryCall(_$listMyWalks, request, options: options);
+  }
+
+  $grpc.ResponseFuture<$0.DeleteWalkResponse> deleteWalk(
+    $0.DeleteWalkRequest request, {
+    $grpc.CallOptions? options,
+  }) {
+    return $createUnaryCall(_$deleteWalk, request, options: options);
+  }
+
   // method descriptors
 
   static final _$syncWalk =
@@ -58,6 +72,16 @@ class WalkServiceClient extends $grpc.Client {
           '/walk.WalkService/GetUserStats',
           ($0.GetUserStatsRequest value) => value.writeToBuffer(),
           $0.GetUserStatsResponse.fromBuffer);
+  static final _$listMyWalks =
+      $grpc.ClientMethod<$0.ListMyWalksRequest, $0.ListMyWalksResponse>(
+          '/walk.WalkService/ListMyWalks',
+          ($0.ListMyWalksRequest value) => value.writeToBuffer(),
+          $0.ListMyWalksResponse.fromBuffer);
+  static final _$deleteWalk =
+      $grpc.ClientMethod<$0.DeleteWalkRequest, $0.DeleteWalkResponse>(
+          '/walk.WalkService/DeleteWalk',
+          ($0.DeleteWalkRequest value) => value.writeToBuffer(),
+          $0.DeleteWalkResponse.fromBuffer);
 }
 
 @$pb.GrpcServiceName('walk.WalkService')
@@ -81,6 +105,22 @@ abstract class WalkServiceBase extends $grpc.Service {
             ($core.List<$core.int> value) =>
                 $0.GetUserStatsRequest.fromBuffer(value),
             ($0.GetUserStatsResponse value) => value.writeToBuffer()));
+    $addMethod(
+        $grpc.ServiceMethod<$0.ListMyWalksRequest, $0.ListMyWalksResponse>(
+            'ListMyWalks',
+            listMyWalks_Pre,
+            false,
+            false,
+            ($core.List<$core.int> value) =>
+                $0.ListMyWalksRequest.fromBuffer(value),
+            ($0.ListMyWalksResponse value) => value.writeToBuffer()));
+    $addMethod($grpc.ServiceMethod<$0.DeleteWalkRequest, $0.DeleteWalkResponse>(
+        'DeleteWalk',
+        deleteWalk_Pre,
+        false,
+        false,
+        ($core.List<$core.int> value) => $0.DeleteWalkRequest.fromBuffer(value),
+        ($0.DeleteWalkResponse value) => value.writeToBuffer()));
   }
 
   $async.Future<$0.SyncWalkResponse> syncWalk_Pre($grpc.ServiceCall $call,
@@ -99,4 +139,20 @@ abstract class WalkServiceBase extends $grpc.Service {
 
   $async.Future<$0.GetUserStatsResponse> getUserStats(
       $grpc.ServiceCall call, $0.GetUserStatsRequest request);
+
+  $async.Future<$0.ListMyWalksResponse> listMyWalks_Pre($grpc.ServiceCall $call,
+      $async.Future<$0.ListMyWalksRequest> $request) async {
+    return listMyWalks($call, await $request);
+  }
+
+  $async.Future<$0.ListMyWalksResponse> listMyWalks(
+      $grpc.ServiceCall call, $0.ListMyWalksRequest request);
+
+  $async.Future<$0.DeleteWalkResponse> deleteWalk_Pre($grpc.ServiceCall $call,
+      $async.Future<$0.DeleteWalkRequest> $request) async {
+    return deleteWalk($call, await $request);
+  }
+
+  $async.Future<$0.DeleteWalkResponse> deleteWalk(
+      $grpc.ServiceCall call, $0.DeleteWalkRequest request);
 }

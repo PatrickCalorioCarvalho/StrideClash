@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 
@@ -13,11 +14,22 @@ const _kInvertColors = ColorFilter.matrix(<double>[
   0, 0, 0, 1, 0,
 ]);
 
+// Caches tiles to disk (via cached_network_image's default cache manager) as
+// they're viewed, so a route walked once with a signal still renders when
+// reopened offline later — nothing needs pre-downloading ahead of time,
+// tiles just accumulate in the cache as you go.
+class _CachedTileProvider extends TileProvider {
+  @override
+  ImageProvider getImage(TileCoordinates coordinates, TileLayer options) =>
+      CachedNetworkImageProvider(getTileUrl(coordinates, options));
+}
+
 Widget buildDarkTileLayer() => ColorFiltered(
       colorFilter: _kInvertColors,
       child: TileLayer(
         urlTemplate: kOsmTileUrl,
         userAgentPackageName: 'com.patrickcaloriocarvalho.strideclash',
+        tileProvider: _CachedTileProvider(),
       ),
     );
 
