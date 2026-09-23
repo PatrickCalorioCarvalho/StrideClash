@@ -21,7 +21,13 @@ const _kInvertColors = ColorFilter.matrix(<double>[
 class _CachedTileProvider extends TileProvider {
   @override
   ImageProvider getImage(TileCoordinates coordinates, TileLayer options) =>
-      CachedNetworkImageProvider(getTileUrl(coordinates, options));
+      CachedNetworkImageProvider(
+        getTileUrl(coordinates, options),
+        // Sem isso, o pedido sai sem o header 'User-Agent' que o TileLayer
+        // preenche aqui (via userAgentPackageName) — o OpenStreetMap
+        // bloqueia com 403 requisições sem User-Agent identificável.
+        headers: headers,
+      );
 }
 
 Widget buildDarkTileLayer() => ColorFiltered(
