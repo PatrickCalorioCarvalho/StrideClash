@@ -28,6 +28,7 @@ class WalkTrackingPageState extends State<WalkTrackingPage>
   bool _tracking = false;
   bool _busy = false;
   Timer? _uiTimer;
+  Timer? _preStartLocationTimer;
   LatLng? _currentCenter;
   List<Championship> _championships = [];
   String? _selectedChampionshipId;
@@ -49,22 +50,47 @@ class WalkTrackingPageState extends State<WalkTrackingPage>
         _followCurrentPosition();
       },
     );
+    // Antes de iniciar, o único jeito de saber onde a caminhada vai começar
+    // era o mapa centrado numa localização já meio velha — sem um "você
+    // está aqui" visível, ficava difícil saber de onde exatamente ia
+    // partir. Atualiza a posição atual periodicamente enquanto não está
+    // rastreando, pra mostrar isso com um marcador.
+    _preStartLocationTimer = Timer.periodic(
+      const Duration(seconds: 4),
+      (_) => _refreshCurrentLocation(),
+    );
+  }
+
+  Future<void> _refreshCurrentLocation() async {
+    if (_tracking) return;
+    try {
+      final position = await Geolocator.getCurrentPosition();
+      if (!mounted || _tracking) return;
+      setState(() {
+        _currentCenter = LatLng(position.latitude, position.longitude);
+      });
+    } catch (e) {
+      debugPrint('getCurrentPosition (pré-início) falhou: $e');
+    }
   }
 
   // The map only centers on `initialCenter` once — it never follows the
-  // walker on its own, so without this it looks "stuck" wherever it was
-  // last centered (very noticeable after unlocking the phone mid-walk).
+  // walker (or the "você está aqui" marker before starting) on its own, so
+  // without this it looks "stuck" wherever it was last centered (very
+  // noticeable after unlocking the phone mid-walk).
   void _followCurrentPosition() {
-    if (!_tracking) return;
-    final pts = _service.points;
-    if (pts.isEmpty) return;
+    LatLng? target;
+    if (_tracking) {
+      final pts = _service.points;
+      if (pts.isNotEmpty) target = LatLng(pts.last.latitude, pts.last.longitude);
+    } else {
+      target = _currentCenter;
+    }
+    if (target == null) return;
 
     try {
       final zoom = _mapController.camera.zoom;
-      _mapController.move(
-        LatLng(pts.last.latitude, pts.last.longitude),
-        zoom,
-      );
+      _mapController.move(target, zoom);
     } catch (_) {
       // Map not attached yet — the next tick will retry.
     }
@@ -121,6 +147,7 @@ class WalkTrackingPageState extends State<WalkTrackingPage>
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     _uiTimer?.cancel();
+    _preStartLocationTimer?.cancel();
     if (_tracking) {
       _service.stopWalk().catchError((_) => null);
     }
@@ -335,6 +362,22 @@ class WalkTrackingPageState extends State<WalkTrackingPage>
             children: [
               buildDarkTileLayer(),
               buildMapAttribution(),
+              if (!_tracking && _currentCenter != null)
+                MarkerLayer(
+                  markers: [
+                    Marker(
+                      point: _currentCenter!,
+                      width: 44,
+                      height: 44,
+                      alignment: Alignment.topCenter,
+                      child: const Icon(
+                        Icons.location_pin,
+                        color: Colors.redAccent,
+                        size: 44,
+                      ),
+                    ),
+                  ],
+                ),
               if (showPolygon)
                 PolygonLayer(
                   polygons: [
