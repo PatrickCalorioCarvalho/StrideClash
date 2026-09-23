@@ -10,7 +10,9 @@ import '../../generated/championship.pb.dart';
 import '../../generated/championship.pbgrpc.dart';
 import '../../model/walk_models.dart';
 import '../../services/walk_tracking_service.dart';
+import '../../theme.dart';
 import '../../widgets/dark_map_layers.dart';
+import '../../widgets/pulsing_location_marker.dart';
 
 class WalkTrackingPage extends StatefulWidget {
   const WalkTrackingPage({super.key});
@@ -270,7 +272,7 @@ class WalkTrackingPageState extends State<WalkTrackingPage>
             Icon(
               closed ? Icons.check_circle_outline : Icons.social_distance,
               size: 18,
-              color: closed ? Colors.green : null,
+              color: closed ? kNeonGreen : null,
             ),
             const SizedBox(width: 8),
             Expanded(
@@ -369,12 +371,7 @@ class WalkTrackingPageState extends State<WalkTrackingPage>
                       point: _currentCenter!,
                       width: 44,
                       height: 44,
-                      alignment: Alignment.topCenter,
-                      child: const Icon(
-                        Icons.location_pin,
-                        color: Colors.redAccent,
-                        size: 44,
-                      ),
+                      child: const PulsingLocationMarker(),
                     ),
                   ],
                 ),
@@ -383,8 +380,8 @@ class WalkTrackingPageState extends State<WalkTrackingPage>
                   polygons: [
                     Polygon(
                       points: points,
-                      color: Colors.green.withValues(alpha: 0.35),
-                      borderColor: Colors.green,
+                      color: kNeonGreen.withValues(alpha: 0.35),
+                      borderColor: kNeonGreen,
                       borderStrokeWidth: 3,
                     ),
                   ],
@@ -395,7 +392,7 @@ class WalkTrackingPageState extends State<WalkTrackingPage>
                     Polyline(
                       points: points,
                       strokeWidth: 5,
-                      color: Colors.green,
+                      color: kNeonGreen,
                     ),
                   ],
                 ),
