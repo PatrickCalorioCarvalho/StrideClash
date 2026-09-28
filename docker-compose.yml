@@ -46,6 +46,26 @@ services:
       DB_SSLMODE: disable
     ports:
       - "50051:50051"
+    # "default" = a rede própria deste projeto (fala com postgres acima);
+    # "edge" = rede compartilhada do gateway de homologação (Traefik, no
+    # HomeLabDevelopment) - só existe se este projeto rodar na MESMA vm-docker
+    # do gateway. Ver docs/HOMOLOGACAO.md lá.
+    networks:
+      - default
+      - edge
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.stride-clash-grpc.rule=PathPrefix(`/auth.AuthService`) || PathPrefix(`/game.ChampionshipService`) || PathPrefix(`/walk.WalkService`)"
+      - "traefik.http.routers.stride-clash-grpc.priority=100"
+      # h2c: o grpc.NewServer() deste backend roda sem TLS - ver
+      # docker-compose.ngrok.yml pro mesmo motivo (endpoints TCP/TLS do ngrok
+      # exigem cartão).
+      - "traefik.http.services.stride-clash-grpc.loadbalancer.server.scheme=h2c"
+      - "traefik.http.services.stride-clash-grpc.loadbalancer.server.port=50051"
+
+networks:
+  edge:
+    external: true
 
 volumes:
   postgres_data:
