@@ -42,7 +42,14 @@ CREATE TABLE IF NOT EXISTS walks (
     -- self-intersecting walk (ST_MakeValid) or splitting one via
     -- ST_Difference can legitimately produce a MultiPolygon.
     polygon GEOMETRY(Geometry, 4326),
-    area_m2 DOUBLE PRECISION
+    area_m2 DOUBLE PRECISION,
+    -- Trilha real percorrida (soma das distâncias entre pontos consecutivos,
+    -- sem fechar o anel) e o motivo de invalidação quando polygon é NULL por
+    -- não ter passado nas regras de anti-cheat/validação em services/walk.go
+    -- — permitem ao usuário ver, numa lista de todas as caminhadas, o pace/
+    -- velocidade média e por que uma caminhada específica não contou.
+    distance_m DOUBLE PRECISION,
+    invalid_reason TEXT
 );
 
 -- WALK POINTS

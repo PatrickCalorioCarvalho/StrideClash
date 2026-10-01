@@ -4,6 +4,7 @@ import '../../auth/auth_storage.dart';
 import '../../grpc_client.dart';
 import '../../generated/walk.pbgrpc.dart';
 import '../auth/login_page.dart';
+import 'all_walks_page.dart';
 import 'walk_list_page.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -116,6 +117,19 @@ class _ProfilePageState extends State<ProfilePage> {
                           'Caminhadas concluídas',
                         ),
                       ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Card(
+                  child: ListTile(
+                    leading: const Icon(Icons.history),
+                    title: const Text('Minhas caminhadas'),
+                    subtitle: const Text('Histórico completo, inclusive as inválidas'),
+                    trailing: const Icon(Icons.chevron_right),
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const AllWalksPage()),
                     ),
                   ),
                 ),

@@ -53,6 +53,13 @@ class WalkServiceClient extends $grpc.Client {
     return $createUnaryCall(_$listMyWalks, request, options: options);
   }
 
+  $grpc.ResponseFuture<$0.ListAllMyWalksResponse> listAllMyWalks(
+    $0.ListAllMyWalksRequest request, {
+    $grpc.CallOptions? options,
+  }) {
+    return $createUnaryCall(_$listAllMyWalks, request, options: options);
+  }
+
   $grpc.ResponseFuture<$0.DeleteWalkResponse> deleteWalk(
     $0.DeleteWalkRequest request, {
     $grpc.CallOptions? options,
@@ -77,6 +84,11 @@ class WalkServiceClient extends $grpc.Client {
           '/walk.WalkService/ListMyWalks',
           ($0.ListMyWalksRequest value) => value.writeToBuffer(),
           $0.ListMyWalksResponse.fromBuffer);
+  static final _$listAllMyWalks =
+      $grpc.ClientMethod<$0.ListAllMyWalksRequest, $0.ListAllMyWalksResponse>(
+          '/walk.WalkService/ListAllMyWalks',
+          ($0.ListAllMyWalksRequest value) => value.writeToBuffer(),
+          $0.ListAllMyWalksResponse.fromBuffer);
   static final _$deleteWalk =
       $grpc.ClientMethod<$0.DeleteWalkRequest, $0.DeleteWalkResponse>(
           '/walk.WalkService/DeleteWalk',
@@ -114,6 +126,15 @@ abstract class WalkServiceBase extends $grpc.Service {
             ($core.List<$core.int> value) =>
                 $0.ListMyWalksRequest.fromBuffer(value),
             ($0.ListMyWalksResponse value) => value.writeToBuffer()));
+    $addMethod($grpc.ServiceMethod<$0.ListAllMyWalksRequest,
+            $0.ListAllMyWalksResponse>(
+        'ListAllMyWalks',
+        listAllMyWalks_Pre,
+        false,
+        false,
+        ($core.List<$core.int> value) =>
+            $0.ListAllMyWalksRequest.fromBuffer(value),
+        ($0.ListAllMyWalksResponse value) => value.writeToBuffer()));
     $addMethod($grpc.ServiceMethod<$0.DeleteWalkRequest, $0.DeleteWalkResponse>(
         'DeleteWalk',
         deleteWalk_Pre,
@@ -147,6 +168,15 @@ abstract class WalkServiceBase extends $grpc.Service {
 
   $async.Future<$0.ListMyWalksResponse> listMyWalks(
       $grpc.ServiceCall call, $0.ListMyWalksRequest request);
+
+  $async.Future<$0.ListAllMyWalksResponse> listAllMyWalks_Pre(
+      $grpc.ServiceCall $call,
+      $async.Future<$0.ListAllMyWalksRequest> $request) async {
+    return listAllMyWalks($call, await $request);
+  }
+
+  $async.Future<$0.ListAllMyWalksResponse> listAllMyWalks(
+      $grpc.ServiceCall call, $0.ListAllMyWalksRequest request);
 
   $async.Future<$0.DeleteWalkResponse> deleteWalk_Pre($grpc.ServiceCall $call,
       $async.Future<$0.DeleteWalkRequest> $request) async {

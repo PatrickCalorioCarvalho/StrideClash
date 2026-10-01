@@ -18,22 +18,23 @@ func NewWalkRepository(db *sql.DB) *WalkRepository {
 // GetSyncState reports whether a walk (identified by the client-generated
 // id) was already fully synced in an earlier attempt, so SyncWalk can be
 // retried safely without double-processing it.
-func (r *WalkRepository) GetSyncState(walkID string) (exists bool, finished bool, areaM2 float64, err error) {
+func (r *WalkRepository) GetSyncState(walkID string) (exists bool, finished bool, areaM2 float64, invalidReason string, err error) {
 	var area sql.NullFloat64
 	var finishedAt sql.NullTime
+	var reason sql.NullString
 
 	err = r.DB.QueryRow(`
-		SELECT finished_at, area_m2 FROM walks WHERE id = $1
-	`, walkID).Scan(&finishedAt, &area)
+		SELECT finished_at, area_m2, invalid_reason FROM walks WHERE id = $1
+	`, walkID).Scan(&finishedAt, &area, &reason)
 
 	if err == sql.ErrNoRows {
-		return false, false, 0, nil
+		return false, false, 0, "", nil
 	}
 	if err != nil {
-		return false, false, 0, err
+		return false, false, 0, "", err
 	}
 
-	return true, finishedAt.Valid, area.Float64, nil
+	return true, finishedAt.Valid, area.Float64, reason.String, nil
 }
 
 // EnsureCreated inserts the walk row if it doesn't exist yet. Safe to call
@@ -113,6 +114,25 @@ func (r *WalkRepository) ClearPolygon(walkID string) error {
 		SET polygon = NULL, area_m2 = 0
 		WHERE id = $1
 	`, walkID)
+
+	return err
+}
+
+// SetWalkMeta stores the actual distance walked and, for an invalidated
+// capture, why — set on every sync (valid or not) so a walk's pace/speed can
+// be inspected later even when it didn't count territory. invalidReason
+// empty clears any previous reason (e.g. a retried sync that now validates).
+func (r *WalkRepository) SetWalkMeta(walkID string, distanceM float64, invalidReason string) error {
+	var reason sql.NullString
+	if invalidReason != "" {
+		reason = sql.NullString{String: invalidReason, Valid: true}
+	}
+
+	_, err := r.DB.Exec(`
+		UPDATE walks
+		SET distance_m = $1, invalid_reason = $2
+		WHERE id = $3
+	`, distanceM, reason, walkID)
 
 	return err
 }
@@ -242,6 +262,55 @@ func (r *WalkRepository) ListByUserAndChampionship(userID, championshipID string
 	for rows.Next() {
 		var w WalkSummary
 		if err := rows.Scan(&w.ID, &w.StartedAt, &w.FinishedAt, &w.AreaM2); err != nil {
+			return nil, err
+		}
+		out = append(out, w)
+	}
+
+	return out, rows.Err()
+}
+
+type WalkDetail struct {
+	ID               string
+	ChampionshipID   string
+	ChampionshipName string
+	StartedAt        time.Time
+	FinishedAt       time.Time
+	AreaM2           float64
+	Valid            bool
+	InvalidReason    string
+	DistanceM        float64
+}
+
+// ListAllByUser returns every one of the user's finished walks, valid or
+// not — the full history, so an invalidated walk's pace/speed can be
+// inspected to see why it got rejected (unlike ListByUserAndChampionship,
+// which only ever shows the valid captures behind one stats group).
+func (r *WalkRepository) ListAllByUser(userID string) ([]WalkDetail, error) {
+	rows, err := r.DB.Query(`
+		SELECT w.id, COALESCE(c.id::text, ''), COALESCE(c.name, 'Sem campeonato'),
+			w.started_at, w.finished_at, COALESCE(w.area_m2, 0),
+			(w.polygon IS NOT NULL) AS valid,
+			COALESCE(w.invalid_reason, ''),
+			COALESCE(w.distance_m, 0)
+		FROM walks w
+		LEFT JOIN championships c ON c.id = w.championship_id
+		WHERE w.user_id = $1 AND w.finished_at IS NOT NULL
+		ORDER BY w.finished_at DESC
+	`, userID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var out []WalkDetail
+	for rows.Next() {
+		var w WalkDetail
+		if err := rows.Scan(
+			&w.ID, &w.ChampionshipID, &w.ChampionshipName,
+			&w.StartedAt, &w.FinishedAt, &w.AreaM2,
+			&w.Valid, &w.InvalidReason, &w.DistanceM,
+		); err != nil {
 			return nil, err
 		}
 		out = append(out, w)

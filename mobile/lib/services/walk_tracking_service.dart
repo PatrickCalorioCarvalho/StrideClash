@@ -42,7 +42,7 @@ class WalkTrackingService {
 
     _db = await openDatabase(
       path,
-      version: 4,
+      version: 5,
       onCreate: (db, _) async {
         await db.execute('''
           CREATE TABLE walks (
@@ -54,7 +54,9 @@ class WalkTrackingService {
             distance REAL,
             polygon_wkt TEXT,
             area_m2 REAL,
-            status TEXT NOT NULL DEFAULT 'recording'
+            status TEXT NOT NULL DEFAULT 'recording',
+            valid INTEGER,
+            invalid_reason TEXT
           )
         ''');
 
@@ -92,6 +94,10 @@ class WalkTrackingService {
         }
         if (oldVersion < 4) {
           await _createCacheTables(db);
+        }
+        if (oldVersion < 5) {
+          await db.execute('ALTER TABLE walks ADD COLUMN valid INTEGER');
+          await db.execute('ALTER TABLE walks ADD COLUMN invalid_reason TEXT');
         }
       },
     );
@@ -323,6 +329,9 @@ class WalkTrackingService {
     if (points.length < 3) {
       walk.status = WalkStatus.synced;
       walk.areaM2 = 0;
+      walk.valid = false;
+      walk.invalidReason =
+          'Poucos pontos de GPS registrados — caminhada muito curta ou parada rápido demais.';
       await _db!.update(
         'walks',
         walk.toMap(),
@@ -351,6 +360,8 @@ class WalkTrackingService {
       walk.polygonWkt = response.polygonWkt;
       walk.areaM2 = response.areaM2;
       walk.status = WalkStatus.synced;
+      walk.valid = response.valid;
+      walk.invalidReason = response.invalidReason.isEmpty ? null : response.invalidReason;
 
       await _db!.update(
         'walks',

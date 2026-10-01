@@ -19,10 +19,11 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	WalkService_SyncWalk_FullMethodName     = "/walk.WalkService/SyncWalk"
-	WalkService_GetUserStats_FullMethodName = "/walk.WalkService/GetUserStats"
-	WalkService_ListMyWalks_FullMethodName  = "/walk.WalkService/ListMyWalks"
-	WalkService_DeleteWalk_FullMethodName   = "/walk.WalkService/DeleteWalk"
+	WalkService_SyncWalk_FullMethodName       = "/walk.WalkService/SyncWalk"
+	WalkService_GetUserStats_FullMethodName   = "/walk.WalkService/GetUserStats"
+	WalkService_ListMyWalks_FullMethodName    = "/walk.WalkService/ListMyWalks"
+	WalkService_ListAllMyWalks_FullMethodName = "/walk.WalkService/ListAllMyWalks"
+	WalkService_DeleteWalk_FullMethodName     = "/walk.WalkService/DeleteWalk"
 )
 
 // WalkServiceClient is the client API for WalkService service.
@@ -32,6 +33,7 @@ type WalkServiceClient interface {
 	SyncWalk(ctx context.Context, in *SyncWalkRequest, opts ...grpc.CallOption) (*SyncWalkResponse, error)
 	GetUserStats(ctx context.Context, in *GetUserStatsRequest, opts ...grpc.CallOption) (*GetUserStatsResponse, error)
 	ListMyWalks(ctx context.Context, in *ListMyWalksRequest, opts ...grpc.CallOption) (*ListMyWalksResponse, error)
+	ListAllMyWalks(ctx context.Context, in *ListAllMyWalksRequest, opts ...grpc.CallOption) (*ListAllMyWalksResponse, error)
 	DeleteWalk(ctx context.Context, in *DeleteWalkRequest, opts ...grpc.CallOption) (*DeleteWalkResponse, error)
 }
 
@@ -73,6 +75,16 @@ func (c *walkServiceClient) ListMyWalks(ctx context.Context, in *ListMyWalksRequ
 	return out, nil
 }
 
+func (c *walkServiceClient) ListAllMyWalks(ctx context.Context, in *ListAllMyWalksRequest, opts ...grpc.CallOption) (*ListAllMyWalksResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListAllMyWalksResponse)
+	err := c.cc.Invoke(ctx, WalkService_ListAllMyWalks_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *walkServiceClient) DeleteWalk(ctx context.Context, in *DeleteWalkRequest, opts ...grpc.CallOption) (*DeleteWalkResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(DeleteWalkResponse)
@@ -90,6 +102,7 @@ type WalkServiceServer interface {
 	SyncWalk(context.Context, *SyncWalkRequest) (*SyncWalkResponse, error)
 	GetUserStats(context.Context, *GetUserStatsRequest) (*GetUserStatsResponse, error)
 	ListMyWalks(context.Context, *ListMyWalksRequest) (*ListMyWalksResponse, error)
+	ListAllMyWalks(context.Context, *ListAllMyWalksRequest) (*ListAllMyWalksResponse, error)
 	DeleteWalk(context.Context, *DeleteWalkRequest) (*DeleteWalkResponse, error)
 	mustEmbedUnimplementedWalkServiceServer()
 }
@@ -109,6 +122,9 @@ func (UnimplementedWalkServiceServer) GetUserStats(context.Context, *GetUserStat
 }
 func (UnimplementedWalkServiceServer) ListMyWalks(context.Context, *ListMyWalksRequest) (*ListMyWalksResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method ListMyWalks not implemented")
+}
+func (UnimplementedWalkServiceServer) ListAllMyWalks(context.Context, *ListAllMyWalksRequest) (*ListAllMyWalksResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method ListAllMyWalks not implemented")
 }
 func (UnimplementedWalkServiceServer) DeleteWalk(context.Context, *DeleteWalkRequest) (*DeleteWalkResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method DeleteWalk not implemented")
@@ -188,6 +204,24 @@ func _WalkService_ListMyWalks_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _WalkService_ListAllMyWalks_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListAllMyWalksRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(WalkServiceServer).ListAllMyWalks(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: WalkService_ListAllMyWalks_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(WalkServiceServer).ListAllMyWalks(ctx, req.(*ListAllMyWalksRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _WalkService_DeleteWalk_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(DeleteWalkRequest)
 	if err := dec(in); err != nil {
@@ -224,6 +258,10 @@ var WalkService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ListMyWalks",
 			Handler:    _WalkService_ListMyWalks_Handler,
+		},
+		{
+			MethodName: "ListAllMyWalks",
+			Handler:    _WalkService_ListAllMyWalks_Handler,
 		},
 		{
 			MethodName: "DeleteWalk",

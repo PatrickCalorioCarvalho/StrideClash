@@ -141,10 +141,14 @@ class SyncWalkResponse extends $pb.GeneratedMessage {
   factory SyncWalkResponse({
     $core.String? polygonWkt,
     $core.double? areaM2,
+    $core.bool? valid,
+    $core.String? invalidReason,
   }) {
     final result = create();
     if (polygonWkt != null) result.polygonWkt = polygonWkt;
     if (areaM2 != null) result.areaM2 = areaM2;
+    if (valid != null) result.valid = valid;
+    if (invalidReason != null) result.invalidReason = invalidReason;
     return result;
   }
 
@@ -163,6 +167,8 @@ class SyncWalkResponse extends $pb.GeneratedMessage {
       createEmptyInstance: create)
     ..aOS(1, _omitFieldNames ? '' : 'polygonWkt')
     ..aD(2, _omitFieldNames ? '' : 'areaM2')
+    ..aOB(3, _omitFieldNames ? '' : 'valid')
+    ..aOS(4, _omitFieldNames ? '' : 'invalidReason')
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -201,6 +207,27 @@ class SyncWalkResponse extends $pb.GeneratedMessage {
   $core.bool hasAreaM2() => $_has(1);
   @$pb.TagNumber(2)
   void clearAreaM2() => $_clearField(2);
+
+  /// false quando o servidor descartou o polígono (GPS parado, não fechou
+  /// perto do início, ou velocidade incompatível com caminhada) — a
+  /// caminhada em si continua salva, só não conta território.
+  @$pb.TagNumber(3)
+  $core.bool get valid => $_getBF(2);
+  @$pb.TagNumber(3)
+  set valid($core.bool value) => $_setBool(2, value);
+  @$pb.TagNumber(3)
+  $core.bool hasValid() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearValid() => $_clearField(3);
+
+  @$pb.TagNumber(4)
+  $core.String get invalidReason => $_getSZ(3);
+  @$pb.TagNumber(4)
+  set invalidReason($core.String value) => $_setString(3, value);
+  @$pb.TagNumber(4)
+  $core.bool hasInvalidReason() => $_has(3);
+  @$pb.TagNumber(4)
+  void clearInvalidReason() => $_clearField(4);
 }
 
 class WalkPoint extends $pb.GeneratedMessage {
@@ -726,6 +753,282 @@ class WalkSummary extends $pb.GeneratedMessage {
   $core.bool hasAreaM2() => $_has(3);
   @$pb.TagNumber(4)
   void clearAreaM2() => $_clearField(4);
+}
+
+/// Lists every one of the user's walks, valid or not — unlike ListMyWalks
+/// (which drills into one ChampionshipStat group and only ever shows valid
+/// captures), this is the full history, so an invalidated walk's pace/speed
+/// can be inspected to see why it got rejected.
+class ListAllMyWalksRequest extends $pb.GeneratedMessage {
+  factory ListAllMyWalksRequest({
+    $core.String? userId,
+  }) {
+    final result = create();
+    if (userId != null) result.userId = userId;
+    return result;
+  }
+
+  ListAllMyWalksRequest._();
+
+  factory ListAllMyWalksRequest.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(data, registry);
+  factory ListAllMyWalksRequest.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'ListAllMyWalksRequest',
+      package: const $pb.PackageName(_omitMessageNames ? '' : 'walk'),
+      createEmptyInstance: create)
+    ..aOS(1, _omitFieldNames ? '' : 'userId')
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  ListAllMyWalksRequest clone() => deepCopy();
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  ListAllMyWalksRequest copyWith(
+          void Function(ListAllMyWalksRequest) updates) =>
+      super.copyWith((message) => updates(message as ListAllMyWalksRequest))
+          as ListAllMyWalksRequest;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static ListAllMyWalksRequest create() => ListAllMyWalksRequest._();
+  @$core.override
+  ListAllMyWalksRequest createEmptyInstance() => create();
+  @$core.pragma('dart2js:noInline')
+  static ListAllMyWalksRequest getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<ListAllMyWalksRequest>(create);
+  static ListAllMyWalksRequest? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get userId => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set userId($core.String value) => $_setString(0, value);
+  @$pb.TagNumber(1)
+  $core.bool hasUserId() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearUserId() => $_clearField(1);
+}
+
+class ListAllMyWalksResponse extends $pb.GeneratedMessage {
+  factory ListAllMyWalksResponse({
+    $core.Iterable<WalkDetail>? walks,
+  }) {
+    final result = create();
+    if (walks != null) result.walks.addAll(walks);
+    return result;
+  }
+
+  ListAllMyWalksResponse._();
+
+  factory ListAllMyWalksResponse.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(data, registry);
+  factory ListAllMyWalksResponse.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'ListAllMyWalksResponse',
+      package: const $pb.PackageName(_omitMessageNames ? '' : 'walk'),
+      createEmptyInstance: create)
+    ..pPM<WalkDetail>(1, _omitFieldNames ? '' : 'walks',
+        subBuilder: WalkDetail.create)
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  ListAllMyWalksResponse clone() => deepCopy();
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  ListAllMyWalksResponse copyWith(
+          void Function(ListAllMyWalksResponse) updates) =>
+      super.copyWith((message) => updates(message as ListAllMyWalksResponse))
+          as ListAllMyWalksResponse;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static ListAllMyWalksResponse create() => ListAllMyWalksResponse._();
+  @$core.override
+  ListAllMyWalksResponse createEmptyInstance() => create();
+  @$core.pragma('dart2js:noInline')
+  static ListAllMyWalksResponse getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<ListAllMyWalksResponse>(create);
+  static ListAllMyWalksResponse? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $pb.PbList<WalkDetail> get walks => $_getList(0);
+}
+
+class WalkDetail extends $pb.GeneratedMessage {
+  factory WalkDetail({
+    $core.String? id,
+    $core.String? championshipId,
+    $core.String? championshipName,
+    $1.Timestamp? startedAt,
+    $1.Timestamp? finishedAt,
+    $core.double? areaM2,
+    $core.bool? valid,
+    $core.String? invalidReason,
+    $core.double? distanceM,
+    $core.double? avgSpeedMps,
+  }) {
+    final result = create();
+    if (id != null) result.id = id;
+    if (championshipId != null) result.championshipId = championshipId;
+    if (championshipName != null) result.championshipName = championshipName;
+    if (startedAt != null) result.startedAt = startedAt;
+    if (finishedAt != null) result.finishedAt = finishedAt;
+    if (areaM2 != null) result.areaM2 = areaM2;
+    if (valid != null) result.valid = valid;
+    if (invalidReason != null) result.invalidReason = invalidReason;
+    if (distanceM != null) result.distanceM = distanceM;
+    if (avgSpeedMps != null) result.avgSpeedMps = avgSpeedMps;
+    return result;
+  }
+
+  WalkDetail._();
+
+  factory WalkDetail.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(data, registry);
+  factory WalkDetail.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'WalkDetail',
+      package: const $pb.PackageName(_omitMessageNames ? '' : 'walk'),
+      createEmptyInstance: create)
+    ..aOS(1, _omitFieldNames ? '' : 'id')
+    ..aOS(2, _omitFieldNames ? '' : 'championshipId')
+    ..aOS(3, _omitFieldNames ? '' : 'championshipName')
+    ..aOM<$1.Timestamp>(4, _omitFieldNames ? '' : 'startedAt',
+        subBuilder: $1.Timestamp.create)
+    ..aOM<$1.Timestamp>(5, _omitFieldNames ? '' : 'finishedAt',
+        subBuilder: $1.Timestamp.create)
+    ..aD(6, _omitFieldNames ? '' : 'areaM2')
+    ..aOB(7, _omitFieldNames ? '' : 'valid')
+    ..aOS(8, _omitFieldNames ? '' : 'invalidReason')
+    ..aD(9, _omitFieldNames ? '' : 'distanceM')
+    ..aD(10, _omitFieldNames ? '' : 'avgSpeedMps')
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  WalkDetail clone() => deepCopy();
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  WalkDetail copyWith(void Function(WalkDetail) updates) =>
+      super.copyWith((message) => updates(message as WalkDetail)) as WalkDetail;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static WalkDetail create() => WalkDetail._();
+  @$core.override
+  WalkDetail createEmptyInstance() => create();
+  @$core.pragma('dart2js:noInline')
+  static WalkDetail getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<WalkDetail>(create);
+  static WalkDetail? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get id => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set id($core.String value) => $_setString(0, value);
+  @$pb.TagNumber(1)
+  $core.bool hasId() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearId() => $_clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.String get championshipId => $_getSZ(1);
+  @$pb.TagNumber(2)
+  set championshipId($core.String value) => $_setString(1, value);
+  @$pb.TagNumber(2)
+  $core.bool hasChampionshipId() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearChampionshipId() => $_clearField(2);
+
+  @$pb.TagNumber(3)
+  $core.String get championshipName => $_getSZ(2);
+  @$pb.TagNumber(3)
+  set championshipName($core.String value) => $_setString(2, value);
+  @$pb.TagNumber(3)
+  $core.bool hasChampionshipName() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearChampionshipName() => $_clearField(3);
+
+  @$pb.TagNumber(4)
+  $1.Timestamp get startedAt => $_getN(3);
+  @$pb.TagNumber(4)
+  set startedAt($1.Timestamp value) => $_setField(4, value);
+  @$pb.TagNumber(4)
+  $core.bool hasStartedAt() => $_has(3);
+  @$pb.TagNumber(4)
+  void clearStartedAt() => $_clearField(4);
+  @$pb.TagNumber(4)
+  $1.Timestamp ensureStartedAt() => $_ensure(3);
+
+  @$pb.TagNumber(5)
+  $1.Timestamp get finishedAt => $_getN(4);
+  @$pb.TagNumber(5)
+  set finishedAt($1.Timestamp value) => $_setField(5, value);
+  @$pb.TagNumber(5)
+  $core.bool hasFinishedAt() => $_has(4);
+  @$pb.TagNumber(5)
+  void clearFinishedAt() => $_clearField(5);
+  @$pb.TagNumber(5)
+  $1.Timestamp ensureFinishedAt() => $_ensure(4);
+
+  @$pb.TagNumber(6)
+  $core.double get areaM2 => $_getN(5);
+  @$pb.TagNumber(6)
+  set areaM2($core.double value) => $_setDouble(5, value);
+  @$pb.TagNumber(6)
+  $core.bool hasAreaM2() => $_has(5);
+  @$pb.TagNumber(6)
+  void clearAreaM2() => $_clearField(6);
+
+  @$pb.TagNumber(7)
+  $core.bool get valid => $_getBF(6);
+  @$pb.TagNumber(7)
+  set valid($core.bool value) => $_setBool(6, value);
+  @$pb.TagNumber(7)
+  $core.bool hasValid() => $_has(6);
+  @$pb.TagNumber(7)
+  void clearValid() => $_clearField(7);
+
+  @$pb.TagNumber(8)
+  $core.String get invalidReason => $_getSZ(7);
+  @$pb.TagNumber(8)
+  set invalidReason($core.String value) => $_setString(7, value);
+  @$pb.TagNumber(8)
+  $core.bool hasInvalidReason() => $_has(7);
+  @$pb.TagNumber(8)
+  void clearInvalidReason() => $_clearField(8);
+
+  @$pb.TagNumber(9)
+  $core.double get distanceM => $_getN(8);
+  @$pb.TagNumber(9)
+  set distanceM($core.double value) => $_setDouble(8, value);
+  @$pb.TagNumber(9)
+  $core.bool hasDistanceM() => $_has(8);
+  @$pb.TagNumber(9)
+  void clearDistanceM() => $_clearField(9);
+
+  @$pb.TagNumber(10)
+  $core.double get avgSpeedMps => $_getN(9);
+  @$pb.TagNumber(10)
+  set avgSpeedMps($core.double value) => $_setDouble(9, value);
+  @$pb.TagNumber(10)
+  $core.bool hasAvgSpeedMps() => $_has(9);
+  @$pb.TagNumber(10)
+  void clearAvgSpeedMps() => $_clearField(10);
 }
 
 class DeleteWalkRequest extends $pb.GeneratedMessage {

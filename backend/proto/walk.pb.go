@@ -111,9 +111,14 @@ func (x *SyncWalkRequest) GetPoints() []*WalkPoint {
 }
 
 type SyncWalkResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	PolygonWkt    string                 `protobuf:"bytes,1,opt,name=polygon_wkt,json=polygonWkt,proto3" json:"polygon_wkt,omitempty"`
-	AreaM2        float64                `protobuf:"fixed64,2,opt,name=area_m2,json=areaM2,proto3" json:"area_m2,omitempty"`
+	state      protoimpl.MessageState `protogen:"open.v1"`
+	PolygonWkt string                 `protobuf:"bytes,1,opt,name=polygon_wkt,json=polygonWkt,proto3" json:"polygon_wkt,omitempty"`
+	AreaM2     float64                `protobuf:"fixed64,2,opt,name=area_m2,json=areaM2,proto3" json:"area_m2,omitempty"`
+	// false quando o servidor descartou o polígono (GPS parado, não fechou
+	// perto do início, ou velocidade incompatível com caminhada) — a
+	// caminhada em si continua salva, só não conta território.
+	Valid         bool   `protobuf:"varint,3,opt,name=valid,proto3" json:"valid,omitempty"`
+	InvalidReason string `protobuf:"bytes,4,opt,name=invalid_reason,json=invalidReason,proto3" json:"invalid_reason,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -160,6 +165,20 @@ func (x *SyncWalkResponse) GetAreaM2() float64 {
 		return x.AreaM2
 	}
 	return 0
+}
+
+func (x *SyncWalkResponse) GetValid() bool {
+	if x != nil {
+		return x.Valid
+	}
+	return false
+}
+
+func (x *SyncWalkResponse) GetInvalidReason() string {
+	if x != nil {
+		return x.InvalidReason
+	}
+	return ""
 }
 
 type WalkPoint struct {
@@ -571,6 +590,214 @@ func (x *WalkSummary) GetAreaM2() float64 {
 	return 0
 }
 
+// Lists every one of the user's walks, valid or not — unlike ListMyWalks
+// (which drills into one ChampionshipStat group and only ever shows valid
+// captures), this is the full history, so an invalidated walk's pace/speed
+// can be inspected to see why it got rejected.
+type ListAllMyWalksRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	UserId        string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListAllMyWalksRequest) Reset() {
+	*x = ListAllMyWalksRequest{}
+	mi := &file_proto_walk_proto_msgTypes[9]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListAllMyWalksRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListAllMyWalksRequest) ProtoMessage() {}
+
+func (x *ListAllMyWalksRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_walk_proto_msgTypes[9]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListAllMyWalksRequest.ProtoReflect.Descriptor instead.
+func (*ListAllMyWalksRequest) Descriptor() ([]byte, []int) {
+	return file_proto_walk_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *ListAllMyWalksRequest) GetUserId() string {
+	if x != nil {
+		return x.UserId
+	}
+	return ""
+}
+
+type ListAllMyWalksResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Walks         []*WalkDetail          `protobuf:"bytes,1,rep,name=walks,proto3" json:"walks,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListAllMyWalksResponse) Reset() {
+	*x = ListAllMyWalksResponse{}
+	mi := &file_proto_walk_proto_msgTypes[10]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListAllMyWalksResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListAllMyWalksResponse) ProtoMessage() {}
+
+func (x *ListAllMyWalksResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_walk_proto_msgTypes[10]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListAllMyWalksResponse.ProtoReflect.Descriptor instead.
+func (*ListAllMyWalksResponse) Descriptor() ([]byte, []int) {
+	return file_proto_walk_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *ListAllMyWalksResponse) GetWalks() []*WalkDetail {
+	if x != nil {
+		return x.Walks
+	}
+	return nil
+}
+
+type WalkDetail struct {
+	state            protoimpl.MessageState `protogen:"open.v1"`
+	Id               string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	ChampionshipId   string                 `protobuf:"bytes,2,opt,name=championship_id,json=championshipId,proto3" json:"championship_id,omitempty"`
+	ChampionshipName string                 `protobuf:"bytes,3,opt,name=championship_name,json=championshipName,proto3" json:"championship_name,omitempty"`
+	StartedAt        *timestamppb.Timestamp `protobuf:"bytes,4,opt,name=started_at,json=startedAt,proto3" json:"started_at,omitempty"`
+	FinishedAt       *timestamppb.Timestamp `protobuf:"bytes,5,opt,name=finished_at,json=finishedAt,proto3" json:"finished_at,omitempty"`
+	AreaM2           float64                `protobuf:"fixed64,6,opt,name=area_m2,json=areaM2,proto3" json:"area_m2,omitempty"`
+	Valid            bool                   `protobuf:"varint,7,opt,name=valid,proto3" json:"valid,omitempty"`
+	InvalidReason    string                 `protobuf:"bytes,8,opt,name=invalid_reason,json=invalidReason,proto3" json:"invalid_reason,omitempty"`
+	DistanceM        float64                `protobuf:"fixed64,9,opt,name=distance_m,json=distanceM,proto3" json:"distance_m,omitempty"`
+	AvgSpeedMps      float64                `protobuf:"fixed64,10,opt,name=avg_speed_mps,json=avgSpeedMps,proto3" json:"avg_speed_mps,omitempty"`
+	unknownFields    protoimpl.UnknownFields
+	sizeCache        protoimpl.SizeCache
+}
+
+func (x *WalkDetail) Reset() {
+	*x = WalkDetail{}
+	mi := &file_proto_walk_proto_msgTypes[11]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *WalkDetail) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*WalkDetail) ProtoMessage() {}
+
+func (x *WalkDetail) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_walk_proto_msgTypes[11]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use WalkDetail.ProtoReflect.Descriptor instead.
+func (*WalkDetail) Descriptor() ([]byte, []int) {
+	return file_proto_walk_proto_rawDescGZIP(), []int{11}
+}
+
+func (x *WalkDetail) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *WalkDetail) GetChampionshipId() string {
+	if x != nil {
+		return x.ChampionshipId
+	}
+	return ""
+}
+
+func (x *WalkDetail) GetChampionshipName() string {
+	if x != nil {
+		return x.ChampionshipName
+	}
+	return ""
+}
+
+func (x *WalkDetail) GetStartedAt() *timestamppb.Timestamp {
+	if x != nil {
+		return x.StartedAt
+	}
+	return nil
+}
+
+func (x *WalkDetail) GetFinishedAt() *timestamppb.Timestamp {
+	if x != nil {
+		return x.FinishedAt
+	}
+	return nil
+}
+
+func (x *WalkDetail) GetAreaM2() float64 {
+	if x != nil {
+		return x.AreaM2
+	}
+	return 0
+}
+
+func (x *WalkDetail) GetValid() bool {
+	if x != nil {
+		return x.Valid
+	}
+	return false
+}
+
+func (x *WalkDetail) GetInvalidReason() string {
+	if x != nil {
+		return x.InvalidReason
+	}
+	return ""
+}
+
+func (x *WalkDetail) GetDistanceM() float64 {
+	if x != nil {
+		return x.DistanceM
+	}
+	return 0
+}
+
+func (x *WalkDetail) GetAvgSpeedMps() float64 {
+	if x != nil {
+		return x.AvgSpeedMps
+	}
+	return 0
+}
+
 type DeleteWalkRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	WalkId        string                 `protobuf:"bytes,1,opt,name=walk_id,json=walkId,proto3" json:"walk_id,omitempty"`
@@ -581,7 +808,7 @@ type DeleteWalkRequest struct {
 
 func (x *DeleteWalkRequest) Reset() {
 	*x = DeleteWalkRequest{}
-	mi := &file_proto_walk_proto_msgTypes[9]
+	mi := &file_proto_walk_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -593,7 +820,7 @@ func (x *DeleteWalkRequest) String() string {
 func (*DeleteWalkRequest) ProtoMessage() {}
 
 func (x *DeleteWalkRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_walk_proto_msgTypes[9]
+	mi := &file_proto_walk_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -606,7 +833,7 @@ func (x *DeleteWalkRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteWalkRequest.ProtoReflect.Descriptor instead.
 func (*DeleteWalkRequest) Descriptor() ([]byte, []int) {
-	return file_proto_walk_proto_rawDescGZIP(), []int{9}
+	return file_proto_walk_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *DeleteWalkRequest) GetWalkId() string {
@@ -632,7 +859,7 @@ type DeleteWalkResponse struct {
 
 func (x *DeleteWalkResponse) Reset() {
 	*x = DeleteWalkResponse{}
-	mi := &file_proto_walk_proto_msgTypes[10]
+	mi := &file_proto_walk_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -644,7 +871,7 @@ func (x *DeleteWalkResponse) String() string {
 func (*DeleteWalkResponse) ProtoMessage() {}
 
 func (x *DeleteWalkResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_walk_proto_msgTypes[10]
+	mi := &file_proto_walk_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -657,7 +884,7 @@ func (x *DeleteWalkResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteWalkResponse.ProtoReflect.Descriptor instead.
 func (*DeleteWalkResponse) Descriptor() ([]byte, []int) {
-	return file_proto_walk_proto_rawDescGZIP(), []int{10}
+	return file_proto_walk_proto_rawDescGZIP(), []int{13}
 }
 
 func (x *DeleteWalkResponse) GetSuccess() bool {
@@ -680,11 +907,13 @@ const file_proto_walk_proto_rawDesc = "" +
 	"started_at\x18\x04 \x01(\v2\x1a.google.protobuf.TimestampR\tstartedAt\x12;\n" +
 	"\vfinished_at\x18\x05 \x01(\v2\x1a.google.protobuf.TimestampR\n" +
 	"finishedAt\x12'\n" +
-	"\x06points\x18\x06 \x03(\v2\x0f.walk.WalkPointR\x06points\"L\n" +
+	"\x06points\x18\x06 \x03(\v2\x0f.walk.WalkPointR\x06points\"\x89\x01\n" +
 	"\x10SyncWalkResponse\x12\x1f\n" +
 	"\vpolygon_wkt\x18\x01 \x01(\tR\n" +
 	"polygonWkt\x12\x17\n" +
-	"\aarea_m2\x18\x02 \x01(\x01R\x06areaM2\"\x7f\n" +
+	"\aarea_m2\x18\x02 \x01(\x01R\x06areaM2\x12\x14\n" +
+	"\x05valid\x18\x03 \x01(\bR\x05valid\x12%\n" +
+	"\x0einvalid_reason\x18\x04 \x01(\tR\rinvalidReason\"\x7f\n" +
 	"\tWalkPoint\x12\x10\n" +
 	"\x03lat\x18\x01 \x01(\x01R\x03lat\x12\x10\n" +
 	"\x03lng\x18\x02 \x01(\x01R\x03lng\x128\n" +
@@ -714,16 +943,37 @@ const file_proto_walk_proto_rawDesc = "" +
 	"started_at\x18\x02 \x01(\v2\x1a.google.protobuf.TimestampR\tstartedAt\x12;\n" +
 	"\vfinished_at\x18\x03 \x01(\v2\x1a.google.protobuf.TimestampR\n" +
 	"finishedAt\x12\x17\n" +
-	"\aarea_m2\x18\x04 \x01(\x01R\x06areaM2\"E\n" +
+	"\aarea_m2\x18\x04 \x01(\x01R\x06areaM2\"0\n" +
+	"\x15ListAllMyWalksRequest\x12\x17\n" +
+	"\auser_id\x18\x01 \x01(\tR\x06userId\"@\n" +
+	"\x16ListAllMyWalksResponse\x12&\n" +
+	"\x05walks\x18\x01 \x03(\v2\x10.walk.WalkDetailR\x05walks\"\x83\x03\n" +
+	"\n" +
+	"WalkDetail\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12'\n" +
+	"\x0fchampionship_id\x18\x02 \x01(\tR\x0echampionshipId\x12+\n" +
+	"\x11championship_name\x18\x03 \x01(\tR\x10championshipName\x129\n" +
+	"\n" +
+	"started_at\x18\x04 \x01(\v2\x1a.google.protobuf.TimestampR\tstartedAt\x12;\n" +
+	"\vfinished_at\x18\x05 \x01(\v2\x1a.google.protobuf.TimestampR\n" +
+	"finishedAt\x12\x17\n" +
+	"\aarea_m2\x18\x06 \x01(\x01R\x06areaM2\x12\x14\n" +
+	"\x05valid\x18\a \x01(\bR\x05valid\x12%\n" +
+	"\x0einvalid_reason\x18\b \x01(\tR\rinvalidReason\x12\x1d\n" +
+	"\n" +
+	"distance_m\x18\t \x01(\x01R\tdistanceM\x12\"\n" +
+	"\ravg_speed_mps\x18\n" +
+	" \x01(\x01R\vavgSpeedMps\"E\n" +
 	"\x11DeleteWalkRequest\x12\x17\n" +
 	"\awalk_id\x18\x01 \x01(\tR\x06walkId\x12\x17\n" +
 	"\auser_id\x18\x02 \x01(\tR\x06userId\".\n" +
 	"\x12DeleteWalkResponse\x12\x18\n" +
-	"\asuccess\x18\x01 \x01(\bR\asuccess2\x94\x02\n" +
+	"\asuccess\x18\x01 \x01(\bR\asuccess2\xe1\x02\n" +
 	"\vWalkService\x129\n" +
 	"\bSyncWalk\x12\x15.walk.SyncWalkRequest\x1a\x16.walk.SyncWalkResponse\x12E\n" +
 	"\fGetUserStats\x12\x19.walk.GetUserStatsRequest\x1a\x1a.walk.GetUserStatsResponse\x12B\n" +
-	"\vListMyWalks\x12\x18.walk.ListMyWalksRequest\x1a\x19.walk.ListMyWalksResponse\x12?\n" +
+	"\vListMyWalks\x12\x18.walk.ListMyWalksRequest\x1a\x19.walk.ListMyWalksResponse\x12K\n" +
+	"\x0eListAllMyWalks\x12\x1b.walk.ListAllMyWalksRequest\x1a\x1c.walk.ListAllMyWalksResponse\x12?\n" +
 	"\n" +
 	"DeleteWalk\x12\x17.walk.DeleteWalkRequest\x1a\x18.walk.DeleteWalkResponseB@Z>github.com/PatrickCalorioCarvalho/StrideClash/backend/proto;pbb\x06proto3"
 
@@ -739,43 +989,51 @@ func file_proto_walk_proto_rawDescGZIP() []byte {
 	return file_proto_walk_proto_rawDescData
 }
 
-var file_proto_walk_proto_msgTypes = make([]protoimpl.MessageInfo, 11)
+var file_proto_walk_proto_msgTypes = make([]protoimpl.MessageInfo, 14)
 var file_proto_walk_proto_goTypes = []any{
-	(*SyncWalkRequest)(nil),       // 0: walk.SyncWalkRequest
-	(*SyncWalkResponse)(nil),      // 1: walk.SyncWalkResponse
-	(*WalkPoint)(nil),             // 2: walk.WalkPoint
-	(*GetUserStatsRequest)(nil),   // 3: walk.GetUserStatsRequest
-	(*GetUserStatsResponse)(nil),  // 4: walk.GetUserStatsResponse
-	(*ChampionshipStat)(nil),      // 5: walk.ChampionshipStat
-	(*ListMyWalksRequest)(nil),    // 6: walk.ListMyWalksRequest
-	(*ListMyWalksResponse)(nil),   // 7: walk.ListMyWalksResponse
-	(*WalkSummary)(nil),           // 8: walk.WalkSummary
-	(*DeleteWalkRequest)(nil),     // 9: walk.DeleteWalkRequest
-	(*DeleteWalkResponse)(nil),    // 10: walk.DeleteWalkResponse
-	(*timestamppb.Timestamp)(nil), // 11: google.protobuf.Timestamp
+	(*SyncWalkRequest)(nil),        // 0: walk.SyncWalkRequest
+	(*SyncWalkResponse)(nil),       // 1: walk.SyncWalkResponse
+	(*WalkPoint)(nil),              // 2: walk.WalkPoint
+	(*GetUserStatsRequest)(nil),    // 3: walk.GetUserStatsRequest
+	(*GetUserStatsResponse)(nil),   // 4: walk.GetUserStatsResponse
+	(*ChampionshipStat)(nil),       // 5: walk.ChampionshipStat
+	(*ListMyWalksRequest)(nil),     // 6: walk.ListMyWalksRequest
+	(*ListMyWalksResponse)(nil),    // 7: walk.ListMyWalksResponse
+	(*WalkSummary)(nil),            // 8: walk.WalkSummary
+	(*ListAllMyWalksRequest)(nil),  // 9: walk.ListAllMyWalksRequest
+	(*ListAllMyWalksResponse)(nil), // 10: walk.ListAllMyWalksResponse
+	(*WalkDetail)(nil),             // 11: walk.WalkDetail
+	(*DeleteWalkRequest)(nil),      // 12: walk.DeleteWalkRequest
+	(*DeleteWalkResponse)(nil),     // 13: walk.DeleteWalkResponse
+	(*timestamppb.Timestamp)(nil),  // 14: google.protobuf.Timestamp
 }
 var file_proto_walk_proto_depIdxs = []int32{
-	11, // 0: walk.SyncWalkRequest.started_at:type_name -> google.protobuf.Timestamp
-	11, // 1: walk.SyncWalkRequest.finished_at:type_name -> google.protobuf.Timestamp
+	14, // 0: walk.SyncWalkRequest.started_at:type_name -> google.protobuf.Timestamp
+	14, // 1: walk.SyncWalkRequest.finished_at:type_name -> google.protobuf.Timestamp
 	2,  // 2: walk.SyncWalkRequest.points:type_name -> walk.WalkPoint
-	11, // 3: walk.WalkPoint.timestamp:type_name -> google.protobuf.Timestamp
+	14, // 3: walk.WalkPoint.timestamp:type_name -> google.protobuf.Timestamp
 	5,  // 4: walk.GetUserStatsResponse.by_championship:type_name -> walk.ChampionshipStat
 	8,  // 5: walk.ListMyWalksResponse.walks:type_name -> walk.WalkSummary
-	11, // 6: walk.WalkSummary.started_at:type_name -> google.protobuf.Timestamp
-	11, // 7: walk.WalkSummary.finished_at:type_name -> google.protobuf.Timestamp
-	0,  // 8: walk.WalkService.SyncWalk:input_type -> walk.SyncWalkRequest
-	3,  // 9: walk.WalkService.GetUserStats:input_type -> walk.GetUserStatsRequest
-	6,  // 10: walk.WalkService.ListMyWalks:input_type -> walk.ListMyWalksRequest
-	9,  // 11: walk.WalkService.DeleteWalk:input_type -> walk.DeleteWalkRequest
-	1,  // 12: walk.WalkService.SyncWalk:output_type -> walk.SyncWalkResponse
-	4,  // 13: walk.WalkService.GetUserStats:output_type -> walk.GetUserStatsResponse
-	7,  // 14: walk.WalkService.ListMyWalks:output_type -> walk.ListMyWalksResponse
-	10, // 15: walk.WalkService.DeleteWalk:output_type -> walk.DeleteWalkResponse
-	12, // [12:16] is the sub-list for method output_type
-	8,  // [8:12] is the sub-list for method input_type
-	8,  // [8:8] is the sub-list for extension type_name
-	8,  // [8:8] is the sub-list for extension extendee
-	0,  // [0:8] is the sub-list for field type_name
+	14, // 6: walk.WalkSummary.started_at:type_name -> google.protobuf.Timestamp
+	14, // 7: walk.WalkSummary.finished_at:type_name -> google.protobuf.Timestamp
+	11, // 8: walk.ListAllMyWalksResponse.walks:type_name -> walk.WalkDetail
+	14, // 9: walk.WalkDetail.started_at:type_name -> google.protobuf.Timestamp
+	14, // 10: walk.WalkDetail.finished_at:type_name -> google.protobuf.Timestamp
+	0,  // 11: walk.WalkService.SyncWalk:input_type -> walk.SyncWalkRequest
+	3,  // 12: walk.WalkService.GetUserStats:input_type -> walk.GetUserStatsRequest
+	6,  // 13: walk.WalkService.ListMyWalks:input_type -> walk.ListMyWalksRequest
+	9,  // 14: walk.WalkService.ListAllMyWalks:input_type -> walk.ListAllMyWalksRequest
+	12, // 15: walk.WalkService.DeleteWalk:input_type -> walk.DeleteWalkRequest
+	1,  // 16: walk.WalkService.SyncWalk:output_type -> walk.SyncWalkResponse
+	4,  // 17: walk.WalkService.GetUserStats:output_type -> walk.GetUserStatsResponse
+	7,  // 18: walk.WalkService.ListMyWalks:output_type -> walk.ListMyWalksResponse
+	10, // 19: walk.WalkService.ListAllMyWalks:output_type -> walk.ListAllMyWalksResponse
+	13, // 20: walk.WalkService.DeleteWalk:output_type -> walk.DeleteWalkResponse
+	16, // [16:21] is the sub-list for method output_type
+	11, // [11:16] is the sub-list for method input_type
+	11, // [11:11] is the sub-list for extension type_name
+	11, // [11:11] is the sub-list for extension extendee
+	0,  // [0:11] is the sub-list for field type_name
 }
 
 func init() { file_proto_walk_proto_init() }
@@ -789,7 +1047,7 @@ func file_proto_walk_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_walk_proto_rawDesc), len(file_proto_walk_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   11,
+			NumMessages:   14,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

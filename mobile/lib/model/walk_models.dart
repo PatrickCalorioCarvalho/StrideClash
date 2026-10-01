@@ -16,6 +16,11 @@ class Walk {
   String? polygonWkt;
   double? areaM2;
   String status;
+  // null até sincronizar; depois, false explica por que areaM2 ficou 0 (GPS
+  // parado, não fechou perto do início, velocidade incompatível com
+  // caminhada) em vez de simplesmente mostrar "0 m²" sem motivo nenhum.
+  bool? valid;
+  String? invalidReason;
 
   Walk({
     required this.id,
@@ -27,6 +32,8 @@ class Walk {
     this.polygonWkt,
     this.areaM2,
     this.status = WalkStatus.recording,
+    this.valid,
+    this.invalidReason,
   });
 
   Map<String, dynamic> toMap() => {
@@ -39,6 +46,8 @@ class Walk {
         'polygon_wkt': polygonWkt,
         'area_m2': areaM2,
         'status': status,
+        'valid': valid == null ? null : (valid! ? 1 : 0),
+        'invalid_reason': invalidReason,
       };
 
   factory Walk.fromMap(Map<String, dynamic> map) => Walk(
@@ -52,6 +61,8 @@ class Walk {
         polygonWkt: map['polygon_wkt'] as String?,
         areaM2: (map['area_m2'] as num?)?.toDouble(),
         status: map['status'] as String? ?? WalkStatus.recording,
+        valid: (map['valid'] as num?) == null ? null : (map['valid'] as num) != 0,
+        invalidReason: map['invalid_reason'] as String?,
       );
 }
 

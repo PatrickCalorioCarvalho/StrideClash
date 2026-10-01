@@ -61,4 +61,18 @@ func runMigrations(db *sql.DB) {
 	`); err != nil {
 		log.Printf("⚠️ migração (relaxar tipo da coluna polygon) falhou: %v", err)
 	}
+
+	// distance_m (trilha real percorrida) e invalid_reason (por que uma
+	// caminhada foi descartada) — colunas novas, podem não existir ainda em
+	// bancos criados antes delas.
+	if _, err := db.Exec(`
+		ALTER TABLE walks ADD COLUMN IF NOT EXISTS distance_m DOUBLE PRECISION
+	`); err != nil {
+		log.Printf("⚠️ migração (adicionar coluna distance_m) falhou: %v", err)
+	}
+	if _, err := db.Exec(`
+		ALTER TABLE walks ADD COLUMN IF NOT EXISTS invalid_reason TEXT
+	`); err != nil {
+		log.Printf("⚠️ migração (adicionar coluna invalid_reason) falhou: %v", err)
+	}
 }

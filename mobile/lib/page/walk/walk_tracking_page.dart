@@ -44,12 +44,17 @@ class WalkTrackingPageState extends State<WalkTrackingPage>
           _currentCenter = _service.defaultCenter;
         }));
     _loadChampionships();
+    // Só atualiza os textos (distância até o início etc.) — não recentraliza
+    // o mapa sozinho a cada tick, porque isso brigava com o usuário tentando
+    // arrastar/dar zoom manualmente (o mapa "voltava pro centro" o tempo
+    // todo). Recentralizar automaticamente fica só pra quando o app volta de
+    // segundo plano (didChangeAppLifecycleState) — fora isso, é o botão de
+    // recentralizar.
     _uiTimer = Timer.periodic(
       const Duration(seconds: 1),
       (_) {
         if (!mounted) return;
         setState(() {});
-        _followCurrentPosition();
       },
     );
     // Antes de iniciar, o único jeito de saber onde a caminhada vai começar
@@ -76,10 +81,10 @@ class WalkTrackingPageState extends State<WalkTrackingPage>
     }
   }
 
-  // The map only centers on `initialCenter` once — it never follows the
-  // walker (or the "você está aqui" marker before starting) on its own, so
-  // without this it looks "stuck" wherever it was last centered (very
-  // noticeable after unlocking the phone mid-walk).
+  // Recentraliza o mapa na posição atual (ou no último ponto da trilha, se
+  // estiver rastreando). Só é chamado ao voltar de segundo plano e pelo
+  // botão de recentralizar — nunca automaticamente a cada tick, pra não
+  // atrapalhar o usuário arrastando/dando zoom no mapa manualmente.
   void _followCurrentPosition() {
     LatLng? target;
     if (_tracking) {
@@ -339,6 +344,40 @@ class WalkTrackingPageState extends State<WalkTrackingPage>
     );
   }
 
+  Widget _buildResultCard(Walk walk) {
+    if (walk.status == WalkStatus.pendingSync) {
+      return const Row(
+        children: [
+          Icon(Icons.cloud_upload_outlined, size: 20),
+          SizedBox(width: 8),
+          Expanded(child: Text('Aguardando internet pra sincronizar...')),
+        ],
+      );
+    }
+
+    if (walk.valid == false) {
+      return Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Icon(Icons.warning_amber_rounded, color: Colors.orangeAccent, size: 20),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              walk.invalidReason ??
+                  'Essa caminhada foi salva, mas não contou território.',
+            ),
+          ),
+        ],
+      );
+    }
+
+    return Text(
+      'Área capturada: ${walk.areaM2?.toStringAsFixed(0) ?? '0'} m²',
+      style: const TextStyle(fontWeight: FontWeight.bold),
+      textAlign: TextAlign.center,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final points = _service.points
@@ -346,7 +385,11 @@ class WalkTrackingPageState extends State<WalkTrackingPage>
         .toList();
 
     final finishedWalk = _service.lastFinishedWalk;
-    final showPolygon = !_tracking && finishedWalk != null && points.length > 2;
+    final showResultCard = !_tracking && finishedWalk != null;
+    final showPolygon =
+        showResultCard && finishedWalk.valid == true && points.length > 2;
+    final showInvalidTrail =
+        showResultCard && finishedWalk.valid == false && points.length > 1;
 
     return Scaffold(
       appBar: AppBar(title: const Text('Caminhada')),
@@ -386,6 +429,18 @@ class WalkTrackingPageState extends State<WalkTrackingPage>
                     ),
                   ],
                 )
+              else if (showInvalidTrail)
+                // Mostra o trajeto percorrido mesmo invalidado — só não
+                // preenche como território, já que não contou de verdade.
+                PolylineLayer(
+                  polylines: [
+                    Polyline(
+                      points: points,
+                      strokeWidth: 5,
+                      color: Colors.orangeAccent,
+                    ),
+                  ],
+                )
               else if (points.length > 1)
                 PolylineLayer(
                   polylines: [
@@ -410,22 +465,27 @@ class WalkTrackingPageState extends State<WalkTrackingPage>
                   const SizedBox(height: 8),
                   _buildDistanceToStartCard(),
                 ],
-                if (showPolygon) ...[
+                if (showResultCard) ...[
                   const SizedBox(height: 8),
                   Card(
                     child: Padding(
                       padding: const EdgeInsets.all(12),
-                      child: Text(
-                        finishedWalk.status == WalkStatus.pendingSync
-                            ? 'Aguardando internet pra sincronizar...'
-                            : 'Área capturada: ${finishedWalk.areaM2?.toStringAsFixed(0) ?? '0'} m²',
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                        textAlign: TextAlign.center,
-                      ),
+                      child: _buildResultCard(finishedWalk),
                     ),
                   ),
                 ],
               ],
+            ),
+          ),
+
+          Positioned(
+            bottom: 96,
+            right: 16,
+            child: FloatingActionButton.small(
+              heroTag: 'recenter',
+              tooltip: 'Recentralizar',
+              onPressed: _followCurrentPosition,
+              child: const Icon(Icons.my_location),
             ),
           ),
 

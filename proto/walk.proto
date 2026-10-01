@@ -10,6 +10,7 @@ service WalkService {
   rpc SyncWalk(SyncWalkRequest) returns (SyncWalkResponse);
   rpc GetUserStats(GetUserStatsRequest) returns (GetUserStatsResponse);
   rpc ListMyWalks(ListMyWalksRequest) returns (ListMyWalksResponse);
+  rpc ListAllMyWalks(ListAllMyWalksRequest) returns (ListAllMyWalksResponse);
   rpc DeleteWalk(DeleteWalkRequest) returns (DeleteWalkResponse);
 }
 
@@ -29,6 +30,11 @@ message SyncWalkRequest {
 message SyncWalkResponse {
   string polygon_wkt = 1;
   double area_m2 = 2;
+  // false quando o servidor descartou o polígono (GPS parado, não fechou
+  // perto do início, ou velocidade incompatível com caminhada) — a
+  // caminhada em si continua salva, só não conta território.
+  bool valid = 3;
+  string invalid_reason = 4;
 }
 
 message WalkPoint {
@@ -74,6 +80,31 @@ message WalkSummary {
   google.protobuf.Timestamp started_at = 2;
   google.protobuf.Timestamp finished_at = 3;
   double area_m2 = 4;
+}
+
+// Lists every one of the user's walks, valid or not — unlike ListMyWalks
+// (which drills into one ChampionshipStat group and only ever shows valid
+// captures), this is the full history, so an invalidated walk's pace/speed
+// can be inspected to see why it got rejected.
+message ListAllMyWalksRequest {
+  string user_id = 1;
+}
+
+message ListAllMyWalksResponse {
+  repeated WalkDetail walks = 1;
+}
+
+message WalkDetail {
+  string id = 1;
+  string championship_id = 2;
+  string championship_name = 3;
+  google.protobuf.Timestamp started_at = 4;
+  google.protobuf.Timestamp finished_at = 5;
+  double area_m2 = 6;
+  bool valid = 7;
+  string invalid_reason = 8;
+  double distance_m = 9;
+  double avg_speed_mps = 10;
 }
 
 message DeleteWalkRequest {

@@ -61,12 +61,16 @@ func (s *WalkService) SyncWalk(
 		)
 	}
 
-	_, finished, existingArea, err := s.Walks.GetSyncState(req.ClientWalkId)
+	_, finished, existingArea, existingReason, err := s.Walks.GetSyncState(req.ClientWalkId)
 	if err != nil {
 		return nil, err
 	}
 	if finished {
-		return &pb.SyncWalkResponse{AreaM2: existingArea}, nil
+		return &pb.SyncWalkResponse{
+			AreaM2:        existingArea,
+			Valid:         existingReason == "",
+			InvalidReason: existingReason,
+		}, nil
 	}
 
 	var championshipID *string
@@ -93,12 +97,39 @@ func (s *WalkService) SyncWalk(
 
 	first, last := req.Points[0], req.Points[len(req.Points)-1]
 	closingGapM := haversineMeters(first.Lat, first.Lng, last.Lat, last.Lng)
+	distanceM := totalTrailDistance(req.Points)
+	peakSpeedMps := maxSpeedMps(req.Points)
 
-	if areaM2 < minValidAreaM2 || closingGapM > maxClosingGapMeters || exceedsHumanSpeed(req.Points) {
+	var invalidReason string
+	switch {
+	case areaM2 < minValidAreaM2:
+		invalidReason = "Área capturada muito pequena — parece GPS parado ou caminhada curta demais pra formar território."
+	case closingGapM > maxClosingGapMeters:
+		invalidReason = fmt.Sprintf(
+			"Não fechou perto o suficiente do ponto de partida (ficou a %.0f m, o limite é %.0f m).",
+			closingGapM, maxClosingGapMeters,
+		)
+	case peakSpeedMps > maxWalkingSpeedMps:
+		invalidReason = fmt.Sprintf(
+			"Velocidade incompatível com caminhada em algum trecho (%.0f km/h) — parece bicicleta, moto ou carro.",
+			peakSpeedMps*3.6,
+		)
+	}
+
+	if err := s.Walks.SetWalkMeta(req.ClientWalkId, distanceM, invalidReason); err != nil {
+		return nil, err
+	}
+
+	if invalidReason != "" {
 		if err := s.Walks.ClearPolygon(req.ClientWalkId); err != nil {
 			return nil, err
 		}
-		return &pb.SyncWalkResponse{PolygonWkt: "", AreaM2: 0}, nil
+		return &pb.SyncWalkResponse{
+			PolygonWkt:    "",
+			AreaM2:        0,
+			Valid:         false,
+			InvalidReason: invalidReason,
+		}, nil
 	}
 
 	// A real capture — claim any territory it overlaps from earlier walks.
@@ -109,6 +140,7 @@ func (s *WalkService) SyncWalk(
 	return &pb.SyncWalkResponse{
 		PolygonWkt: polygonWKT,
 		AreaM2:     areaM2,
+		Valid:      true,
 	}, nil
 }
 
@@ -169,6 +201,43 @@ func (s *WalkService) ListMyWalks(
 	return &pb.ListMyWalksResponse{Walks: out}, nil
 }
 
+// ListAllMyWalks returns the user's full walk history, valid or not — so an
+// invalidated walk's pace/speed can be inspected to see why it got rejected.
+func (s *WalkService) ListAllMyWalks(
+	ctx context.Context,
+	req *pb.ListAllMyWalksRequest,
+) (*pb.ListAllMyWalksResponse, error) {
+
+	walks, err := s.Walks.ListAllByUser(req.UserId)
+	if err != nil {
+		return nil, err
+	}
+
+	out := make([]*pb.WalkDetail, len(walks))
+	for i, w := range walks {
+		durationS := w.FinishedAt.Sub(w.StartedAt).Seconds()
+		var avgSpeedMps float64
+		if durationS > 0 {
+			avgSpeedMps = w.DistanceM / durationS
+		}
+
+		out[i] = &pb.WalkDetail{
+			Id:               w.ID,
+			ChampionshipId:   w.ChampionshipID,
+			ChampionshipName: w.ChampionshipName,
+			StartedAt:        timestamppb.New(w.StartedAt),
+			FinishedAt:       timestamppb.New(w.FinishedAt),
+			AreaM2:           w.AreaM2,
+			Valid:            w.Valid,
+			InvalidReason:    w.InvalidReason,
+			DistanceM:        w.DistanceM,
+			AvgSpeedMps:      avgSpeedMps,
+		}
+	}
+
+	return &pb.ListAllMyWalksResponse{Walks: out}, nil
+}
+
 // DeleteWalk removes a walk the user no longer wants counted — e.g. a test
 // walk that landed in "sem campeonato". Only the walk's own owner can delete
 // it.
@@ -212,11 +281,13 @@ func buildPolygonWKT(ring []*pb.WalkPoint) string {
 	return fmt.Sprintf("POLYGON((%s))", strings.Join(coords, ", "))
 }
 
-// exceedsHumanSpeed checks every consecutive pair of fixes for a speed no
-// person walking or running could sustain. A long pause between two points
-// just yields a small distance over a large time — near-zero speed, never
-// flagged — so resting mid-walk is never mistaken for cheating.
-func exceedsHumanSpeed(points []*pb.WalkPoint) bool {
+// maxSpeedMps finds the fastest implied speed between any two consecutive
+// fixes — the anti-cheat check that catches a bike/motorcycle/car. A long
+// pause between two points just yields a small distance over a large time
+// (near-zero speed), never flagged — so resting mid-walk is never mistaken
+// for cheating; it's specifically a single too-fast segment that trips this.
+func maxSpeedMps(points []*pb.WalkPoint) float64 {
+	var max float64
 	for i := 1; i < len(points); i++ {
 		prev, cur := points[i-1], points[i]
 
@@ -226,12 +297,26 @@ func exceedsHumanSpeed(points []*pb.WalkPoint) bool {
 		}
 
 		dist := haversineMeters(prev.Lat, prev.Lng, cur.Lat, cur.Lng)
-		if dist/dt > maxWalkingSpeedMps {
-			return true
+		if speed := dist / dt; speed > max {
+			max = speed
 		}
 	}
 
-	return false
+	return max
+}
+
+// totalTrailDistance sums the distance between consecutive raw fixes — the
+// actual ground covered, as opposed to the closed ring's perimeter (which
+// includes the invented closing edge when the trail didn't already return
+// to its start).
+func totalTrailDistance(points []*pb.WalkPoint) float64 {
+	var total float64
+	for i := 1; i < len(points); i++ {
+		prev, cur := points[i-1], points[i]
+		total += haversineMeters(prev.Lat, prev.Lng, cur.Lat, cur.Lng)
+	}
+
+	return total
 }
 
 // haversineMeters is the great-circle distance between two lat/lng points,
