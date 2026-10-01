@@ -16,19 +16,25 @@ class _MainTabsPageState extends State<MainTabsPage> {
   // Campeonato ficam de cada lado dela na barra inferior.
   int _index = 1;
 
+  final _profilePageKey = GlobalKey<ProfilePageState>();
   final _walkPageKey = GlobalKey<WalkTrackingPageState>();
 
   late final _pages = [
-    const ProfilePage(),
+    ProfilePage(key: _profilePageKey),
     WalkTrackingPage(key: _walkPageKey),
     const ChampionshipPage(),
   ];
 
   void _onTap(int index) {
     setState(() => _index = index);
-    // The walk tab keeps its championship list loaded only once (it's kept
-    // alive by the IndexedStack below), so refresh it whenever it becomes
-    // visible in case one was created/joined from the Campeonato tab.
+    // Both tabs are kept alive by the IndexedStack below with stable widget
+    // instances, so Flutter skips rebuilding them on its own when they
+    // become visible again — without an explicit refresh, the profile's
+    // stats and the walk tab's championship list would never update after
+    // the first time each was built.
+    if (index == 0) {
+      _profilePageKey.currentState?.refresh();
+    }
     if (index == 1) {
       _walkPageKey.currentState?.refreshChampionships();
     }

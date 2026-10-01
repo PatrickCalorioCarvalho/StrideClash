@@ -11,13 +11,20 @@ class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
 
   @override
-  State<ProfilePage> createState() => _ProfilePageState();
+  State<ProfilePage> createState() => ProfilePageState();
 }
 
-class _ProfilePageState extends State<ProfilePage> {
+class ProfilePageState extends State<ProfilePage> {
   final _storage = AuthStorage();
   final _grpcClient = GrpcClient();
   bool _photoFailed = false;
+
+  /// Chamado por [MainTabsPage] sempre que a aba Perfil fica visível de
+  /// novo — como ela é mantida viva por um IndexedStack com o mesmo widget
+  /// `const`, o Flutter pula o rebuild sozinho (widget idêntico ao
+  /// anterior), então as estatísticas nunca atualizariam depois de uma
+  /// caminhada nova sem isso.
+  void refresh() => setState(() {});
 
   Future<void> _logout() async {
     await _storage.logout();
